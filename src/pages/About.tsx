@@ -27,10 +27,7 @@ import {
   Trophy,
   CheckCircle,
   ArrowRight,
-  Calendar,
-  MapPin,
-  Mail,
-  Phone
+  Calendar
 } from 'lucide-react';
 
 interface TeamMember {
@@ -147,8 +144,6 @@ const About = () => {
   const teamMembers = team.length > 0 ? team : defaultTeam;
 
   console.log('About render - Loading:', loading);
-  console.log('About render - CompanyInfo:', companyInfo);
-  console.log('About render - Team:', team);
   console.log('About render - Company used:', company);
   console.log('About render - Team members used:', teamMembers);
 
@@ -222,164 +217,64 @@ const About = () => {
         </div>
       </section>
 
-      {/* Hero Section */}
-      <section className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-background"></div>
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-32 h-32 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-24 h-24 bg-accent/30 rounded-full blur-lg"></div>
+      {/* TEST CONTENT */}
+      <div className="container mx-auto px-4 py-16">
+        <h1 className="text-4xl font-bold text-center mb-8">О нашей студии</h1>
+        <p className="text-center text-lg mb-8 max-w-3xl mx-auto">
+          {company.description}
+        </p>
+        
+        <div className="bg-red-100 border border-red-300 p-4 mb-8 rounded text-red-800">
+          <h2 className="font-bold text-xl mb-2">ТЕСТ: Этот блок должен быть виден!</h2>
+          <p>Компания основана: {company.founding_year}</p>
+          <p>Размер команды: {company.team_size}</p>
+          <p>Команда: {teamMembers.length} человек(а)</p>
+          <p>Проектов завершено: {company.projects_completed}</p>
         </div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center animate-on-scroll">
-            <h1 className="text-5xl md:text-6xl font-heading font-bold mb-6">
-              О нашей студии
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-              {company.description}
-            </p>
-          </div>
-        </div>
-      </section>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-muted/20">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center animate-on-scroll">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-                  <stat.icon className="h-8 w-8 text-primary" />
-                </div>
-                <div className="text-3xl font-bold text-primary mb-2">{stat.value}</div>
-                <div className="text-muted-foreground">{stat.label}</div>
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+          {stats.map((stat, index) => (
+            <div key={index} className="text-center p-4 bg-white rounded-lg shadow">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+                <stat.icon className="h-8 w-8 text-primary" />
               </div>
+              <div className="text-3xl font-bold text-primary mb-2">{stat.value}</div>
+              <div className="text-muted-foreground">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Team */}
+        <div className="text-center mb-16">
+          <h2 className="text-3xl font-bold mb-8">Наша команда</h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {teamMembers.map((member) => (
+              <Card key={member.id} className="overflow-hidden">
+                <div className="aspect-square overflow-hidden">
+                  <img 
+                    src={member.image} 
+                    alt={member.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold mb-2">{member.name}</h3>
+                  <p className="text-primary font-medium mb-3">{member.position}</p>
+                  <p className="text-sm text-muted-foreground mb-4">{member.description}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {member.skills.map((skill, skillIndex) => (
+                      <Badge key={skillIndex} variant="secondary" className="text-xs">
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
-      </section>
-
-      {/* Mission & Vision */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-12">
-              <div className="animate-on-scroll">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
-                  <Target className="h-8 w-8 text-primary" />
-                </div>
-                <h2 className="text-3xl font-heading font-bold mb-4">Наша миссия</h2>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  {company.mission}
-                </p>
-              </div>
-              <div className="animate-on-scroll">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-accent/10 rounded-full mb-6">
-                  <Award className="h-8 w-8 text-accent" />
-                </div>
-                <h2 className="text-3xl font-heading font-bold mb-4">Наше видение</h2>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  {company.vision}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Values Section */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16 animate-on-scroll">
-              <h2 className="text-4xl font-heading font-bold mb-4">Наши ценности</h2>
-              <p className="text-xl text-muted-foreground">
-                Принципы, которыми мы руководствуемся в работе
-              </p>
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {values.map((value, index) => (
-                <Card key={index} className="text-center hover:shadow-lg transition-shadow animate-on-scroll">
-                  <CardContent className="p-6">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-                      <value.icon className="h-8 w-8 text-primary" />
-                    </div>
-                    <h3 className="text-xl font-semibold mb-3">{value.title}</h3>
-                    <p className="text-muted-foreground">{value.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Team Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16 animate-on-scroll">
-              <h2 className="text-4xl font-heading font-bold mb-4">Наша команда</h2>
-              <p className="text-xl text-muted-foreground">
-                Профессионалы, которые создают ваш успех
-              </p>
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {teamMembers.map((member, index) => (
-                <Card key={member.id} className="overflow-hidden hover:shadow-lg transition-shadow animate-on-scroll">
-                  <div className="aspect-square overflow-hidden">
-                    <img 
-                      src={member.image} 
-                      alt={member.name}
-                      className="w-full h-full object-cover transition-transform hover:scale-105"
-                    />
-                  </div>
-                  <CardContent className="p-6">
-                    <h3 className="text-xl font-semibold mb-1">{member.name}</h3>
-                    <p className="text-primary font-medium mb-3">{member.position}</p>
-                    <p className="text-muted-foreground text-sm mb-4">{member.description}</p>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                      <Clock className="h-4 w-4" />
-                      <span>Опыт: {member.experience}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {member.skills.map((skill, skillIndex) => (
-                        <Badge key={skillIndex} variant="secondary" className="text-xs">
-                          {skill}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary to-primary/80">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center text-white animate-on-scroll">
-            <h2 className="text-4xl font-heading font-bold mb-4">
-              Готовы начать проект?
-            </h2>
-            <p className="text-xl mb-8 opacity-90">
-              Свяжитесь с нами, и мы обсудим, как помочь вашему бизнесу расти
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" variant="secondary">
-                <Link to="/contact" className="flex items-center gap-2">
-                  Связаться с нами
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-                <Link to="/cases">Посмотреть работы</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      </div>
 
       <Footer />
       <BackToTop />
