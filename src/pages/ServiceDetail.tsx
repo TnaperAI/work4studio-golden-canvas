@@ -195,14 +195,14 @@ const ServiceDetail = () => {
               {currentService.description}
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-4xl mx-auto">
-            <div className="p-8 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-3xl backdrop-blur-sm hover:shadow-xl transition-all duration-300">
-                <div className="flex items-center gap-4 text-xl">
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-8 mb-16 max-w-2xl mx-auto">
+              <div className="p-8 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-3xl backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center justify-center gap-4 text-xl">
                   <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center">
                     <DollarSign className="h-8 w-8 text-primary" />
                   </div>
-                  <div>
-                    <span className="font-bold text-foreground text-xl">Стоимость</span>
+                  <div className="text-center">
+                    <span className="font-bold text-foreground text-xl block">Стоимость</span>
                     <p className="text-muted-foreground text-lg">{formatPrice(currentService.price_from, currentService.price_to)}</p>
                   </div>
                 </div>

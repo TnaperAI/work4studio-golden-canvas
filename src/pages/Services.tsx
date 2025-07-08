@@ -34,6 +34,7 @@ const Services = () => {
 
   useEffect(() => {
     const fetchServices = async () => {
+      console.log('Fetching services...');
       const { data, error } = await supabase
         .from('services')
         .select('*')
@@ -50,7 +51,7 @@ const Services = () => {
     };
 
     fetchServices();
-  }, []);
+  }, []); // Убираем зависимости, чтобы эффект выполнялся только при монтировании
 
   const formatPrice = (from: number, to: number) => {
     return `от ${from.toLocaleString()} ₽`;
