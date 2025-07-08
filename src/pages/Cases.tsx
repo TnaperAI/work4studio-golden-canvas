@@ -174,7 +174,7 @@ const Cases = () => {
             <div className="absolute bottom-10 right-10 w-24 h-24 bg-gradient-to-br from-accent/30 to-transparent rounded-full blur-lg animate-pulse-slow"></div>
           </div>
           <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-none">
               <Link 
                 to="/cases" 
                 className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors mb-8 text-lg"
