@@ -62,6 +62,19 @@ const About = () => {
     fetchData();
   }, []);
 
+  // Перезапускаем анимацию скролла после загрузки данных
+  useEffect(() => {
+    if (!loading) {
+      // Даем время DOM обновиться, затем повторно запускаем анимацию
+      setTimeout(() => {
+        const elements = document.querySelectorAll('.animate-on-scroll');
+        elements.forEach(el => {
+          el.classList.add('in-view');
+        });
+      }, 100);
+    }
+  }, [loading]);
+
   const fetchData = async () => {
     try {
       // Fetch team members
