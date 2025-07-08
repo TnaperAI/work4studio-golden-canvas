@@ -11,9 +11,9 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative overflow-hidden border-t border-border/50">
+    <footer className="relative overflow-hidden border-t-2 border-border">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-secondary/5 to-background"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 via-secondary/30 to-secondary/20"></div>
       <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-primary/5 to-transparent rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 right-0 w-72 h-72 bg-gradient-to-br from-accent/5 to-transparent rounded-full blur-3xl"></div>
       

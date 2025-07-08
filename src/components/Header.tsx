@@ -19,8 +19,8 @@ const Header = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-border/50">
-      <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/98 to-background/95"></div>
+    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-border">
+      <div className="absolute inset-0 bg-gradient-to-r from-secondary/80 via-secondary/90 to-secondary/80"></div>
       <nav className="container-custom relative z-10">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
