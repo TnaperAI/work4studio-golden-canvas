@@ -17,6 +17,7 @@ import {
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
+import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { 
   Mail, 
   Phone, 
@@ -38,6 +39,8 @@ const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  
+  useScrollAnimation();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -50,7 +53,6 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    console.log('Contact form: submitting', formData);
 
     try {
       const { error } = await supabase
@@ -67,7 +69,6 @@ const Contact = () => {
         throw error;
       }
 
-      console.log('Contact form: submitted successfully');
       toast({
         title: 'Заявка отправлена!',
         description: 'Мы свяжемся с вами в ближайшее время.',
@@ -83,7 +84,6 @@ const Contact = () => {
       });
     } finally {
       setIsSubmitting(false);
-      console.log('Contact form: submission completed');
     }
   };
 

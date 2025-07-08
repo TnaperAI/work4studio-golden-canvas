@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { 
   Search, 
   Filter,
@@ -77,28 +78,23 @@ const Cases = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  
+  useScrollAnimation();
 
   useEffect(() => {
     fetchCases();
   }, []);
 
   useEffect(() => {
-    console.log('URL slug changed:', slug);
-    console.log('Cases loaded:', cases.length);
-    
     if (slug && cases.length > 0) {
       const caseItem = cases.find(c => c.slug === slug);
-      console.log('Found case:', caseItem?.title);
       setSelectedCase(caseItem || null);
     } else if (!slug) {
-      // Если нет slug в URL, показываем список кейсов
-      console.log('No slug, showing case list');
       setSelectedCase(null);
     }
   }, [slug, cases]);
 
   const fetchCases = async () => {
-    console.log('Fetching cases...');
     const { data, error } = await supabase
       .from('cases')
       .select('*')
@@ -109,7 +105,6 @@ const Cases = () => {
     if (error) {
       console.error('Error fetching cases:', error);
     } else {
-      console.log('Cases fetched successfully:', data);
       setCases(data || []);
     }
     setLoading(false);
@@ -127,15 +122,6 @@ const Cases = () => {
 
   const categories = Array.from(new Set(cases.map(c => c.category)));
   
-  console.log('Filter Debug:');
-  console.log('- Search term:', searchTerm);
-  console.log('- Selected category:', selectedCategory);
-  console.log('- Cases total:', cases.length);
-  console.log('- Filtered cases:', filteredCases.length);
-  console.log('- Featured cases:', featuredCases.length);
-  console.log('- Regular cases:', regularCases.length);
-  console.log('- Loading state:', loading);
-  console.log('- Categories:', categories);
 
   if (selectedCase) {
     return (

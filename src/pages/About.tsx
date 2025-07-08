@@ -53,19 +53,16 @@ interface CompanyInfo {
 }
 
 const About = () => {
-  console.log('About component loaded');
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
   const [loading, setLoading] = useState(true);
   useScrollAnimation();
 
   useEffect(() => {
-    console.log('About useEffect triggered');
     fetchData();
   }, []);
 
   const fetchData = async () => {
-    console.log('About page: fetchData started');
     try {
       // Fetch team members
       const { data: teamData, error: teamError } = await supabase
@@ -74,15 +71,11 @@ const About = () => {
         .eq('is_active', true)
         .order('sort_order');
 
-      console.log('Team data:', teamData, 'Team error:', teamError);
-
       // Fetch company info
       const { data: companyData, error: companyError } = await supabase
         .from('company_info')
         .select('*')
         .maybeSingle();
-
-      console.log('Company data:', companyData, 'Company error:', companyError);
 
       if (teamError) {
         console.error('Team error:', teamError);
@@ -93,12 +86,10 @@ const About = () => {
 
       setTeam(teamData || []);
       setCompanyInfo(companyData);
-      console.log('About page: data set successfully');
     } catch (error) {
       console.error('Error fetching about data:', error);
     } finally {
       setLoading(false);
-      console.log('About page: loading set to false');
     }
   };
 
@@ -114,7 +105,6 @@ const About = () => {
   };
 
   const company = companyInfo || defaultCompany;
-  console.log('About render - Company used:', company);
 
   const defaultTeam = [
     {
@@ -154,10 +144,6 @@ const About = () => {
 
   const teamMembers = team.length > 0 ? team : defaultTeam;
 
-  console.log('About render - Loading:', loading);
-  console.log('About render - Company used:', company);
-  console.log('About render - Team members used:', teamMembers);
-
   const stats = [
     { icon: Calendar, label: 'Год основания', value: company.founding_year },
     { icon: Users, label: 'Команда', value: company.team_size },
@@ -189,7 +175,6 @@ const About = () => {
   ];
 
   if (loading) {
-    console.log('About page: still loading...');
     return (
       <div className="min-h-screen bg-background">
         <Header />
@@ -202,8 +187,6 @@ const About = () => {
       </div>
     );
   }
-
-  console.log('About page: rendering main content');
 
   return (
     <div className="min-h-screen bg-background">
