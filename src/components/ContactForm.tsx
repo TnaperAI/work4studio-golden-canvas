@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Send, Mail, MessageCircle, Phone } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: '',
-    contact: '',
+    email: '',
+    phone: '',
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -15,16 +17,38 @@ const ContactForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      const { error } = await supabase
+        .from('contact_submissions')
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone || null,
+            message: formData.message
+          }
+        ]);
 
-    toast({
-      title: "Заявка отправлена!",
-      description: "Мы свяжемся с вами в течение 30 минут в рабочее время.",
-    });
+      if (error) {
+        throw error;
+      }
 
-    setFormData({ name: '', contact: '', message: '' });
-    setIsSubmitting(false);
+      toast({
+        title: "Заявка отправлена!",
+        description: "Мы получили вашу заявку и свяжемся с вами в ближайшее время.",
+      });
+
+      setFormData({ name: '', email: '', phone: '', message: '' });
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast({
+        title: "Ошибка",
+        description: "Произошла ошибка при отправке заявки. Попробуйте еще раз.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -68,18 +92,33 @@ const ContactForm = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="contact" className="block text-sm font-medium mb-2">
-                    Email или телефон
+                  <label htmlFor="email" className="block text-sm font-medium mb-2">
+                    Email
                   </label>
                   <input
-                    type="text"
-                    id="contact"
-                    name="contact"
-                    value={formData.contact}
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-3 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                    placeholder="Как с вами связаться?"
+                    placeholder="your@email.com"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium mb-2">
+                    Телефон (необязательно)
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                    placeholder="+7 (999) 123-45-67"
                   />
                 </div>
 

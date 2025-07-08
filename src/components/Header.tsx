@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import ContactFormModal from './ContactFormModal';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const location = useLocation();
 
   const navigation = [
@@ -40,7 +42,10 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
-            <button className="btn-gold text-sm">
+            <button 
+              className="btn-gold text-sm"
+              onClick={() => setIsContactModalOpen(true)}
+            >
               Обсудить проект
             </button>
           </div>
@@ -75,7 +80,10 @@ const Header = () => {
                 </Link>
               ))}
               <div className="px-3 py-2">
-                <button className="btn-gold text-sm w-full">
+                <button 
+                  className="btn-gold text-sm w-full"
+                  onClick={() => setIsContactModalOpen(true)}
+                >
                   Обсудить проект
                 </button>
               </div>
@@ -83,6 +91,11 @@ const Header = () => {
           </div>
         )}
       </nav>
+      
+      <ContactFormModal 
+        isOpen={isContactModalOpen} 
+        onClose={() => setIsContactModalOpen(false)} 
+      />
     </header>
   );
 };
