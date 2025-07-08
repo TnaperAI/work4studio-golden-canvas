@@ -17,7 +17,7 @@ const Hero = () => {
           
           {/* CTA Button */}
           <div className="pt-4">
-            <button className="btn-gold text-lg px-12 py-5">
+            <button className="btn-gold">
               Обсудить проект
             </button>
           </div>

@@ -124,7 +124,7 @@
 
   /* Gold Button Variants */
   .btn-gold {
-    @apply bg-primary text-primary-foreground px-8 py-4 rounded-lg font-medium uppercase tracking-wide;
+    @apply bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium uppercase tracking-wide text-sm;
     background: var(--gradient-primary);
     box-shadow: var(--shadow-gold);
     transition: var(--transition-smooth);
@@ -133,6 +133,16 @@
   .btn-gold:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-glow);
+  }
+
+  /* Secondary Button */
+  .btn-secondary {
+    @apply bg-transparent text-foreground px-6 py-3 rounded-lg font-medium border border-border text-sm;
+    transition: var(--transition-smooth);
+  }
+
+  .btn-secondary:hover {
+    @apply bg-secondary border-primary/30;
   }
 
   /* Glass Effect */

@@ -25,7 +25,7 @@ const Advantages = () => {
   ];
 
   return (
-    <section className="section-padding bg-dark-gray">
+    <section className="section-padding bg-secondary/30">
       <div className="container-custom">
         <div className="text-center mb-16 animate-on-scroll">
           <h2 className="mb-6">
@@ -41,18 +41,18 @@ const Advantages = () => {
           {advantages.map((advantage, index) => (
             <div
               key={index}
-              className="card-premium p-8 text-center group animate-on-scroll"
+              className="card-premium p-6 text-center group animate-on-scroll"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <div className="w-16 h-16 mx-auto mb-6 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                 <advantage.icon className="w-8 h-8 text-primary" />
               </div>
               
-              <h3 className="text-xl font-heading font-semibold mb-4">
+              <h3 className="text-lg font-heading font-semibold mb-4">
                 {advantage.title}
               </h3>
               
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed text-sm">
                 {advantage.description}
               </p>
             </div>

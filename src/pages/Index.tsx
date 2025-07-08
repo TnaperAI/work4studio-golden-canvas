@@ -2,6 +2,7 @@ import Hero from '@/components/Hero';
 import ServicesSection from '@/components/ServicesSection';
 import CasesSection from '@/components/CasesSection';
 import ContactSection from '@/components/ContactSection';
+import Advantages from '@/components/Advantages';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
@@ -15,6 +16,7 @@ const Index = () => {
       <main>
         <Hero />
         <ServicesSection />
+        <Advantages />
         <CasesSection />
         <ContactSection />
       </main>
