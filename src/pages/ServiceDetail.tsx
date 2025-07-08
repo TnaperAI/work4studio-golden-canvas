@@ -1,4 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -10,237 +12,98 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { useState } from 'react';
+
+interface ServiceData {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  short_description: string;
+  price_from: number;
+  price_to: number;
+  features: string[];
+  is_active: boolean;
+}
 
 const ServiceDetail = () => {
   const { service } = useParams();
   const [showContactForm, setShowContactForm] = useState(false);
+  const [serviceData, setServiceData] = useState<ServiceData | null>(null);
+  const [loading, setLoading] = useState(true);
   useScrollAnimation();
 
-  const serviceData = {
+  useEffect(() => {
+    const fetchService = async () => {
+      if (!service) return;
+
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('slug', service)
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error fetching service:', error);
+      } else {
+        setServiceData(data);
+      }
+      setLoading(false);
+    };
+
+    fetchService();
+  }, [service]);
+
+  // Fallback данные если не найдены в базе
+  const fallbackData = {
     lending: {
-      name: 'Лендинг',
-      slogan: 'Сайт, который продаёт с первого экрана',
-      description: 'Одностраничный сайт, сфокусированный на одной цели: подписка, заявка, покупка. Мы проектируем структуру, пишем тексты, собираем в чистом и современном дизайне. И всё это — за 3–5 дней.',
-      duration: 'от 3 рабочих дней',
-      price: 'от 25 000 ₽',
-      included: 'прототип → дизайн → сборка → настройка → хостинг → домен',
-      features: [
-        'Прототип и структура',
-        'Дизайн в фирменном стиле или нейтральный',
-        'Вёрстка (адаптивная, быстрая)',
-        'SEO-структура: теги, sitemap',
-        'Интеграция с формой, CRM, Telegram (если нужно)',
-        'CMS: редактирование текстов, блоков, изображений'
-      ],
-      suitableFor: [
-        'Продукта или услуги',
-        'Рекламной кампании',
-        'Онлайн-записи',
-        'Обратной связи'
-      ],
-      faq: [
-        {
-          question: 'А если мне нужно несколько языков?',
-          answer: 'Сделаем. Мультиязычность входит в базовый функционал.'
-        },
-        {
-          question: 'А вы пишете тексты?',
-          answer: 'Да, входит в стоимость. Наши копирайтеры создадут продающие тексты.'
-        },
-        {
-          question: 'А домен и хостинг?',
-          answer: 'Настроим сами. Поможем с выбором и регистрацией домена.'
-        }
-      ]
+      id: 'lending',
+      title: 'Лендинг',
+      slug: 'lending',
+      description: 'Одностраничный сайт, сфокусированный на одной цели: подписка, заявка, покупка. Мы проектируем структуру, пишем тексты, собираем в чистом и современном дизайне.',
+      short_description: 'Сайт, который продаёт с первого экрана',
+      price_from: 25000,
+      price_to: 120000,
+      features: ['Прототип и структура', 'Дизайн в фирменном стиле', 'Адаптивная вёрстка', 'SEO-структура', 'Интеграция с CRM', 'CMS для редактирования'],
+      is_active: true
     },
     corporate: {
-      name: 'Корпоративный сайт',
-      slogan: 'Представительство бизнеса онлайн',
-      description: 'Многостраничный сайт для представления компании, её услуг и команды. Включает разделы о компании, услугах, команде, контактах. Современный дизайн с возможностью управления контентом.',
-      duration: 'от 7 рабочих дней',
-      price: 'от 45 000 ₽',
-      included: 'прототип → дизайн → разработка → CMS → SEO → хостинг',
-      features: [
-        'Многостраничная структура',
-        'Корпоративный дизайн',
-        'CMS для управления контентом',
-        'SEO-оптимизация',
-        'Формы обратной связи',
-        'Интеграция с соцсетями'
-      ],
-      suitableFor: [
-        'Представления компании',
-        'Демонстрации услуг',
-        'Публикации новостей',
-        'Привлечения клиентов'
-      ],
-      faq: [
-        {
-          question: 'Можно ли добавлять страницы?',
-          answer: 'Да, структура сайта легко расширяется через CMS.'
-        },
-        {
-          question: 'Интегрируете с CRM?',
-          answer: 'Да, настроим интеграцию с популярными CRM-системами.'
-        },
-        {
-          question: 'Будет ли сайт быстро загружаться?',
-          answer: 'Да, оптимизируем скорость загрузки и производительность.'
-        }
-      ]
+      id: 'corporate',
+      title: 'Корпоративный сайт',
+      slug: 'corporate',
+      description: 'Многостраничный сайт для представления компании, её услуг и команды. Включает разделы о компании, услугах, команде, контактах.',
+      short_description: 'Представительство бизнеса онлайн',
+      price_from: 45000,
+      price_to: 300000,
+      features: ['Многостраничная структура', 'Корпоративный дизайн', 'CMS для управления', 'SEO-оптимизация', 'Формы обратной связи', 'Интеграция с соцсетями'],
+      is_active: true
     },
     ecommerce: {
-      name: 'Интернет-магазин',
-      slogan: 'Каталог + корзина + оплата',
-      description: 'Полноценный интернет-магазин с каталогом товаров, корзиной, системой заказов и оплаты. Удобная админка для управления товарами, заказами и клиентами.',
-      duration: 'от 14 рабочих дней',
-      price: 'от 75 000 ₽',
-      included: 'каталог → корзина → оплата → CMS → интеграции → хостинг',
-      features: [
-        'Каталог товаров с фильтрами',
-        'Корзина и оформление заказов',
-        'Интеграция с платёжными системами',
-        'Система управления заказами',
-        'CMS для управления товарами',
-        'Мобильная адаптация'
-      ],
-      suitableFor: [
-        'Продажи товаров онлайн',
-        'B2B и B2C торговли',
-        'Автоматизации продаж',
-        'Расширения бизнеса'
-      ],
-      faq: [
-        {
-          question: 'Какие платёжные системы поддерживаются?',
-          answer: 'ЮKassa, Сбербанк, Тинькофф, PayPal и другие популярные системы.'
-        },
-        {
-          question: 'Можно ли интегрировать с 1С?',
-          answer: 'Да, настроим синхронизацию товаров и заказов с 1С.'
-        },
-        {
-          question: 'Сколько товаров можно добавить?',
-          answer: 'Без ограничений. Система масштабируется под ваши нужды.'
-        }
-      ]
-    },
-    mvp: {
-      name: 'MVP / Startup-сайт',
-      slogan: 'Быстрый запуск проекта',
-      description: 'Минимально жизнеспособный продукт для быстрого тестирования идеи. Содержит ключевой функционал и форму для сбора заявок от потенциальных клиентов.',
-      duration: 'от 5 рабочих дней',
-      price: 'от 35 000 ₽',
-      included: 'концепт → MVP → форма лидов → аналитика → хостинг',
-      features: [
-        'Минимальный набор функций',
-        'Быстрая разработка',
-        'Форма сбора лидов',
-        'Интеграция с аналитикой',
-        'A/B тестирование',
-        'Готовность к масштабированию'
-      ],
-      suitableFor: [
-        'Тестирования бизнес-идей',
-        'Привлечения инвестиций',
-        'Валидации концепции',
-        'Быстрого входа на рынок'
-      ],
-      faq: [
-        {
-          question: 'Что такое MVP?',
-          answer: 'Минимально жизнеспособный продукт с базовым функционалом для тестирования идеи.'
-        },
-        {
-          question: 'Можно ли доработать потом?',
-          answer: 'Да, архитектура позволяет легко добавлять новые функции.'
-        },
-        {
-          question: 'Подойдёт ли для стартапа?',
-          answer: 'Идеально! MVP позволяет быстро протестировать идею с минимальными затратами.'
-        }
-      ]
-    },
-    franchise: {
-      name: 'Сайт под франшизу',
-      slogan: 'Шаблон для клонирования',
-      description: 'Сайт-шаблон для франшизы, который легко адаптируется под разные города и регионы. Единый дизайн с возможностью локальной настройки контента.',
-      duration: 'от 10 рабочих дней',
-      price: 'от 55 000 ₽',
-      included: 'шаблон → мультисайт → CMS → инструкции → поддержка',
-      features: [
-        'Единый дизайн-шаблон',
-        'Мультисайтовая архитектура',
-        'Локализация контента',
-        'Централизованное управление',
-        'Инструкции для франчайзи',
-        'Техническая поддержка'
-      ],
-      suitableFor: [
-        'Развития франшизы',
-        'Мультирегиональных проектов',
-        'Сетевого бизнеса',
-        'Масштабирования бренда'
-      ],
-      faq: [
-        {
-          question: 'Сколько городов можно подключить?',
-          answer: 'Без ограничений. Система масштабируется под любое количество регионов.'
-        },
-        {
-          question: 'Могут ли франчайзи менять контент?',
-          answer: 'Да, предусмотрены локальные настройки в рамках бренд-гайдов.'
-        },
-        {
-          question: 'Нужна ли техническая поддержка?',
-          answer: 'Да, предоставляем поддержку и обучение для франчайзи.'
-        }
-      ]
-    },
-    portfolio: {
-      name: 'Сайт-портфолио',
-      slogan: 'Для экспертов и дизайнеров',
-      description: 'Персональный сайт для демонстрации работ и привлечения клиентов. Элегантный дизайн с акцентом на визуальную подачу проектов и экспертности.',
-      duration: 'от 5 рабочих дней',
-      price: 'от 30 000 ₽',
-      included: 'дизайн → галерея → блог → контакты → SEO → хостинг',
-      features: [
-        'Галерея работ',
-        'Персональный блог',
-        'О себе и услугах',
-        'Форма для заказов',
-        'SEO-оптимизация',
-        'Социальные сети'
-      ],
-      suitableFor: [
-        'Дизайнеров и художников',
-        'Фотографов',
-        'Экспертов и консультантов',
-        'Творческих агентств'
-      ],
-      faq: [
-        {
-          question: 'Можно ли добавить блог?',
-          answer: 'Да, блог входит в базовую комплектацию сайта-портфолио.'
-        },
-        {
-          question: 'Сколько работ можно разместить?',
-          answer: 'Без ограничений. Галерея масштабируется под любое количество проектов.'
-        },
-        {
-          question: 'Подойдёт ли для личного бренда?',
-          answer: 'Идеально! Сайт-портфолио помогает выстроить экспертность и привлечь клиентов.'
-        }
-      ]
+      id: 'ecommerce',
+      title: 'Интернет-магазин',
+      slug: 'ecommerce',
+      description: 'Полноценный интернет-магазин с каталогом товаров, корзиной, системой заказов и оплаты. Удобная админка для управления товарами.',
+      short_description: 'Каталог + корзина + оплата',
+      price_from: 75000,
+      price_to: 500000,
+      features: ['Каталог товаров с фильтрами', 'Корзина и оформление заказов', 'Интеграция с платёжными системами', 'Система управления заказами', 'CMS для управления товарами', 'Мобильная адаптация'],
+      is_active: true
     }
   };
 
-  const currentService = serviceData[service as keyof typeof serviceData];
+  const currentService = serviceData || fallbackData[service as keyof typeof fallbackData];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   if (!currentService) {
     return (
-      <div className="min-h-screen flex items-center justify-center">{/* Убираем bg-background чтобы видеть фоновую анимацию */}
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Услуга не найдена</h1>
           <Link to="/services">
@@ -250,6 +113,33 @@ const ServiceDetail = () => {
       </div>
     );
   }
+
+  const formatPrice = (from: number, to: number) => {
+    return `от ${from.toLocaleString()} ₽`;
+  };
+
+  const suitableFor = [
+    'Продукта или услуги',
+    'Рекламной кампании', 
+    'Онлайн-записи',
+    'Обратной связи'
+  ];
+
+  const faq = [
+    {
+      question: 'Сколько времени займёт разработка?',
+      answer: 'В зависимости от сложности проекта, от 3 до 14 рабочих дней.'
+    },
+    {
+      question: 'Входит ли поддержка в стоимость?',
+      answer: 'Да, базовая техническая поддержка входит в стоимость на 3 месяца.'
+    },
+    {
+      question: 'Можно ли вносить изменения?',
+      answer: 'Конечно! Мы предусматриваем 2 раунда правок в рамках проекта.'
+    }
+  ];
+
 
   return (
     <div className="min-h-screen">{/* Убираем bg-background чтобы видеть фоновую анимацию */}
@@ -273,7 +163,7 @@ const ServiceDetail = () => {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>{currentService.name}</BreadcrumbPage>
+                <BreadcrumbPage>{currentService.title}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -293,12 +183,12 @@ const ServiceDetail = () => {
             <div className="flex items-center justify-center mb-8">
               <Badge variant="secondary" className="px-6 py-3 text-lg font-bold bg-gradient-to-r from-primary/10 to-accent/10 text-primary border-primary/20 rounded-2xl">
                 <Star className="h-5 w-5 mr-3" />
-                {currentService.name}
+                {currentService.title}
               </Badge>
             </div>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-10 leading-tight">
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
-                {currentService.slogan}
+                {currentService.short_description}
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-16 max-w-5xl mx-auto leading-relaxed">
@@ -306,25 +196,14 @@ const ServiceDetail = () => {
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-4xl mx-auto">
-              <div className="p-8 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-3xl backdrop-blur-sm hover:shadow-xl transition-all duration-300">
-                <div className="flex items-center gap-4 text-xl">
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center">
-                    <Clock className="h-8 w-8 text-primary" />
-                  </div>
-                  <div>
-                    <span className="font-bold text-foreground text-xl">Срок работы</span>
-                    <p className="text-muted-foreground text-lg">{currentService.duration}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="p-8 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-3xl backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+            <div className="p-8 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-3xl backdrop-blur-sm hover:shadow-xl transition-all duration-300">
                 <div className="flex items-center gap-4 text-xl">
                   <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center">
                     <DollarSign className="h-8 w-8 text-primary" />
                   </div>
                   <div>
                     <span className="font-bold text-foreground text-xl">Стоимость</span>
-                    <p className="text-muted-foreground text-lg">{currentService.price}</p>
+                    <p className="text-muted-foreground text-lg">{formatPrice(currentService.price_from, currentService.price_to)}</p>
                   </div>
                 </div>
               </div>
@@ -333,13 +212,15 @@ const ServiceDetail = () => {
             <div className="mb-12 p-8 md:p-10 bg-gradient-to-r from-primary/10 to-accent/10 rounded-3xl backdrop-blur-sm border border-primary/20">
               <div className="flex items-center justify-center mb-4">
                 <Sparkles className="h-6 w-6 text-primary mr-3" />
-                <span className="font-bold text-xl">В стоимость входит</span>
+                <span className="font-bold text-xl">Что входит в услугу</span>
               </div>
-              <p className="text-muted-foreground text-lg">{currentService.included}</p>
+              <p className="text-muted-foreground text-lg">
+                {currentService.features.join(' • ')}
+              </p>
             </div>
             
             <Button size="lg" className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-xl px-12 py-6 hover:shadow-2xl hover:scale-105 transition-all duration-300" onClick={() => setShowContactForm(true)}>
-              Заказать {currentService.name.toLowerCase()}
+              Заказать {currentService.title.toLowerCase()}
               <ArrowLeft className="ml-3 h-6 w-6 rotate-180" />
             </Button>
           </div>
@@ -390,7 +271,7 @@ const ServiceDetail = () => {
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">для</span>
             </h2>
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-              {currentService.suitableFor.map((item, index) => (
+              {suitableFor.map((item, index) => (
                 <div key={index} className="text-center p-8 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-3xl hover:shadow-xl transition-all duration-300 hover:scale-105 backdrop-blur-sm group">
                   <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
                     {index === 0 && <Target className="h-10 w-10 text-primary" />}
@@ -418,7 +299,7 @@ const ServiceDetail = () => {
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">вопросы</span>
             </h2>
             <Accordion type="single" collapsible className="space-y-6">
-              {currentService.faq.map((item, index) => (
+              {faq.map((item, index) => (
                 <AccordionItem key={index} value={`item-${index}`} className="border-0 bg-gradient-to-r from-card/50 to-secondary/30 rounded-2xl px-8 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
                   <AccordionTrigger className="text-left font-semibold text-lg py-6 hover:no-underline">
                     {item.question}
@@ -443,7 +324,7 @@ const ServiceDetail = () => {
           <div className="max-w-6xl mx-auto text-center animate-on-scroll">
             <div className="p-12 md:p-16 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-3xl backdrop-blur-sm">
               <h2 className="text-4xl md:text-6xl font-heading font-bold mb-8 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                Заполните форму и получите {currentService.name.toLowerCase()} за {currentService.duration.replace('от ', '')}
+                Заполните форму и получите {currentService.title.toLowerCase()} быстро
               </h2>
               <p className="text-muted-foreground mb-12 text-xl md:text-2xl leading-relaxed max-w-4xl mx-auto">
                 Обсудим ваши задачи, подберём оптимальное решение и запустим проект в кратчайшие сроки

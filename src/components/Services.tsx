@@ -1,23 +1,75 @@
+import { useState, useEffect } from 'react';
 import { ArrowRight, Globe, Wrench } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+
+interface Service {
+  id: string;
+  title: string;
+  slug: string;
+  short_description: string;
+  features: string[];
+  is_active: boolean;
+  sort_order: number;
+}
 
 const Services = () => {
-  const services = [
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching services:', error);
+      } else {
+        setServices(data || []);
+      }
+      setLoading(false);
+    };
+
+    fetchServices();
+  }, []);
+
+  const defaultServices = [
     {
-      icon: Globe,
+      id: '1',
       title: 'Разработка сайтов',
-      description: 'Создаём лендинги, многостраничные сайты и MVP. Современный дизайн, быстрая загрузка, SEO-оптимизация.',
+      slug: 'development',
+      short_description: 'Создаём лендинги, многостраничные сайты и MVP. Современный дизайн, быстрая загрузка, SEO-оптимизация.',
       features: ['Адаптивная вёрстка', 'SEO-ready', 'CMS на выбор', 'Интеграции'],
-      link: '/services#development'
+      is_active: true,
+      sort_order: 1
     },
     {
-      icon: Wrench,
+      id: '2',
       title: 'Поддержка сайтов',
-      description: 'Техническая поддержка, доработки и оптимизация существующих проектов. SLA или почасовая оплата.',
+      slug: 'support',
+      short_description: 'Техническая поддержка, доработки и оптимизация существующих проектов. SLA или почасовая оплата.',
       features: ['24/7 мониторинг', 'Быстрые правки', 'Обновления безопасности', 'Консультации'],
-      link: '/services#support'
+      is_active: true,
+      sort_order: 2
     }
   ];
+
+  const displayServices = services.length > 0 ? services : defaultServices;
+
+  if (loading) {
+    return (
+      <section className="section-padding">
+        <div className="container-custom">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="section-padding">
@@ -32,15 +84,15 @@ const Services = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {services.map((service, index) => (
+          {displayServices.map((service, index) => (
             <div
-              key={index}
+              key={service.id}
               className="card-premium p-8 group cursor-pointer animate-on-scroll"
               style={{ animationDelay: `${index * 200}ms` }}
             >
               <div className="flex items-start space-x-6">
                 <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
-                  <service.icon className="w-8 h-8 text-primary" />
+                  <Globe className="w-8 h-8 text-primary" />
                 </div>
                 
                 <div className="flex-1">
@@ -49,20 +101,22 @@ const Services = () => {
                   </h3>
                   
                   <p className="text-muted-foreground mb-6 leading-relaxed">
-                    {service.description}
+                    {service.short_description}
                   </p>
                   
-                  <ul className="space-y-2 mb-8">
-                    {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center text-sm">
-                        <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
+                  {service.features && service.features.length > 0 && (
+                    <ul className="space-y-2 mb-8">
+                      {service.features.slice(0, 4).map((feature, idx) => (
+                        <li key={idx} className="flex items-center text-sm">
+                          <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                   
                   <Link
-                    to={service.link}
+                    to={`/services/${service.slug}`}
                     className="inline-flex items-center text-primary hover:text-primary/80 transition-colors font-medium"
                   >
                     Подробнее
