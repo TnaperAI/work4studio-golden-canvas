@@ -69,7 +69,7 @@ const Services = () => {
       <Header />
       
       {/* Breadcrumb */}
-      <section className="pt-20 pb-6 bg-muted/50 border-b">
+      <section className="pt-18 pb-2 bg-muted/50 border-b">
         <div className="container mx-auto px-4">
           <Breadcrumb>
             <BreadcrumbList>
