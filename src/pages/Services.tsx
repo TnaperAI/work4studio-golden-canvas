@@ -139,38 +139,44 @@ const Services = () => {
             </p>
           </div>
           
-          {loading ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            </div>
-          ) : (
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
-              {services.map((service, index) => (
-                <div key={service.id} className="animate-on-scroll group bg-white/10 border border-white/20 p-8 rounded-3xl relative overflow-hidden hover:shadow-2xl transition-all duration-500 backdrop-blur-sm hover:scale-105" style={{ animationDelay: `${index * 150}ms` }}>
-                  <div className="relative z-10">
-                    <h3 className="text-2xl font-heading font-bold mb-4 text-white">
-                      {service.title}
-                    </h3>
-                    <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                      {service.short_description}
-                    </p>
-                    
-                    <div className="flex items-center gap-3 text-muted-foreground mb-8">
-                      <DollarSign className="h-6 w-6 text-primary" />
-                      <span className="font-semibold text-white">{formatPrice(service.price_from, service.price_to)}</span>
-                    </div>
-                    
-                    <Link to={`/services/${service.slug}`}>
-                      <Button className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-xl hover:scale-105 transition-all duration-300 text-lg py-6">
-                        Подробнее
-                        <ArrowRight className="ml-3 h-5 w-5" />
-                      </Button>
-                    </Link>
-                  </div>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
+            {loading && (
+              <div className="col-span-full flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <p className="ml-4 text-white">Загружаем...</p>
+              </div>
+            )}
+            
+            {services && services.length > 0 && services.map((service, index) => (
+              <div key={service.id} className="bg-white/20 border border-white/30 p-6 rounded-2xl hover:bg-white/30 transition-all">
+                <h3 className="text-xl font-bold text-white mb-3">
+                  {service.title}
+                </h3>
+                <p className="text-gray-200 mb-4">
+                  {service.short_description}
+                </p>
+                <div className="flex items-center justify-between">
+                  <span className="text-primary font-semibold">
+                    от {service.price_from?.toLocaleString()} ₽
+                  </span>
+                  <Link to={`/services/${service.slug}`}>
+                    <Button size="sm" className="bg-primary hover:bg-primary/80">
+                      Подробнее
+                    </Button>
+                  </Link>
                 </div>
-              ))}
-            </div>
-          )}
+              </div>
+            ))}
+            
+            {!loading && (!services || services.length === 0) && (
+              <div className="col-span-full text-center py-16">
+                <p className="text-white text-xl">Услуги не найдены</p>
+                <p className="text-gray-400 text-sm mt-2">
+                  Данные: {JSON.stringify(services?.length || 'нет')}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
