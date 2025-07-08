@@ -17,7 +17,7 @@ const Footer = () => {
       <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-primary/5 to-transparent rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 right-0 w-72 h-72 bg-gradient-to-br from-accent/5 to-transparent rounded-full blur-3xl"></div>
       
-      <div className="container-custom section-padding relative z-10">
+      <div className="w-full section-padding relative z-10 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* Logo and Description */}
           <div className="md:col-span-2">
