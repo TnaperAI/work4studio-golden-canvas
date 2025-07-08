@@ -56,29 +56,36 @@ interface CompanyInfo {
 }
 
 const About = () => {
+  console.log('About component loaded');
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
   const [loading, setLoading] = useState(true);
   useScrollAnimation();
 
   useEffect(() => {
+    console.log('About useEffect triggered');
     fetchData();
   }, []);
 
   const fetchData = async () => {
+    console.log('About page: fetchData started');
     try {
       // Fetch team members
-      const { data: teamData } = await supabase
+      const { data: teamData, error: teamError } = await supabase
         .from('team_members')
         .select('*')
         .eq('is_active', true)
         .order('sort_order');
 
+      console.log('Team data:', teamData, 'Team error:', teamError);
+
       // Fetch company info
-      const { data: companyData } = await supabase
+      const { data: companyData, error: companyError } = await supabase
         .from('company_info')
         .select('*')
         .maybeSingle();
+
+      console.log('Company data:', companyData, 'Company error:', companyError);
 
       setTeam(teamData || []);
       setCompanyInfo(companyData);
@@ -138,6 +145,12 @@ const About = () => {
 
   const company = companyInfo || defaultCompany;
   const teamMembers = team.length > 0 ? team : defaultTeam;
+
+  console.log('About render - Loading:', loading);
+  console.log('About render - CompanyInfo:', companyInfo);
+  console.log('About render - Team:', team);
+  console.log('About render - Company used:', company);
+  console.log('About render - Team members used:', teamMembers);
 
   const stats = [
     { icon: Calendar, label: 'Год основания', value: company.founding_year },
