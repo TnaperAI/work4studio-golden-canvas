@@ -139,87 +139,38 @@ const Services = () => {
             </p>
           </div>
           
-          {(() => {
-            console.log('🎯 FINAL CHECK:');
-            console.log('   loading:', loading);
-            console.log('   services:', services); 
-            console.log('   services length:', services?.length || 0);
-            console.log('   is array:', Array.isArray(services));
-            
-            if (loading) {
-              return (
-                <div className="flex items-center justify-center h-64">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                  <p className="ml-4 text-foreground">Загружаем услуги...</p>
-                </div>
-              );
-            }
-            
-            if (!Array.isArray(services) || services.length === 0) {
-              return (
-                <div className="flex items-center justify-center h-64">
-                  <div className="text-center">
-                    <p className="text-xl text-muted-foreground mb-4">Услуги не найдены</p>
-                    <p className="text-sm text-muted-foreground">
-                      Debug: services = {JSON.stringify(services)} | length = {services?.length || 'undefined'}
-                    </p>
-                  </div>
-                </div>
-              );
-            }
-
-            return (
+          {loading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : (
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
               {services.map((service, index) => (
-                <div key={service.id} className="animate-on-scroll group" style={{ animationDelay: `${index * 150}ms` }}>
-                  <div className="h-full border border-border/30 bg-gradient-to-br from-card/90 to-secondary/60 p-8 rounded-3xl relative overflow-hidden hover:shadow-2xl transition-all duration-500 backdrop-blur-sm hover:scale-105 hover:border-primary/50">
-                    <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div key={service.id} className="animate-on-scroll group bg-white/10 border border-white/20 p-8 rounded-3xl relative overflow-hidden hover:shadow-2xl transition-all duration-500 backdrop-blur-sm hover:scale-105" style={{ animationDelay: `${index * 150}ms` }}>
+                  <div className="relative z-10">
+                    <h3 className="text-2xl font-heading font-bold mb-4 text-white">
+                      {service.title}
+                    </h3>
+                    <p className="text-gray-300 text-lg leading-relaxed mb-6">
+                      {service.short_description}
+                    </p>
                     
-                    <div className="relative z-10">
-                      <div className="mb-6">
-                        <h3 className="text-2xl md:text-3xl font-heading font-bold mb-4 group-hover:text-primary transition-colors">
-                          {service.title}
-                        </h3>
-                        <p className="text-muted-foreground text-lg leading-relaxed">
-                          {service.short_description}
-                        </p>
-                      </div>
-                      
-                      {service.features && service.features.length > 0 && (
-                        <div className="mb-6">
-                          <div className="grid grid-cols-2 gap-2">
-                            {service.features.slice(0, 4).map((feature, idx) => (
-                              <div key={idx} className="flex items-center text-sm bg-gradient-to-r from-secondary/80 to-muted/50 rounded-xl px-3 py-2 border border-border/50">
-                                <div className="w-2 h-2 bg-gradient-to-r from-primary to-accent rounded-full mr-2 flex-shrink-0"></div>
-                                <span className="font-medium">{feature}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      
-                      <div className="flex items-center gap-6 mb-8 text-lg">
-                        <div className="flex items-center gap-3 text-muted-foreground">
-                          <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl flex items-center justify-center">
-                            <DollarSign className="h-6 w-6 text-primary" />
-                          </div>
-                          <span className="font-semibold">{formatPrice(service.price_from, service.price_to)}</span>
-                        </div>
-                      </div>
-                      
-                      <Link to={`/services/${service.slug}`}>
-                        <Button className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-xl hover:scale-105 transition-all duration-300 text-lg py-6 group/button">
-                          Подробнее
-                          <ArrowRight className="ml-3 h-5 w-5 group-hover/button:translate-x-1 transition-transform" />
-                        </Button>
-                      </Link>
+                    <div className="flex items-center gap-3 text-muted-foreground mb-8">
+                      <DollarSign className="h-6 w-6 text-primary" />
+                      <span className="font-semibold text-white">{formatPrice(service.price_from, service.price_to)}</span>
                     </div>
+                    
+                    <Link to={`/services/${service.slug}`}>
+                      <Button className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-xl hover:scale-105 transition-all duration-300 text-lg py-6">
+                        Подробнее
+                        <ArrowRight className="ml-3 h-5 w-5" />
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               ))}
             </div>
-            );
-          })()}
+          )}
         </div>
       </section>
 
