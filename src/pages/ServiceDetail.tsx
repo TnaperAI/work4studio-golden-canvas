@@ -3,13 +3,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ArrowLeft, Clock, DollarSign, Check, Lightbulb, Target, Zap, Globe } from 'lucide-react';
+import { ArrowLeft, Clock, DollarSign, Check, Lightbulb, Target, Zap, Globe, Star, Sparkles } from 'lucide-react';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import ContactFormModal from '@/components/ContactFormModal';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import BackToTop from '@/components/BackToTop';
+import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { useState } from 'react';
 
 const ServiceDetail = () => {
   const { service } = useParams();
   const [showContactForm, setShowContactForm] = useState(false);
+  useScrollAnimation();
 
   const serviceData = {
     lending: {
@@ -247,64 +253,114 @@ const ServiceDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Header />
+      
       {/* Breadcrumb */}
-      <section className="py-8 border-b">
+      <section className="py-4 border-b">
         <div className="container mx-auto px-4">
-          <Link to="/services" className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Назад к услугам
-          </Link>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/">Главная</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/services">Услуги</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{currentService.name}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
         </div>
       </section>
 
       {/* Hero */}
-      <section className="py-20 bg-gradient-to-br from-primary/5 to-accent/5">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <Badge variant="secondary" className="mb-4">
-              {currentService.name}
-            </Badge>
-            <h1 className="text-4xl md:text-5xl font-heading font-bold mb-6">
+      <section className="relative py-32 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-background"></div>
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-32 h-32 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-40 h-40 bg-accent/30 rounded-full blur-2xl animate-bounce delay-500"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/10 to-accent/10 rounded-full blur-3xl"></div>
+        </div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-5xl mx-auto text-center animate-on-scroll">
+            <div className="flex items-center justify-center mb-6">
+              <Badge variant="secondary" className="px-4 py-2 text-sm font-medium bg-primary/10 text-primary border-primary/20">
+                <Star className="h-4 w-4 mr-2" />
+                {currentService.name}
+              </Badge>
+            </div>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold mb-8 text-glow">
               {currentService.slogan}
             </h1>
-            <p className="text-xl text-muted-foreground mb-8">
+            <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-4xl mx-auto leading-relaxed">
               {currentService.description}
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-8">
-              <div className="flex items-center gap-2 text-lg">
-                <Clock className="h-5 w-5 text-primary" />
-                <span className="font-semibold">Срок:</span> {currentService.duration}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 max-w-2xl mx-auto">
+              <div className="card-premium p-6">
+                <div className="flex items-center gap-3 text-lg">
+                  <Clock className="h-6 w-6 text-primary" />
+                  <div>
+                    <span className="font-semibold text-foreground">Срок работы</span>
+                    <p className="text-muted-foreground">{currentService.duration}</p>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-lg">
-                <DollarSign className="h-5 w-5 text-primary" />
-                <span className="font-semibold">Стоимость:</span> {currentService.price}
+              <div className="card-premium p-6">
+                <div className="flex items-center gap-3 text-lg">
+                  <DollarSign className="h-6 w-6 text-primary" />
+                  <div>
+                    <span className="font-semibold text-foreground">Стоимость</span>
+                    <p className="text-muted-foreground">{currentService.price}</p>
+                  </div>
+                </div>
               </div>
             </div>
             
-            <p className="text-muted-foreground mb-8">
-              <strong>Входит:</strong> {currentService.included}
-            </p>
+            <div className="mb-8 p-6 bg-muted/30 rounded-xl backdrop-blur-sm">
+              <div className="flex items-center justify-center mb-3">
+                <Sparkles className="h-5 w-5 text-primary mr-2" />
+                <span className="font-semibold">В стоимость входит</span>
+              </div>
+              <p className="text-muted-foreground">{currentService.included}</p>
+            </div>
             
-            <Button size="lg" onClick={() => setShowContactForm(true)}>
+            <Button size="lg" className="btn-gold text-lg px-8 py-4" onClick={() => setShowContactForm(true)}>
               Заказать {currentService.name.toLowerCase()}
+              <ArrowLeft className="ml-2 h-5 w-5 rotate-180" />
             </Button>
           </div>
         </div>
       </section>
 
       {/* What's Included */}
-      <section className="py-20">
+      <section className="section-padding relative">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-heading font-bold text-center mb-12">
-              Что входит в работу
-            </h2>
-            <div className="grid gap-4 md:grid-cols-2">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16 animate-on-scroll">
+              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
+                Что входит в работу
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                Полный цикл разработки от идеи до запуска
+              </p>
+            </div>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {currentService.features.map((feature, index) => (
-                <div key={index} className="flex items-start gap-3 p-4 rounded-lg bg-muted/30">
-                  <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span>{feature}</span>
+                <div key={index} className="animate-on-scroll card-premium p-6 group" style={{ animationDelay: `${index * 100}ms` }}>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                      <Check className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="text-foreground font-medium leading-relaxed">{feature}</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -362,22 +418,29 @@ const ServiceDetail = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-gradient-to-br from-primary to-primary/80">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto text-center text-white">
-            <h2 className="text-3xl font-heading font-bold mb-4">
+      <section className="section-padding relative overflow-hidden bg-gradient-to-br from-primary/10 via-accent/5 to-background">
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-0 w-80 h-80 bg-accent/20 rounded-full blur-2xl"></div>
+        </div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl mx-auto text-center animate-on-scroll">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">
               Заполните форму и получите {currentService.name.toLowerCase()} за {currentService.duration.replace('от ', '')}
             </h2>
-            <p className="text-primary-foreground/80 mb-8">
+            <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
               Обсудим ваши задачи и подберём оптимальное решение
             </p>
-            <Button size="lg" variant="secondary" onClick={() => setShowContactForm(true)}>
+            <Button size="lg" className="btn-gold text-lg px-8 py-4" onClick={() => setShowContactForm(true)}>
               Оставить заявку
+              <Sparkles className="ml-2 h-5 w-5" />
             </Button>
           </div>
         </div>
       </section>
 
+      <Footer />
+      <BackToTop />
       <ContactFormModal 
         isOpen={showContactForm} 
         onClose={() => setShowContactForm(false)} 
