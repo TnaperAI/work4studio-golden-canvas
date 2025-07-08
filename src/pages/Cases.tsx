@@ -131,17 +131,18 @@ const Cases = () => {
     return (a.sort_order || 0) - (b.sort_order || 0);
   });
 
+  const categories = Array.from(new Set(cases.map(c => c.category)));
+
   // Debug logging
   console.log('Selected category:', selectedCategory);
   console.log('Total cases:', cases.length);
   console.log('Filtered cases:', filteredCases.length);
   console.log('Cases data:', cases);
+  console.log('Available categories:', categories);
+  console.log('Cases with categories:', cases.map(c => ({title: c.title, category: c.category})));
 
   const featuredCases = filteredCases.filter(c => c.is_featured);
   const regularCases = filteredCases.filter(c => !c.is_featured);
-
-  const categories = Array.from(new Set(cases.map(c => c.category)));
-  
 
   if (selectedCase) {
     return (
