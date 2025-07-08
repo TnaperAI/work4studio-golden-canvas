@@ -191,6 +191,13 @@
   .animate-pulse-slow {
     animation: pulse-slow 15s ease-in-out infinite;
   }
+  }
+  
+  /* Grid Pattern Background */
+  .bg-grid-pattern {
+    background-image: radial-gradient(circle at 1px 1px, hsl(var(--border)) 1px, transparent 0);
+    background-size: 20px 20px;
+  }
 }
 
 @keyframes float-slow {
