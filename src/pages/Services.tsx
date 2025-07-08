@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Clock, DollarSign, Sparkles, Target, Zap } from 'lucide-react';
@@ -7,9 +8,11 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
+import ContactFormModal from '@/components/ContactFormModal';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
 const Services = () => {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const { getContent } = useSiteContent();
   useScrollAnimation();
 
@@ -198,7 +201,11 @@ const Services = () => {
               <p className="text-muted-foreground mb-10 text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto">
                 {getContent('services', 'cta_subtitle') || 'Расскажите о своих задачах — поможем выбрать оптимальное решение и запустим проект в кратчайшие сроки'}
               </p>
-              <Button size="lg" className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-xl px-10 py-6 hover:shadow-2xl hover:scale-105 transition-all duration-300">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-xl px-10 py-6 hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                onClick={() => setIsContactModalOpen(true)}
+              >
                 {getContent('services', 'cta_button') || 'Получить консультацию'}
               </Button>
             </div>
@@ -208,6 +215,11 @@ const Services = () => {
       
       <Footer />
       <BackToTop />
+      
+      <ContactFormModal 
+        isOpen={isContactModalOpen} 
+        onClose={() => setIsContactModalOpen(false)} 
+      />
     </div>
   );
 };

@@ -189,7 +189,9 @@ const ContactForm = () => {
                   </a>
 
                   <a
-                    href="#"
+                    href="https://t.me/work4studio"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center p-6 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl group hover:shadow-xl transition-all duration-300 hover:scale-105 backdrop-blur-sm"
                   >
                     <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
@@ -201,15 +203,18 @@ const ContactForm = () => {
                     </div>
                   </a>
 
-                  <button className="flex items-center p-6 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl group hover:shadow-xl transition-all duration-300 hover:scale-105 backdrop-blur-sm w-full">
+                  <a 
+                    href="tel:+79991234567" 
+                    className="flex items-center p-6 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl group hover:shadow-xl transition-all duration-300 hover:scale-105 backdrop-blur-sm w-full"
+                  >
                     <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
                       <Phone className="w-8 h-8 text-primary" />
                     </div>
                     <div className="ml-6 text-left">
-                      <h4 className="text-xl font-bold mb-1">Созвониться</h4>
-                      <p className="text-muted-foreground text-lg">Назначить звонок</p>
+                      <h4 className="text-xl font-bold mb-1">Позвонить</h4>
+                      <p className="text-muted-foreground text-lg">+7 (999) 123-45-67</p>
                     </div>
-                  </button>
+                  </a>
                 </div>
 
                 <div className="p-8 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl border border-primary/20 backdrop-blur-sm">

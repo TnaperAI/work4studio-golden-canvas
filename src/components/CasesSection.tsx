@@ -1,4 +1,5 @@
 import { ExternalLink, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import casesImage from '@/assets/cases-preview.jpg';
 import {
   Carousel,
@@ -80,7 +81,7 @@ const CasesSection = () => {
             <CarouselContent className="-ml-4 md:-ml-6">
               {cases.map((caseItem, index) => (
                 <CarouselItem key={caseItem.id} className="pl-4 md:pl-6 md:basis-1/2 lg:basis-1/3">
-                  <div className="border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl group cursor-pointer animate-on-scroll h-full hover:shadow-2xl transition-all duration-500 backdrop-blur-sm hover:scale-105 overflow-hidden">
+                  <Link to="/cases" className="block border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl group cursor-pointer animate-on-scroll h-full hover:shadow-2xl transition-all duration-500 backdrop-blur-sm hover:scale-105 overflow-hidden">
                     <div className="relative overflow-hidden">
                       <img
                         src={caseItem.image}
@@ -113,7 +114,7 @@ const CasesSection = () => {
                         {caseItem.result}
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -122,10 +123,10 @@ const CasesSection = () => {
           </Carousel>
           
           <div className="text-center mt-16 animate-on-scroll">
-            <button className="bg-transparent text-foreground px-8 py-4 rounded-xl font-medium border border-border text-lg hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/10 hover:border-primary/50 transition-all duration-300 inline-flex items-center space-x-3 hover:scale-105">
+            <Link to="/cases" className="bg-transparent text-foreground px-8 py-4 rounded-xl font-medium border border-border text-lg hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/10 hover:border-primary/50 transition-all duration-300 inline-flex items-center space-x-3 hover:scale-105">
               <span>Посмотреть все кейсы</span>
               <ArrowRight className="w-5 h-5" />
-            </button>
+            </Link>
           </div>
         </div>
       </div>

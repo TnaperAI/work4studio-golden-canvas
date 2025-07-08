@@ -1,4 +1,5 @@
 import { Globe, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const ServicesSection = () => {
   const service = {
@@ -55,10 +56,10 @@ const ServicesSection = () => {
                   ))}
                 </div>
 
-                <button className="bg-transparent text-foreground px-8 py-4 rounded-xl font-medium border border-border text-lg hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/10 hover:border-primary/50 transition-all duration-300 inline-flex items-center space-x-3 group/button">
+                <Link to="/services" className="bg-transparent text-foreground px-8 py-4 rounded-xl font-medium border border-border text-lg hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/10 hover:border-primary/50 transition-all duration-300 inline-flex items-center space-x-3 group/button">
                   <span>Подробнее об услуге</span>
                   <ArrowRight className="w-5 h-5 group-hover/button:translate-x-1 transition-transform" />
-                </button>
+                </Link>
               </div>
             </div>
           </div>
