@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Clock, DollarSign, Sparkles, Target, Zap } from 'lucide-react';
+import { ArrowRight, DollarSign, Target, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
@@ -36,7 +35,6 @@ const Services = () => {
     const fetchServices = async () => {
       try {
         console.log('🔄 Starting to fetch services...');
-        setLoading(true);
         
         const { data, error } = await supabase
           .from('services')
@@ -44,15 +42,11 @@ const Services = () => {
           .eq('is_active', true)
           .order('sort_order', { ascending: true });
 
-        console.log('📦 Raw response data:', data);
-        console.log('❌ Error (if any):', error);
-
         if (error) {
           console.error('Error fetching services:', error);
           setServices([]);
         } else {
           console.log('✅ Successfully loaded services:', data);
-          console.log('📊 Services count:', data?.length || 0);
           setServices(data || []);
         }
       } catch (err) {
@@ -60,7 +54,6 @@ const Services = () => {
         setServices([]);
       } finally {
         setLoading(false);
-        console.log('🏁 Fetch complete, loading set to false');
       }
     };
 
@@ -72,7 +65,7 @@ const Services = () => {
   };
 
   return (
-    <div className="min-h-screen">{/* Убираем bg-background чтобы видеть фоновую анимацию */}
+    <div className="min-h-screen">
       <Header />
       
       {/* Breadcrumb */}
@@ -145,41 +138,22 @@ const Services = () => {
               От быстрого лендинга до полноценного интернет-магазина — найдём решение под ваши задачи и бюджет
             </p>
           </div>
-          {(() => {
-            console.log('🎨 RENDER CHECK:');
-            console.log('   - loading:', loading);
-            console.log('   - services array:', services);
-            console.log('   - services.length:', services.length);
-            console.log('   - Array.isArray(services):', Array.isArray(services));
-            
-            if (loading) {
-              console.log('🔄 Showing loading spinner');
-              return (
-                <div className="flex items-center justify-center h-64">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                  <p className="ml-4">Загружаем услуги...</p>
-                </div>
-              );
-            }
-            
-            if (!services || services.length === 0) {
-              console.log('❌ No services to show');
-              return (
-                <div className="flex items-center justify-center h-64">
-                  <div className="text-center">
-                    <p className="text-xl text-muted-foreground mb-4">Услуги не найдены</p>
-                    <p className="text-sm text-muted-foreground">Данные: {JSON.stringify(services)}</p>
-                  </div>
-                </div>
-              );
-            }
-
-            console.log('✅ Rendering services grid with', services.length, 'services');
-            return (
-              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
-                {services.map((service, index) => {
-                  console.log(`🎯 Rendering service ${index + 1}:`, service.title);
-                  return (
+          
+          {loading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <p className="ml-4">Загружаем услуги...</p>
+            </div>
+          ) : services.length === 0 ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="text-center">
+                <p className="text-xl text-muted-foreground mb-4">Услуги не найдены</p>
+                <p className="text-sm text-muted-foreground">Обратитесь к администратору</p>
+              </div>
+            </div>
+          ) : (
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
+              {services.map((service, index) => (
                 <div key={service.id} className="animate-on-scroll group" style={{ animationDelay: `${index * 150}ms` }}>
                   <div className="h-full border-0 bg-gradient-to-br from-card/50 to-secondary/30 p-8 rounded-3xl relative overflow-hidden hover:shadow-2xl transition-all duration-500 backdrop-blur-sm hover:scale-105">
                     <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -225,11 +199,9 @@ const Services = () => {
                     </div>
                   </div>
                 </div>
-                  );
-                })}
-              </div>
-            );
-          })()}
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
