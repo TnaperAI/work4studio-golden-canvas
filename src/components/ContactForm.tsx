@@ -59,155 +59,162 @@ const ContactForm = () => {
   };
 
   return (
-    <section id="contact-form" className="section-padding bg-darker-gray">
-      <div className="container-custom">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16 animate-on-scroll">
-            <h2 className="mb-6">
-              Обсудим ваш <span className="text-primary">проект</span>
+    <section id="contact-form" className="section-padding relative overflow-hidden">
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-secondary/5 to-background"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-3xl"></div>
+      
+      <div className="container-custom relative z-10">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-20 animate-on-scroll">
+            <h2 className="text-4xl md:text-6xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">Обсудим ваш</span>{' '}
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">проект</span>
             </h2>
-            <p className="text-xl text-muted-foreground">
-              Оставьте заявку, и мы свяжемся с вами для обсуждения деталей
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+              Оставьте заявку, и мы свяжемся с вами для обсуждения деталей и создания идеального решения
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Contact Form */}
             <div className="animate-on-scroll">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium mb-2">
-                    Ваше имя
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                    placeholder="Как к вам обращаться?"
-                  />
-                </div>
+              <div className="p-8 md:p-10 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-3xl backdrop-blur-sm">
+                <form onSubmit={handleSubmit} className="space-y-8">
+                  <div>
+                    <label htmlFor="name" className="block text-lg font-semibold mb-3">
+                      Ваше имя
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-6 py-4 bg-background/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all text-lg backdrop-blur-sm"
+                      placeholder="Как к вам обращаться?"
+                    />
+                  </div>
 
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                    placeholder="your@email.com"
-                  />
-                </div>
+                  <div>
+                    <label htmlFor="email" className="block text-lg font-semibold mb-3">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-6 py-4 bg-background/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all text-lg backdrop-blur-sm"
+                      placeholder="your@email.com"
+                    />
+                  </div>
 
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium mb-2">
-                    Телефон (необязательно)
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                    placeholder="+7 (999) 123-45-67"
-                  />
-                </div>
+                  <div>
+                    <label htmlFor="phone" className="block text-lg font-semibold mb-3">
+                      Телефон (необязательно)
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full px-6 py-4 bg-background/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all text-lg backdrop-blur-sm"
+                      placeholder="+7 (999) 123-45-67"
+                    />
+                  </div>
 
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium mb-2">
-                    Сообщение
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    rows={5}
-                    className="w-full px-4 py-3 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
-                    placeholder="Расскажите о вашем проекте..."
-                  />
-                </div>
+                  <div>
+                    <label htmlFor="message" className="block text-lg font-semibold mb-3">
+                      Сообщение
+                    </label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
+                      rows={6}
+                      className="w-full px-6 py-4 bg-background/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all resize-none text-lg backdrop-blur-sm"
+                      placeholder="Расскажите о вашем проекте..."
+                    />
+                  </div>
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="btn-gold w-full flex items-center justify-center"
-                >
-                  {isSubmitting ? (
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-current border-t-transparent" />
-                  ) : (
-                    <>
-                      Отправить заявку
-                      <Send className="w-5 h-5 ml-2" />
-                    </>
-                  )}
-                </button>
-              </form>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="btn-gold w-full text-lg px-8 py-4 hover:scale-105 transition-all duration-300 shadow-2xl flex items-center justify-center"
+                  >
+                    {isSubmitting ? (
+                      <div className="animate-spin rounded-full h-6 w-6 border-2 border-current border-t-transparent" />
+                    ) : (
+                      <>
+                        Отправить заявку
+                        <Send className="w-6 h-6 ml-3" />
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
             </div>
 
             {/* Contact Info */}
             <div className="animate-on-scroll">
-              <div className="space-y-8">
+              <div className="space-y-10">
                 <div>
-                  <h3 className="text-2xl font-heading font-semibold mb-6">
+                  <h3 className="text-3xl md:text-4xl font-heading font-bold mb-8 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                     Свяжитесь с нами напрямую
                   </h3>
-                  <p className="text-muted-foreground">
-                    Предпочитаете личное общение? Выберите удобный способ связи
+                  <p className="text-xl text-muted-foreground leading-relaxed">
+                    Предпочитаете личное общение? Выберите удобный способ связи и получите быстрый ответ
                   </p>
                 </div>
 
                 <div className="space-y-6">
                   <a
                     href="mailto:hello@work4studio.com"
-                    className="flex items-center p-4 card-premium group"
+                    className="flex items-center p-6 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl group hover:shadow-xl transition-all duration-300 hover:scale-105 backdrop-blur-sm"
                   >
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                      <Mail className="w-6 h-6 text-primary" />
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                      <Mail className="w-8 h-8 text-primary" />
                     </div>
-                    <div className="ml-4">
-                      <h4 className="font-semibold">Email</h4>
-                      <p className="text-muted-foreground">hello@work4studio.com</p>
+                    <div className="ml-6">
+                      <h4 className="text-xl font-bold mb-1">Email</h4>
+                      <p className="text-muted-foreground text-lg">hello@work4studio.com</p>
                     </div>
                   </a>
 
                   <a
                     href="#"
-                    className="flex items-center p-4 card-premium group"
+                    className="flex items-center p-6 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl group hover:shadow-xl transition-all duration-300 hover:scale-105 backdrop-blur-sm"
                   >
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                      <MessageCircle className="w-6 h-6 text-primary" />
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                      <MessageCircle className="w-8 h-8 text-primary" />
                     </div>
-                    <div className="ml-4">
-                      <h4 className="font-semibold">Telegram</h4>
-                      <p className="text-muted-foreground">Написать напрямую</p>
+                    <div className="ml-6">
+                      <h4 className="text-xl font-bold mb-1">Telegram</h4>
+                      <p className="text-muted-foreground text-lg">Написать напрямую</p>
                     </div>
                   </a>
 
-                  <button className="flex items-center p-4 card-premium group w-full">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                      <Phone className="w-6 h-6 text-primary" />
+                  <button className="flex items-center p-6 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl group hover:shadow-xl transition-all duration-300 hover:scale-105 backdrop-blur-sm w-full">
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                      <Phone className="w-8 h-8 text-primary" />
                     </div>
-                    <div className="ml-4 text-left">
-                      <h4 className="font-semibold">Созвониться</h4>
-                      <p className="text-muted-foreground">Назначить звонок</p>
+                    <div className="ml-6 text-left">
+                      <h4 className="text-xl font-bold mb-1">Созвониться</h4>
+                      <p className="text-muted-foreground text-lg">Назначить звонок</p>
                     </div>
                   </button>
                 </div>
 
-                <div className="p-6 bg-primary/5 rounded-xl border border-primary/20">
-                  <p className="text-sm text-center">
-                    ⚡ <strong>Быстрый ответ:</strong> Отвечаем в течение 30 минут в рабочее время
+                <div className="p-8 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl border border-primary/20 backdrop-blur-sm">
+                  <p className="text-lg text-center leading-relaxed">
+                    ⚡ <strong className="text-primary">Быстрый ответ:</strong> Отвечаем в течение 30 минут в рабочее время
                   </p>
                 </div>
               </div>

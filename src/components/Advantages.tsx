@@ -25,13 +25,18 @@ const Advantages = () => {
   ];
 
   return (
-    <section className="section-padding bg-secondary/30">
-      <div className="container-custom">
-        <div className="text-center mb-16 animate-on-scroll">
-          <h2 className="mb-6">
-            Почему выбирают <span className="text-primary">Work4Studio</span>
+    <section className="section-padding relative overflow-hidden">
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-secondary/5 to-background"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-3xl"></div>
+      
+      <div className="container-custom relative z-10">
+        <div className="text-center mb-20 animate-on-scroll">
+          <h2 className="text-4xl md:text-6xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">Почему выбирают</span>{' '}
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Work4Studio</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
             Мы объединили современные технологии, AI и человеческую экспертизу 
             для создания идеального процесса разработки
           </p>
@@ -41,20 +46,25 @@ const Advantages = () => {
           {advantages.map((advantage, index) => (
             <div
               key={index}
-              className="card-premium p-6 text-center group animate-on-scroll"
-              style={{ animationDelay: `${index * 100}ms` }}
+              className="p-8 text-center group animate-on-scroll border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl hover:shadow-2xl transition-all duration-500 backdrop-blur-sm hover:scale-105 relative overflow-hidden"
+              style={{ animationDelay: `${index * 150}ms` }}
             >
-              <div className="w-16 h-16 mx-auto mb-6 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                <advantage.icon className="w-8 h-8 text-primary" />
+              {/* Hover gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"></div>
+              
+              <div className="relative z-10">
+                <div className="w-20 h-20 mx-auto mb-8 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg">
+                  <advantage.icon className="w-10 h-10 text-primary" />
+                </div>
+                
+                <h3 className="text-xl md:text-2xl font-heading font-bold mb-6 leading-tight">
+                  {advantage.title}
+                </h3>
+                
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  {advantage.description}
+                </p>
               </div>
-              
-              <h3 className="text-lg font-heading font-semibold mb-4">
-                {advantage.title}
-              </h3>
-              
-              <p className="text-muted-foreground leading-relaxed text-sm">
-                {advantage.description}
-              </p>
             </div>
           ))}
         </div>
