@@ -46,6 +46,7 @@ interface Case {
   results: string[];
   is_featured: boolean;
   h1_tag: string;
+  sort_order: number;
 }
 
 const categoryNames: Record<string, string> = {
@@ -122,6 +123,12 @@ const Cases = () => {
   const filteredCases = cases.filter(caseItem => {
     const matchesCategory = selectedCategory === 'all' || caseItem.category === selectedCategory;
     return matchesCategory;
+  }).sort((a, b) => {
+    // Сначала избранные проекты
+    if (a.is_featured && !b.is_featured) return -1;
+    if (!a.is_featured && b.is_featured) return 1;
+    // Затем по sort_order
+    return (a.sort_order || 0) - (b.sort_order || 0);
   });
 
   // Debug logging
