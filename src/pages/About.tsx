@@ -183,15 +183,21 @@ const About = () => {
   ];
 
   if (loading) {
+    console.log('About page: still loading...');
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="pt-20 flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p>Загрузка страницы "О нас"...</p>
+          </div>
         </div>
       </div>
     );
   }
+
+  console.log('About page: rendering main content');
 
   return (
     <div className="min-h-screen bg-background">
