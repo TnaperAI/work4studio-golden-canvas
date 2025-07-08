@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Dashboard from './Dashboard';
 import ContentManagement from './ContentManagement';
+import ContactSubmissionsManagement from './ContactSubmissionsManagement';
 import PageEditor from './PageEditor';
 
 type AdminView = 'dashboard' | 'content' | 'page-editor' | 'submissions' | 'settings';
@@ -64,19 +65,7 @@ const AdminDashboard = () => {
   }
 
   if (currentView === 'submissions') {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-heading font-bold">Заявки</h1>
-          <p className="text-muted-foreground">
-            Управление контактными заявками с сайта
-          </p>
-        </div>
-        <div className="text-center py-12 text-muted-foreground">
-          <p>Раздел заявок находится в разработке</p>
-        </div>
-      </div>
-    );
+    return <ContactSubmissionsManagement />;
   }
 
   if (currentView === 'settings') {

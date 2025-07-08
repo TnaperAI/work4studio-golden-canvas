@@ -7,7 +7,7 @@ const Footer = () => {
     { name: 'Услуги', href: '/services' },
     { name: 'Кейсы', href: '/cases' },
     { name: 'О нас', href: '/about' },
-    { name: 'Контакты', href: '/contacts' },
+    { name: 'Контакты', href: '/contact' },
   ];
 
   return (
