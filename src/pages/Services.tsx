@@ -43,6 +43,7 @@ const Services = () => {
       if (error) {
         console.error('Error fetching services:', error);
       } else {
+        console.log('Loaded services:', data);
         setServices(data || []);
       }
       setLoading(false);
@@ -132,6 +133,13 @@ const Services = () => {
           {loading ? (
             <div className="flex items-center justify-center h-64 col-span-full">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : services.length === 0 ? (
+            <div className="flex items-center justify-center h-64 col-span-full">
+              <div className="text-center">
+                <p className="text-xl text-muted-foreground mb-4">Услуги не найдены</p>
+                <p className="text-sm text-muted-foreground">Обратитесь к администратору</p>
+              </div>
             </div>
           ) : (
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
