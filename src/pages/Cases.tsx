@@ -174,7 +174,7 @@ const Cases = () => {
             <div className="absolute bottom-10 right-10 w-24 h-24 bg-gradient-to-br from-accent/30 to-transparent rounded-full blur-lg animate-pulse-slow"></div>
           </div>
           <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-6xl mx-auto">
               <Link 
                 to="/cases" 
                 className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors mb-8 text-lg"
@@ -182,35 +182,37 @@ const Cases = () => {
                 <ArrowLeft className="h-5 w-5 mr-3" />
                 Вернуться к кейсам
               </Link>
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold mb-8 leading-tight">
-                <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                  {selectedCase.h1_tag || selectedCase.title}
-                </span>
-              </h1>
-              <div className="flex flex-wrap items-center gap-8 text-muted-foreground mb-12">
-                <div className="flex items-center gap-3 text-lg bg-gradient-to-r from-card/50 to-secondary/30 px-6 py-3 rounded-2xl backdrop-blur-sm border border-border/50">
-                  <User className="h-5 w-5 text-primary" />
-                  <span className="font-medium">{selectedCase.client_name}</span>
+              <div className="text-left">
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold mb-8 leading-tight">
+                  <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+                    {selectedCase.h1_tag || selectedCase.title}
+                  </span>
+                </h1>
+                <div className="flex flex-wrap items-center gap-8 text-muted-foreground mb-12">
+                  <div className="flex items-center gap-3 text-lg bg-gradient-to-r from-card/50 to-secondary/30 px-6 py-3 rounded-2xl backdrop-blur-sm border border-border/50">
+                    <User className="h-5 w-5 text-primary" />
+                    <span className="font-medium">{selectedCase.client_name}</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-lg bg-gradient-to-r from-card/50 to-secondary/30 px-6 py-3 rounded-2xl backdrop-blur-sm border border-border/50">
+                    <Calendar className="h-5 w-5 text-primary" />
+                    <span className="font-medium">{new Date(selectedCase.project_date).toLocaleDateString('ru-RU')}</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-lg bg-gradient-to-r from-card/50 to-secondary/30 px-6 py-3 rounded-2xl backdrop-blur-sm border border-border/50">
+                    <Clock className="h-5 w-5 text-primary" />
+                    <span className="font-medium">{selectedCase.project_duration}</span>
+                  </div>
+                  {selectedCase.project_url && (
+                    <a 
+                      href={selectedCase.project_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 text-lg bg-gradient-to-r from-primary to-accent text-primary-foreground px-6 py-3 rounded-2xl hover:shadow-xl hover:scale-105 transition-all duration-300"
+                    >
+                      <ExternalLink className="h-5 w-5" />
+                      <span className="font-medium">Посмотреть проект</span>
+                    </a>
+                  )}
                 </div>
-                <div className="flex items-center gap-3 text-lg bg-gradient-to-r from-card/50 to-secondary/30 px-6 py-3 rounded-2xl backdrop-blur-sm border border-border/50">
-                  <Calendar className="h-5 w-5 text-primary" />
-                  <span className="font-medium">{new Date(selectedCase.project_date).toLocaleDateString('ru-RU')}</span>
-                </div>
-                <div className="flex items-center gap-3 text-lg bg-gradient-to-r from-card/50 to-secondary/30 px-6 py-3 rounded-2xl backdrop-blur-sm border border-border/50">
-                  <Clock className="h-5 w-5 text-primary" />
-                  <span className="font-medium">{selectedCase.project_duration}</span>
-                </div>
-                {selectedCase.project_url && (
-                  <a 
-                    href={selectedCase.project_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-lg bg-gradient-to-r from-primary to-accent text-primary-foreground px-6 py-3 rounded-2xl hover:shadow-xl hover:scale-105 transition-all duration-300"
-                  >
-                    <ExternalLink className="h-5 w-5" />
-                    <span className="font-medium">Посмотреть проект</span>
-                  </a>
-                )}
               </div>
             </div>
           </div>
@@ -416,7 +418,7 @@ const Cases = () => {
                 </h2>
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                   {filteredCases.map((caseItem, index) => (
-                    <div key={caseItem.id} className="group cursor-pointer animate-on-scroll" style={{ animationDelay: `${index * 100}ms` }}>
+                    <Link key={caseItem.id} to={`/cases/${caseItem.slug}`} className="group cursor-pointer animate-on-scroll block" style={{ animationDelay: `${index * 100}ms` }}>
                       <div className="border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-500 backdrop-blur-sm hover:scale-105">
                         <div className="aspect-video overflow-hidden relative">
                           <img 
@@ -445,15 +447,14 @@ const Cases = () => {
                           </p>
                           <div className="flex items-center justify-between">
                             <span className="text-xs text-muted-foreground font-medium">{caseItem.client_name}</span>
-                            <Link to={`/cases/${caseItem.slug}`}>
-                              <Button variant="ghost" size="sm" className="hover:bg-primary/10 hover:text-primary transition-colors">
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                            </Link>
+                            <div className="flex items-center text-primary">
+                              <Eye className="h-4 w-4 mr-1" />
+                              <span className="text-xs font-medium">Смотреть</span>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </section>
