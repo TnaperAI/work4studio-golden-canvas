@@ -4,6 +4,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface ContactFormModalProps {
   isOpen: boolean;
@@ -17,13 +19,46 @@ const ContactFormModal = ({ isOpen, onClose }: ContactFormModalProps) => {
     phone: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Здесь будет отправка формы
-    onClose();
-    setFormData({ name: '', email: '', phone: '', message: '' });
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase
+        .from('contact_submissions')
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone || null,
+            message: formData.message
+          }
+        ]);
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Заявка отправлена!",
+        description: "Мы получили вашу заявку и свяжемся с вами в ближайшее время.",
+      });
+
+      onClose();
+      setFormData({ name: '', email: '', phone: '', message: '' });
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast({
+        title: "Ошибка",
+        description: "Произошла ошибка при отправке заявки. Попробуйте еще раз.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -108,10 +143,17 @@ const ContactFormModal = ({ isOpen, onClose }: ContactFormModalProps) => {
             </button>
             <button
               type="submit"
+              disabled={isSubmitting}
               className="btn-gold flex-1 inline-flex items-center justify-center space-x-2"
             >
-              <Send className="w-4 h-4" />
-              <span>Отправить</span>
+              {isSubmitting ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent" />
+              ) : (
+                <>
+                  <Send className="w-4 h-4" />
+                  <span>Отправить</span>
+                </>
+              )}
             </button>
           </div>
         </form>
