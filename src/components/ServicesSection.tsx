@@ -28,7 +28,7 @@ const ServicesSection = () => {
 
         <div className="max-w-6xl mx-auto">
           <div className="animate-on-scroll">
-            <div className="border-0 bg-gradient-to-br from-card/80 to-secondary/40 p-12 md:p-16 rounded-3xl group relative overflow-hidden hover:shadow-2xl transition-all duration-500 backdrop-blur-sm">
+            <div className="bg-card border border-border p-12 md:p-16 rounded-3xl group relative overflow-hidden hover:shadow-2xl transition-all duration-500">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
               <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-2xl group-hover:blur-xl transition-all duration-500"></div>
               

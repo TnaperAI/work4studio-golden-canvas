@@ -81,7 +81,7 @@ const CasesSection = () => {
             <CarouselContent className="-ml-4 md:-ml-6">
               {cases.map((caseItem, index) => (
                 <CarouselItem key={caseItem.id} className="pl-4 md:pl-6 md:basis-1/2 lg:basis-1/3">
-                  <Link to="/cases" className="block border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl group cursor-pointer animate-on-scroll h-full hover:shadow-2xl transition-all duration-500 backdrop-blur-sm hover:scale-105 overflow-hidden">
+                  <Link to="/cases" className="block bg-card border border-border rounded-2xl group cursor-pointer animate-on-scroll h-full hover:shadow-2xl transition-all duration-500 hover:scale-105 overflow-hidden">
                     <div className="relative overflow-hidden">
                       <img
                         src={caseItem.image}

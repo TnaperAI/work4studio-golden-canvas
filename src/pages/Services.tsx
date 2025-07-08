@@ -110,11 +110,11 @@ const Services = () => {
               {getContent('services', 'subtitle') || 'Выберите подходящий формат — от простого лендинга до интернет-магазина с полной автоматизацией процессов.'}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-8 mb-8">
-              <div className="flex items-center text-lg text-muted-foreground bg-gradient-to-r from-card/50 to-secondary/30 px-6 py-3 rounded-2xl backdrop-blur-sm border border-border/50">
+              <div className="flex items-center text-lg text-muted-foreground bg-card border border-border/50 px-6 py-3 rounded-2xl">
                 <Target className="h-6 w-6 mr-3 text-primary" />
                 Под ключ за 3-14 дней
               </div>
-              <div className="flex items-center text-lg text-muted-foreground bg-gradient-to-r from-card/50 to-secondary/30 px-6 py-3 rounded-2xl backdrop-blur-sm border border-border/50">
+              <div className="flex items-center text-lg text-muted-foreground bg-card border border-border/50 px-6 py-3 rounded-2xl">
                 <Zap className="h-6 w-6 mr-3 text-primary" />
                 С гарантией качества
               </div>
@@ -143,16 +143,16 @@ const Services = () => {
             {loading && (
               <div className="col-span-full flex items-center justify-center h-64">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                <p className="ml-4 text-white">Загружаем...</p>
+                <p className="ml-4 text-foreground">Загружаем...</p>
               </div>
             )}
             
             {services && services.length > 0 && services.map((service, index) => (
-              <div key={service.id} className="bg-white/20 border border-white/30 p-6 rounded-2xl hover:bg-white/30 transition-all">
-                <h3 className="text-xl font-bold text-white mb-3">
+              <div key={service.id} className="bg-card border border-border p-6 rounded-2xl hover:bg-secondary/80 transition-all">
+                <h3 className="text-xl font-bold text-foreground mb-3">
                   {service.title}
                 </h3>
-                <p className="text-gray-200 mb-4">
+                <p className="text-muted-foreground mb-4">
                   {service.short_description}
                 </p>
                 <div className="flex items-center justify-between">
@@ -170,8 +170,8 @@ const Services = () => {
             
             {!loading && (!services || services.length === 0) && (
               <div className="col-span-full text-center py-16">
-                <p className="text-white text-xl">Услуги не найдены</p>
-                <p className="text-gray-400 text-sm mt-2">
+                <p className="text-foreground text-xl">Услуги не найдены</p>
+                <p className="text-muted-foreground text-sm mt-2">
                   Данные: {JSON.stringify(services?.length || 'нет')}
                 </p>
               </div>
@@ -188,7 +188,7 @@ const Services = () => {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-5xl mx-auto text-center animate-on-scroll">
-            <div className="p-12 md:p-16 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-3xl backdrop-blur-sm">
+            <div className="p-12 md:p-16 bg-card border border-border rounded-3xl">
               <h2 className="text-4xl md:text-6xl font-heading font-bold mb-8 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                 {getContent('services', 'cta_title') || 'Не знаете, какой формат подойдёт?'}
               </h2>

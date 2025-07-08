@@ -30,7 +30,7 @@ const Footer = () => {
             <div className="flex space-x-4">
               <a
                 href="mailto:hello@work4studio.com"
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-card/50 to-secondary/30 rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-105 backdrop-blur-sm border border-border/50"
+                className="inline-flex items-center px-6 py-3 bg-card border border-border rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
                 <Mail className="w-5 h-5 mr-3 text-primary" />
                 <span className="font-medium">Написать нам</span>
@@ -39,7 +39,7 @@ const Footer = () => {
                 href="https://t.me/work4studio"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-card/50 to-secondary/30 rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-105 backdrop-blur-sm border border-border/50"
+                className="inline-flex items-center px-6 py-3 bg-card border border-border rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
                 <MessageCircle className="w-5 h-5 mr-3 text-primary" />
                 <span className="font-medium">Telegram</span>

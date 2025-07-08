@@ -46,7 +46,7 @@ const Advantages = () => {
           {advantages.map((advantage, index) => (
             <div
               key={index}
-              className="p-8 text-center group animate-on-scroll border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl hover:shadow-2xl transition-all duration-500 backdrop-blur-sm hover:scale-105 relative overflow-hidden"
+              className="p-8 text-center group animate-on-scroll bg-card border border-border rounded-2xl hover:shadow-2xl transition-all duration-500 hover:scale-105 relative overflow-hidden"
               style={{ animationDelay: `${index * 150}ms` }}
             >
               {/* Hover gradient overlay */}

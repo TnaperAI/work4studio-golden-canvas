@@ -79,7 +79,7 @@ const ContactForm = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Contact Form */}
             <div className="animate-on-scroll">
-              <div className="p-8 md:p-10 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-3xl backdrop-blur-sm">
+              <div className="p-8 md:p-10 bg-card border border-border rounded-3xl">
                 <form onSubmit={handleSubmit} className="space-y-8">
                   <div>
                     <label htmlFor="name" className="block text-lg font-semibold mb-3">
@@ -92,7 +92,7 @@ const ContactForm = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full px-6 py-4 bg-background/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all text-lg backdrop-blur-sm"
+                      className="w-full px-6 py-4 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all text-lg"
                       placeholder="Как к вам обращаться?"
                     />
                   </div>
@@ -108,7 +108,7 @@ const ContactForm = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full px-6 py-4 bg-background/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all text-lg backdrop-blur-sm"
+                      className="w-full px-6 py-4 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all text-lg"
                       placeholder="your@email.com"
                     />
                   </div>
@@ -123,7 +123,7 @@ const ContactForm = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full px-6 py-4 bg-background/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all text-lg backdrop-blur-sm"
+                      className="w-full px-6 py-4 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all text-lg"
                       placeholder="+7 (999) 123-45-67"
                     />
                   </div>
@@ -139,7 +139,7 @@ const ContactForm = () => {
                       onChange={handleChange}
                       required
                       rows={6}
-                      className="w-full px-6 py-4 bg-background/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all resize-none text-lg backdrop-blur-sm"
+                      className="w-full px-6 py-4 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all resize-none text-lg"
                       placeholder="Расскажите о вашем проекте..."
                     />
                   </div>
@@ -177,7 +177,7 @@ const ContactForm = () => {
                 <div className="space-y-6">
                   <a
                     href="mailto:hello@work4studio.com"
-                    className="flex items-center p-6 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl group hover:shadow-xl transition-all duration-300 hover:scale-105 backdrop-blur-sm"
+                    className="flex items-center p-6 bg-card border border-border rounded-2xl group hover:shadow-xl transition-all duration-300 hover:scale-105"
                   >
                     <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
                       <Mail className="w-8 h-8 text-primary" />
@@ -192,7 +192,7 @@ const ContactForm = () => {
                     href="https://t.me/work4studio"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center p-6 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl group hover:shadow-xl transition-all duration-300 hover:scale-105 backdrop-blur-sm"
+                    className="flex items-center p-6 bg-card border border-border rounded-2xl group hover:shadow-xl transition-all duration-300 hover:scale-105"
                   >
                     <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
                       <MessageCircle className="w-8 h-8 text-primary" />
@@ -205,7 +205,7 @@ const ContactForm = () => {
 
                   <a 
                     href="tel:+79991234567" 
-                    className="flex items-center p-6 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl group hover:shadow-xl transition-all duration-300 hover:scale-105 backdrop-blur-sm w-full"
+                    className="flex items-center p-6 bg-card border border-border rounded-2xl group hover:shadow-xl transition-all duration-300 hover:scale-105 w-full"
                   >
                     <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
                       <Phone className="w-8 h-8 text-primary" />
@@ -217,7 +217,7 @@ const ContactForm = () => {
                   </a>
                 </div>
 
-                <div className="p-8 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl border border-primary/20 backdrop-blur-sm">
+                <div className="p-8 bg-secondary border border-primary/20 rounded-2xl">
                   <p className="text-lg text-center leading-relaxed">
                     ⚡ <strong className="text-primary">Быстрый ответ:</strong> Отвечаем в течение 30 минут в рабочее время
                   </p>

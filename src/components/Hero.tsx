@@ -46,19 +46,19 @@ const Hero = () => {
           
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-20 max-w-4xl mx-auto">
-            <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-card/50 to-secondary/30 border border-border/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+            <div className="text-center p-6 rounded-2xl bg-card border border-border hover:shadow-xl transition-all duration-300">
               <div className="text-5xl md:text-6xl font-heading font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-3">
                 {getContent('stats', 'days')}
               </div>
               <div className="text-muted-foreground font-medium">{getContent('stats', 'days_text')}</div>
             </div>
-            <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-card/50 to-secondary/30 border border-border/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+            <div className="text-center p-6 rounded-2xl bg-card border border-border hover:shadow-xl transition-all duration-300">
               <div className="text-5xl md:text-6xl font-heading font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-3">
                 {getContent('stats', 'support')}
               </div>
               <div className="text-muted-foreground font-medium">{getContent('stats', 'support_text')}</div>
             </div>
-            <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-card/50 to-secondary/30 border border-border/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+            <div className="text-center p-6 rounded-2xl bg-card border border-border hover:shadow-xl transition-all duration-300">
               <div className="text-5xl md:text-6xl font-heading font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-3">
                 {getContent('stats', 'code')}
               </div>
