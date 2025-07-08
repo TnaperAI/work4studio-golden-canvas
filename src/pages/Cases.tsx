@@ -353,10 +353,6 @@ const Cases = () => {
         </div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-6xl mx-auto text-center animate-on-scroll">
-            <div className="flex items-center justify-center mb-8">
-              <Star className="h-10 w-10 text-primary mr-4" />
-              <span className="text-primary font-bold text-xl">Портфолио</span>
-            </div>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-10 leading-tight">
               <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                 Наши
