@@ -4,7 +4,7 @@ import ContactFormModal from './ContactFormModal';
 const Hero = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   return (
-    <section className="min-h-screen flex items-center justify-center relative">
+    <section className="min-h-screen flex items-center justify-center relative pt-16">
       <div className="container-custom relative z-10">
         <div className="text-center max-w-4xl mx-auto space-y-8 animate-on-scroll">
           {/* Main heading */}

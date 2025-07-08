@@ -5,6 +5,7 @@ import ContactForm from '@/components/ContactForm';
 import Advantages from '@/components/Advantages';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import BackToTop from '@/components/BackToTop';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
 const Index = () => {
@@ -21,6 +22,7 @@ const Index = () => {
         <ContactForm />
       </main>
       <Footer />
+      <BackToTop />
     </div>
   );
 };
