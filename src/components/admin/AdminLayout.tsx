@@ -24,17 +24,22 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navigation = [
-    { name: 'Дашборд', href: '/admin', icon: Home },
-    { name: 'Контент сайта', href: '/admin/content', icon: FileText },
-    { name: 'Заявки', href: '/admin/submissions', icon: Users },
-    { name: 'Настройки', href: '/admin/settings', icon: Settings },
+    { name: 'Дашборд', href: '#dashboard', icon: Home },
+    { name: 'Контент сайта', href: '#content', icon: FileText },
+    { name: 'Заявки', href: '#submissions', icon: Users },
+    { name: 'Настройки', href: '#settings', icon: Settings },
   ];
 
   const handleSignOut = async () => {
     await signOut();
   };
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    const hash = window.location.hash.replace('#', '');
+    if (path === '#dashboard') return hash === 'dashboard' || hash === '';
+    if (path === '#content') return hash === 'content';
+    return false;
+  };
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -65,9 +70,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           {navigation.map((item) => {
             const Icon = item.icon;
             return (
-              <Link
+              <a
                 key={item.name}
-                to={item.href}
+                href={item.href}
                 className={`
                   flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors
                   ${isActive(item.href)
@@ -79,7 +84,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               >
                 <Icon className="mr-3 h-4 w-4" />
                 {item.name}
-              </Link>
+              </a>
             );
           })}
         </nav>
