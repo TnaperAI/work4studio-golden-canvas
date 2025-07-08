@@ -406,69 +406,16 @@ const Cases = () => {
           </div>
         ) : (
           <div className="space-y-12">
-            {/* Featured Cases */}
-            {featuredCases.length > 0 && (
+            {/* Show all filtered cases in one grid */}
+            {filteredCases.length > 0 ? (
               <section>
-                <h2 className="text-4xl md:text-5xl font-heading font-bold mb-12 flex items-center gap-4">
-                  <Star className="h-8 w-8 text-yellow-500" />
+                <h2 className="text-4xl md:text-5xl font-heading font-bold mb-12">
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    Избранные проекты
-                  </span>
-                </h2>
-                <div className="grid gap-12 md:grid-cols-2">
-                  {featuredCases.map((caseItem) => (
-                    <div key={caseItem.id} className="group cursor-pointer animate-on-scroll">
-                      <div className="border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-500 backdrop-blur-sm hover:scale-105">
-                        <div className="aspect-video overflow-hidden relative">
-                          <img 
-                            src={caseItem.main_image} 
-                            alt={caseItem.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                          <div className="absolute top-4 left-4 flex gap-2">
-                            <Badge className="bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold shadow-lg">
-                              {categoryNames[caseItem.category] || caseItem.category}
-                            </Badge>
-                            <Badge variant="outline" className="text-yellow-600 border-yellow-600 bg-background/80 backdrop-blur-sm">
-                              Избранное
-                            </Badge>
-                          </div>
-                        </div>
-                        <div className="p-8">
-                          <h3 className="text-2xl md:text-3xl font-heading font-bold mb-4 group-hover:text-primary transition-colors">
-                            {caseItem.title}
-                          </h3>
-                          <p className="text-muted-foreground mb-6 text-lg leading-relaxed line-clamp-2">
-                            {caseItem.short_description}
-                          </p>
-                          <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground font-medium">{caseItem.client_name}</span>
-                            <Link to={`/cases/${caseItem.slug}`}>
-                              <Button className="bg-gradient-to-r from-primary to-accent text-primary-foreground px-6 py-3 hover:shadow-xl hover:scale-105 transition-all duration-300">
-                                <Eye className="h-5 w-5 mr-2" />
-                                Смотреть
-                              </Button>
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Regular Cases */}
-            {regularCases.length > 0 && (
-              <section>
-                <h2 className="text-3xl md:text-4xl font-heading font-bold mb-12">
-                  <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    {featuredCases.length > 0 ? 'Другие проекты' : 'Все проекты'}
+                    {selectedCategory === 'all' ? 'Все проекты' : `${categoryNames[selectedCategory] || selectedCategory}`}
                   </span>
                 </h2>
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                  {regularCases.map((caseItem, index) => (
+                  {filteredCases.map((caseItem, index) => (
                     <div key={caseItem.id} className="group cursor-pointer animate-on-scroll" style={{ animationDelay: `${index * 100}ms` }}>
                       <div className="border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-500 backdrop-blur-sm hover:scale-105">
                         <div className="aspect-video overflow-hidden relative">
@@ -478,10 +425,15 @@ const Cases = () => {
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                          <div className="absolute top-3 left-3">
+                          <div className="absolute top-3 left-3 flex gap-2">
                             <Badge className="bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold shadow-lg text-xs">
                               {categoryNames[caseItem.category] || caseItem.category}
                             </Badge>
+                            {caseItem.is_featured && (
+                              <Badge variant="outline" className="text-yellow-600 border-yellow-600 bg-background/80 backdrop-blur-sm text-xs">
+                                Избранное
+                              </Badge>
+                            )}
                           </div>
                         </div>
                         <div className="p-6">
@@ -505,11 +457,9 @@ const Cases = () => {
                   ))}
                 </div>
               </section>
-            )}
-
-            {filteredCases.length === 0 && (
+            ) : (
               <div className="text-center py-12">
-                <p className="text-muted-foreground">Кейсы не найдены</p>
+                <p className="text-muted-foreground text-lg">Проекты в этой категории не найдены</p>
               </div>
             )}
           </div>
