@@ -240,7 +240,7 @@ const ServiceDetail = () => {
 
   if (!currentService) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">{/* Убираем bg-background чтобы видеть фоновую анимацию */}
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Услуга не найдена</h1>
           <Link to="/services">
@@ -252,7 +252,7 @@ const ServiceDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">{/* Убираем bg-background чтобы видеть фоновую анимацию */}
       <Header />
       
       {/* Breadcrumb */}

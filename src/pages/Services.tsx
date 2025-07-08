@@ -65,7 +65,7 @@ const Services = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">{/* Убираем bg-background чтобы видеть фоновую анимацию */}
       <Header />
       
       {/* Breadcrumb */}
