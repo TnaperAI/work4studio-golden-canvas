@@ -129,17 +129,15 @@ const Cases = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="container mx-auto px-4 py-8">
-          {/* Breadcrumbs */}
-          <div className="mb-6">
+        
+        {/* Breadcrumb */}
+        <section className="pt-20 pb-3 bg-muted/50 border-b">
+          <div className="container mx-auto px-4">
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/" className="flex items-center gap-1">
-                      <Home className="h-4 w-4" />
-                      Главная
-                    </Link>
+                    <Link to="/">Главная</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
@@ -155,7 +153,9 @@ const Cases = () => {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
+        </section>
 
+        <main className="container mx-auto px-4 py-8">
           <div className="mb-8">
             <Link 
               to="/cases" 
@@ -291,17 +291,15 @@ const Cases = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-4 py-8">
-        {/* Breadcrumbs */}
-        <div className="mb-6">
+      
+      {/* Breadcrumb */}
+      <section className="pt-20 pb-3 bg-muted/50 border-b">
+        <div className="container mx-auto px-4">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/" className="flex items-center gap-1">
-                    <Home className="h-4 w-4" />
-                    Главная
-                  </Link>
+                  <Link to="/">Главная</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
@@ -311,6 +309,9 @@ const Cases = () => {
             </BreadcrumbList>
           </Breadcrumb>
         </div>
+      </section>
+
+      <main className="container mx-auto px-4 py-8">
 
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4">
