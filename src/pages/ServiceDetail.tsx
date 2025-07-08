@@ -256,7 +256,7 @@ const ServiceDetail = () => {
       <Header />
       
       {/* Breadcrumb */}
-      <section className="pt-20 pb-3 bg-muted/50 border-b">
+      <section className="pt-20 pb-3 bg-gradient-to-r from-background/95 via-background/98 to-background/95 border-b border-border/50 backdrop-blur-sm">
         <div className="container mx-auto px-4">
           <Breadcrumb>
             <BreadcrumbList>
@@ -282,84 +282,94 @@ const ServiceDetail = () => {
 
       {/* Hero */}
       <section className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-background"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/5"></div>
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-32 h-32 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-40 h-40 bg-accent/30 rounded-full blur-2xl animate-bounce delay-500"></div>
+          <div className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-xl animate-pulse-slow"></div>
+          <div className="absolute bottom-20 right-10 w-48 h-48 bg-gradient-to-br from-accent/30 to-transparent rounded-full blur-2xl animate-pulse-slow"></div>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/10 to-accent/10 rounded-full blur-3xl"></div>
         </div>
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-5xl mx-auto text-center animate-on-scroll">
-            <div className="flex items-center justify-center mb-6">
-              <Badge variant="secondary" className="px-4 py-2 text-sm font-medium bg-primary/10 text-primary border-primary/20">
-                <Star className="h-4 w-4 mr-2" />
+          <div className="max-w-6xl mx-auto text-center animate-on-scroll">
+            <div className="flex items-center justify-center mb-8">
+              <Badge variant="secondary" className="px-6 py-3 text-lg font-bold bg-gradient-to-r from-primary/10 to-accent/10 text-primary border-primary/20 rounded-2xl">
+                <Star className="h-5 w-5 mr-3" />
                 {currentService.name}
               </Badge>
             </div>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold mb-8 text-glow">
-              {currentService.slogan}
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-10 leading-tight">
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
+                {currentService.slogan}
+              </span>
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl text-muted-foreground mb-16 max-w-5xl mx-auto leading-relaxed">
               {currentService.description}
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 max-w-2xl mx-auto">
-              <div className="card-premium p-6">
-                <div className="flex items-center gap-3 text-lg">
-                  <Clock className="h-6 w-6 text-primary" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-4xl mx-auto">
+              <div className="p-8 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-3xl backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center gap-4 text-xl">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center">
+                    <Clock className="h-8 w-8 text-primary" />
+                  </div>
                   <div>
-                    <span className="font-semibold text-foreground">Срок работы</span>
-                    <p className="text-muted-foreground">{currentService.duration}</p>
+                    <span className="font-bold text-foreground text-xl">Срок работы</span>
+                    <p className="text-muted-foreground text-lg">{currentService.duration}</p>
                   </div>
                 </div>
               </div>
-              <div className="card-premium p-6">
-                <div className="flex items-center gap-3 text-lg">
-                  <DollarSign className="h-6 w-6 text-primary" />
+              <div className="p-8 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-3xl backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center gap-4 text-xl">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center">
+                    <DollarSign className="h-8 w-8 text-primary" />
+                  </div>
                   <div>
-                    <span className="font-semibold text-foreground">Стоимость</span>
-                    <p className="text-muted-foreground">{currentService.price}</p>
+                    <span className="font-bold text-foreground text-xl">Стоимость</span>
+                    <p className="text-muted-foreground text-lg">{currentService.price}</p>
                   </div>
                 </div>
               </div>
             </div>
             
-            <div className="mb-8 p-6 bg-muted/30 rounded-xl backdrop-blur-sm">
-              <div className="flex items-center justify-center mb-3">
-                <Sparkles className="h-5 w-5 text-primary mr-2" />
-                <span className="font-semibold">В стоимость входит</span>
+            <div className="mb-12 p-8 md:p-10 bg-gradient-to-r from-primary/10 to-accent/10 rounded-3xl backdrop-blur-sm border border-primary/20">
+              <div className="flex items-center justify-center mb-4">
+                <Sparkles className="h-6 w-6 text-primary mr-3" />
+                <span className="font-bold text-xl">В стоимость входит</span>
               </div>
-              <p className="text-muted-foreground">{currentService.included}</p>
+              <p className="text-muted-foreground text-lg">{currentService.included}</p>
             </div>
             
-            <Button size="lg" className="btn-gold text-lg px-8 py-4" onClick={() => setShowContactForm(true)}>
+            <Button size="lg" className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-xl px-12 py-6 hover:shadow-2xl hover:scale-105 transition-all duration-300" onClick={() => setShowContactForm(true)}>
               Заказать {currentService.name.toLowerCase()}
-              <ArrowLeft className="ml-2 h-5 w-5 rotate-180" />
+              <ArrowLeft className="ml-3 h-6 w-6 rotate-180" />
             </Button>
           </div>
         </div>
       </section>
 
       {/* What's Included */}
-      <section className="section-padding relative">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16 animate-on-scroll">
-              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
-                Что входит в работу
+      <section className="section-padding relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-secondary/5 to-background"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-3xl"></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-20 animate-on-scroll">
+              <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6">
+                <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">Что входит</span>{' '}
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">в работу</span>
               </h2>
-              <p className="text-muted-foreground text-lg">
-                Полный цикл разработки от идеи до запуска
+              <p className="text-muted-foreground text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
+                Полный цикл разработки от идеи до запуска с гарантией качества
               </p>
             </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
               {currentService.features.map((feature, index) => (
-                <div key={index} className="animate-on-scroll card-premium p-6 group" style={{ animationDelay: `${index * 100}ms` }}>
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                      <Check className="h-5 w-5 text-primary" />
+                <div key={index} className="animate-on-scroll group p-8 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-3xl hover:shadow-2xl transition-all duration-500 backdrop-blur-sm hover:scale-105" style={{ animationDelay: `${index * 150}ms` }}>
+                  <div className="flex items-start gap-6">
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                      <Check className="h-8 w-8 text-primary" />
                     </div>
-                    <span className="text-foreground font-medium leading-relaxed">{feature}</span>
+                    <span className="text-foreground font-semibold leading-relaxed text-lg">{feature}</span>
                   </div>
                 </div>
               ))}
@@ -369,25 +379,27 @@ const ServiceDetail = () => {
       </section>
 
       {/* Suitable For */}
-      <section className="py-20 bg-muted/50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-heading font-bold text-center mb-12">
-              Подходит для
+      <section className="py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5"></div>
+        <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-3xl"></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-4xl md:text-6xl font-heading font-bold text-center mb-16">
+              <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">Подходит</span>{' '}
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">для</span>
             </h2>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
               {currentService.suitableFor.map((item, index) => (
-                <Card key={index} className="text-center">
-                  <CardContent className="pt-6">
-                    <div className="w-12 h-12 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
-                      {index === 0 && <Target className="h-6 w-6 text-primary" />}
-                      {index === 1 && <Zap className="h-6 w-6 text-primary" />}
-                      {index === 2 && <Globe className="h-6 w-6 text-primary" />}
-                      {index === 3 && <Lightbulb className="h-6 w-6 text-primary" />}
-                    </div>
-                    <p className="font-medium">{item}</p>
-                  </CardContent>
-                </Card>
+                <div key={index} className="text-center p-8 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-3xl hover:shadow-xl transition-all duration-300 hover:scale-105 backdrop-blur-sm group">
+                  <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    {index === 0 && <Target className="h-10 w-10 text-primary" />}
+                    {index === 1 && <Zap className="h-10 w-10 text-primary" />}
+                    {index === 2 && <Globe className="h-10 w-10 text-primary" />}
+                    {index === 3 && <Lightbulb className="h-10 w-10 text-primary" />}
+                  </div>
+                  <p className="font-semibold text-lg">{item}</p>
+                </div>
               ))}
             </div>
           </div>
@@ -395,19 +407,23 @@ const ServiceDetail = () => {
       </section>
 
       {/* FAQ */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-heading font-bold text-center mb-12">
-              Частые вопросы
+      <section className="py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-secondary/5 to-background"></div>
+        <div className="absolute bottom-0 right-0 w-72 h-72 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-3xl"></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-4xl md:text-6xl font-heading font-bold text-center mb-16">
+              <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">Частые</span>{' '}
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">вопросы</span>
             </h2>
-            <Accordion type="single" collapsible className="space-y-4">
+            <Accordion type="single" collapsible className="space-y-6">
               {currentService.faq.map((item, index) => (
-                <AccordionItem key={index} value={`item-${index}`} className="border rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-medium">
+                <AccordionItem key={index} value={`item-${index}`} className="border-0 bg-gradient-to-r from-card/50 to-secondary/30 rounded-2xl px-8 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+                  <AccordionTrigger className="text-left font-semibold text-lg py-6 hover:no-underline">
                     {item.question}
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
+                  <AccordionContent className="text-muted-foreground text-lg leading-relaxed pb-6">
                     {item.answer}
                   </AccordionContent>
                 </AccordionItem>
@@ -418,23 +434,25 @@ const ServiceDetail = () => {
       </section>
 
       {/* CTA */}
-      <section className="section-padding relative overflow-hidden bg-gradient-to-br from-primary/10 via-accent/5 to-background">
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-80 h-80 bg-accent/20 rounded-full blur-2xl"></div>
-        </div>
+      <section className="section-padding relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-background"></div>
+        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-br from-accent/20 to-transparent rounded-full blur-2xl"></div>
+        
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center animate-on-scroll">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">
-              Заполните форму и получите {currentService.name.toLowerCase()} за {currentService.duration.replace('от ', '')}
-            </h2>
-            <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
-              Обсудим ваши задачи и подберём оптимальное решение
-            </p>
-            <Button size="lg" className="btn-gold text-lg px-8 py-4" onClick={() => setShowContactForm(true)}>
-              Оставить заявку
-              <Sparkles className="ml-2 h-5 w-5" />
-            </Button>
+          <div className="max-w-6xl mx-auto text-center animate-on-scroll">
+            <div className="p-12 md:p-16 border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-3xl backdrop-blur-sm">
+              <h2 className="text-4xl md:text-6xl font-heading font-bold mb-8 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+                Заполните форму и получите {currentService.name.toLowerCase()} за {currentService.duration.replace('от ', '')}
+              </h2>
+              <p className="text-muted-foreground mb-12 text-xl md:text-2xl leading-relaxed max-w-4xl mx-auto">
+                Обсудим ваши задачи, подберём оптимальное решение и запустим проект в кратчайшие сроки
+              </p>
+              <Button size="lg" className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-xl px-12 py-6 hover:shadow-2xl hover:scale-105 transition-all duration-300" onClick={() => setShowContactForm(true)}>
+                Оставить заявку
+                <Sparkles className="ml-3 h-6 w-6" />
+              </Button>
+            </div>
           </div>
         </div>
       </section>
