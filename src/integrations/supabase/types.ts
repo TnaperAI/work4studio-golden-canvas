@@ -95,6 +95,75 @@ export type Database = {
         }
         Relationships: []
       }
+      services: {
+        Row: {
+          canonical_url: string | null
+          created_at: string
+          description: string | null
+          features: string[] | null
+          h1_tag: string | null
+          id: string
+          is_active: boolean
+          meta_description: string | null
+          meta_keywords: string | null
+          meta_title: string | null
+          og_description: string | null
+          og_image: string | null
+          og_title: string | null
+          price_from: number | null
+          price_to: number | null
+          short_description: string | null
+          slug: string
+          sort_order: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          canonical_url?: string | null
+          created_at?: string
+          description?: string | null
+          features?: string[] | null
+          h1_tag?: string | null
+          id?: string
+          is_active?: boolean
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          price_from?: number | null
+          price_to?: number | null
+          short_description?: string | null
+          slug: string
+          sort_order?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          canonical_url?: string | null
+          created_at?: string
+          description?: string | null
+          features?: string[] | null
+          h1_tag?: string | null
+          id?: string
+          is_active?: boolean
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          price_from?: number | null
+          price_to?: number | null
+          short_description?: string | null
+          slug?: string
+          sort_order?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           created_at: string

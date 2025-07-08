@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import ServicesManagement from './ServicesManagement';
+import ServiceEditor from './ServiceEditor';
 import { 
   FileText, 
   ChevronRight, 
@@ -32,6 +34,8 @@ interface ContentCategoriesProps {
 
 const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
+  const [showServiceEditor, setShowServiceEditor] = useState(false);
 
   const categories: Category[] = [
     {
@@ -71,6 +75,55 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
   ];
 
   const selectedCategoryData = categories.find(cat => cat.id === selectedCategory);
+
+  // Handle service management
+  const handleServiceEdit = (serviceId: string) => {
+    setSelectedServiceId(serviceId);
+    setShowServiceEditor(true);
+  };
+
+  const handleServiceCreate = () => {
+    setSelectedServiceId(null);
+    setShowServiceEditor(true);
+  };
+
+  const handleBackFromServiceEditor = () => {
+    setShowServiceEditor(false);
+    setSelectedServiceId(null);
+  };
+
+  // Show service editor
+  if (showServiceEditor) {
+    return (
+      <ServiceEditor 
+        serviceId={selectedServiceId || undefined}
+        onBack={handleBackFromServiceEditor}
+      />
+    );
+  }
+
+  // Show services management
+  if (selectedCategory === 'services') {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center space-x-4">
+          <Button 
+            variant="ghost" 
+            onClick={() => setSelectedCategory(null)}
+            className="p-2"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Назад к категориям
+          </Button>
+        </div>
+
+        <ServicesManagement 
+          onServiceEdit={handleServiceEdit}
+          onServiceCreate={handleServiceCreate}
+        />
+      </div>
+    );
+  }
 
   if (selectedCategory && selectedCategoryData) {
     return (
@@ -127,26 +180,6 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
           ))}
         </div>
 
-        {selectedCategory === 'services' && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Управление услугами</CardTitle>
-              <CardDescription>
-                Добавление новых услуг и настройка существующих
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex space-x-4">
-                <Button variant="outline">
-                  Добавить новую услугу
-                </Button>
-                <Button variant="outline">
-                  Настроить порядок услуг
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
     );
   }
