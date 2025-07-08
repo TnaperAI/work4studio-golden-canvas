@@ -155,8 +155,8 @@ const Services = () => {
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
               {services.map((service, index) => (
                 <div key={service.id} className="animate-on-scroll group" style={{ animationDelay: `${index * 150}ms` }}>
-                  <div className="h-full border-0 bg-gradient-to-br from-card/50 to-secondary/30 p-8 rounded-3xl relative overflow-hidden hover:shadow-2xl transition-all duration-500 backdrop-blur-sm hover:scale-105">
-                    <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="h-full border border-border/30 bg-gradient-to-br from-card/90 to-secondary/60 p-8 rounded-3xl relative overflow-hidden hover:shadow-2xl transition-all duration-500 backdrop-blur-sm hover:scale-105 hover:border-primary/50">
+                    <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     
                     <div className="relative z-10">
                       <div className="mb-6">
