@@ -50,6 +50,7 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    console.log('Contact form: submitting', formData);
 
     try {
       const { error } = await supabase
@@ -61,8 +62,12 @@ const Contact = () => {
           message: formData.message
         }]);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Contact form error:', error);
+        throw error;
+      }
 
+      console.log('Contact form: submitted successfully');
       toast({
         title: 'Заявка отправлена!',
         description: 'Мы свяжемся с вами в ближайшее время.',
@@ -70,6 +75,7 @@ const Contact = () => {
 
       setFormData({ name: '', email: '', phone: '', message: '' });
     } catch (error) {
+      console.error('Contact form error:', error);
       toast({
         title: 'Ошибка',
         description: 'Не удалось отправить заявку. Попробуйте еще раз.',
@@ -77,6 +83,7 @@ const Contact = () => {
       });
     } finally {
       setIsSubmitting(false);
+      console.log('Contact form: submission completed');
     }
   };
 

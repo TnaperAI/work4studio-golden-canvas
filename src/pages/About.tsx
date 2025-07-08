@@ -84,12 +84,21 @@ const About = () => {
 
       console.log('Company data:', companyData, 'Company error:', companyError);
 
+      if (teamError) {
+        console.error('Team error:', teamError);
+      }
+      if (companyError) {
+        console.error('Company error:', companyError);
+      }
+
       setTeam(teamData || []);
       setCompanyInfo(companyData);
+      console.log('About page: data set successfully');
     } catch (error) {
       console.error('Error fetching about data:', error);
     } finally {
       setLoading(false);
+      console.log('About page: loading set to false');
     }
   };
 
@@ -103,6 +112,9 @@ const About = () => {
     clients_served: '80+',
     description: 'Work4Studio — это команда профессионалов, специализирующихся на создании современных веб-сайтов и приложений. Мы объединяем креативность дизайна с передовыми технологиями разработки.'
   };
+
+  const company = companyInfo || defaultCompany;
+  console.log('About render - Company used:', company);
 
   const defaultTeam = [
     {
@@ -140,7 +152,6 @@ const About = () => {
     }
   ];
 
-  const company = companyInfo || defaultCompany;
   const teamMembers = team.length > 0 ? team : defaultTeam;
 
   console.log('About render - Loading:', loading);
