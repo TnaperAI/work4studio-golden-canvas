@@ -242,7 +242,7 @@ const About = () => {
         <section className="mb-20 animate-on-scroll">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {stats.map((stat, index) => (
-              <div key={index} className="bg-gradient-to-br from-card/50 to-secondary/30 backdrop-blur-sm rounded-3xl p-8 border border-border/50 text-center hover:shadow-2xl hover:scale-105 transition-all duration-500 group">
+              <div key={index} className="bg-card border border-border rounded-3xl p-8 text-center hover:shadow-2xl hover:scale-105 transition-all duration-500 group">
                 <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <stat.icon className="h-10 w-10 text-primary" />
                 </div>
@@ -260,7 +260,7 @@ const About = () => {
         {/* Mission & Vision */}
         <section className="mb-20">
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-gradient-to-br from-card/50 to-secondary/30 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-border/50 hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-on-scroll">
+            <div className="bg-card border border-border rounded-3xl p-8 md:p-12 hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-on-scroll">
               <div className="flex items-center gap-4 mb-8">
                 <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/30 rounded-2xl flex items-center justify-center">
                   <Target className="h-8 w-8 text-primary" />
@@ -273,7 +273,7 @@ const About = () => {
               </div>
               <p className="text-muted-foreground leading-relaxed text-lg">{company.mission}</p>
             </div>
-            <div className="bg-gradient-to-br from-card/50 to-secondary/30 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-border/50 hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-on-scroll">
+            <div className="bg-card border border-border rounded-3xl p-8 md:p-12 hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-on-scroll">
               <div className="flex items-center gap-4 mb-8">
                 <div className="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/30 rounded-2xl flex items-center justify-center">
                   <Award className="h-8 w-8 text-accent" />
@@ -307,7 +307,7 @@ const About = () => {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
-              <div key={index} className="bg-gradient-to-br from-card/50 to-secondary/30 backdrop-blur-sm rounded-3xl p-8 border border-border/50 hover:shadow-2xl hover:scale-105 transition-all duration-500 group text-center animate-on-scroll">
+              <div key={index} className="bg-card border border-border rounded-3xl p-8 hover:shadow-2xl hover:scale-105 transition-all duration-500 group text-center animate-on-scroll">
                 <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <value.icon className="h-10 w-10 text-primary" />
                 </div>
@@ -336,7 +336,7 @@ const About = () => {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {teamMembers.map((member, index) => (
-              <div key={member.id} className="bg-gradient-to-br from-card/50 to-secondary/30 backdrop-blur-sm rounded-3xl overflow-hidden border border-border/50 hover:shadow-2xl hover:scale-105 transition-all duration-500 group animate-on-scroll" style={{ animationDelay: `${index * 100}ms` }}>
+              <div key={member.id} className="bg-card border border-border rounded-3xl overflow-hidden hover:shadow-2xl hover:scale-105 transition-all duration-500 group animate-on-scroll" style={{ animationDelay: `${index * 100}ms` }}>
                 <div className="aspect-square overflow-hidden relative">
                   <img 
                     src={member.image} 
@@ -365,7 +365,7 @@ const About = () => {
 
         {/* CTA Section */}
         <section className="animate-on-scroll">
-          <div className="relative bg-gradient-to-br from-card/50 to-secondary/30 backdrop-blur-sm rounded-3xl p-12 md:p-16 border border-border/50 text-center overflow-hidden">
+          <div className="relative bg-card border border-border rounded-3xl p-12 md:p-16 text-center overflow-hidden">
             <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
             <div className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-xl"></div>
             <div className="absolute bottom-10 right-10 w-24 h-24 bg-gradient-to-br from-accent/30 to-transparent rounded-full blur-lg"></div>

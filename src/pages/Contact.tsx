@@ -133,11 +133,11 @@ const Contact = () => {
               Расскажите о своих задачах — поможем найти оптимальное решение и запустим проект в кратчайшие сроки
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-8 mb-8">
-              <div className="flex items-center text-lg text-muted-foreground bg-gradient-to-r from-card/50 to-secondary/30 px-6 py-3 rounded-2xl backdrop-blur-sm border border-border/50">
+              <div className="flex items-center text-lg text-muted-foreground bg-card border border-border px-6 py-3 rounded-2xl">
                 <CheckCircle className="h-6 w-6 mr-3 text-primary" />
                 Бесплатная консультация
               </div>
-              <div className="flex items-center text-lg text-muted-foreground bg-gradient-to-r from-card/50 to-secondary/30 px-6 py-3 rounded-2xl backdrop-blur-sm border border-border/50">
+              <div className="flex items-center text-lg text-muted-foreground bg-card border border-border px-6 py-3 rounded-2xl">
                 <Star className="h-6 w-6 mr-3 text-primary" />
                 Ответим в течение часа
               </div>
@@ -155,7 +155,7 @@ const Contact = () => {
           <div className="grid gap-16 lg:grid-cols-2">
             {/* Contact Form */}
             <div className="animate-on-scroll">
-              <div className="bg-gradient-to-br from-card/50 to-secondary/30 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-border/50">
+              <div className="bg-card border border-border rounded-3xl p-8 md:p-12">
                 <h2 className="text-3xl md:text-4xl font-heading font-bold mb-8">
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                     Отправить заявку
@@ -173,7 +173,7 @@ const Contact = () => {
                         value={formData.name}
                         onChange={handleInputChange}
                         required
-                        className="h-14 text-lg bg-gradient-to-r from-background/80 to-card/80 backdrop-blur-sm border border-border/50 rounded-2xl"
+                        className="h-14 text-lg bg-background border border-border rounded-2xl"
                       />
                     </div>
                     <div className="space-y-2">
@@ -185,7 +185,7 @@ const Contact = () => {
                         placeholder="+7 (000) 000-00-00"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="h-14 text-lg bg-gradient-to-r from-background/80 to-card/80 backdrop-blur-sm border border-border/50 rounded-2xl"
+                        className="h-14 text-lg bg-background border border-border rounded-2xl"
                       />
                     </div>
                   </div>
@@ -199,7 +199,7 @@ const Contact = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="h-14 text-lg bg-gradient-to-r from-background/80 to-card/80 backdrop-blur-sm border border-border/50 rounded-2xl"
+                      className="h-14 text-lg bg-background border border-border rounded-2xl"
                     />
                   </div>
                   <div className="space-y-2">
@@ -212,7 +212,7 @@ const Contact = () => {
                       onChange={handleInputChange}
                       required
                       rows={6}
-                      className="text-lg bg-gradient-to-r from-background/80 to-card/80 backdrop-blur-sm border border-border/50 rounded-2xl"
+                      className="text-lg bg-background border border-border rounded-2xl"
                     />
                   </div>
                   <Button
@@ -238,7 +238,7 @@ const Contact = () => {
 
             {/* Contact Info */}
             <div className="space-y-8 animate-on-scroll">
-              <div className="bg-gradient-to-br from-card/50 to-secondary/30 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-border/50">
+              <div className="bg-card border border-border rounded-3xl p-8 md:p-12">
                 <h3 className="text-2xl md:text-3xl font-heading font-bold mb-8">
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                     Контактная информация
@@ -285,7 +285,7 @@ const Contact = () => {
               </div>
 
               {/* Why Choose Us */}
-              <div className="bg-gradient-to-br from-card/50 to-secondary/30 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-border/50">
+              <div className="bg-card border border-border rounded-3xl p-8 md:p-12">
                 <h3 className="text-2xl md:text-3xl font-heading font-bold mb-8">
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                     Почему выбирают нас

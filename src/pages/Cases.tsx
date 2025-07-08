@@ -189,15 +189,15 @@ const Cases = () => {
                   </span>
                 </h1>
                 <div className="flex flex-wrap items-center gap-8 text-muted-foreground mb-12">
-                  <div className="flex items-center gap-3 text-lg bg-gradient-to-r from-card/50 to-secondary/30 px-6 py-3 rounded-2xl backdrop-blur-sm border border-border/50">
+                  <div className="flex items-center gap-3 text-lg bg-card border border-border px-6 py-3 rounded-2xl">
                     <User className="h-5 w-5 text-primary" />
                     <span className="font-medium">{selectedCase.client_name}</span>
                   </div>
-                  <div className="flex items-center gap-3 text-lg bg-gradient-to-r from-card/50 to-secondary/30 px-6 py-3 rounded-2xl backdrop-blur-sm border border-border/50">
+                  <div className="flex items-center gap-3 text-lg bg-card border border-border px-6 py-3 rounded-2xl">
                     <Calendar className="h-5 w-5 text-primary" />
                     <span className="font-medium">{new Date(selectedCase.project_date).toLocaleDateString('ru-RU')}</span>
                   </div>
-                  <div className="flex items-center gap-3 text-lg bg-gradient-to-r from-card/50 to-secondary/30 px-6 py-3 rounded-2xl backdrop-blur-sm border border-border/50">
+                  <div className="flex items-center gap-3 text-lg bg-card border border-border px-6 py-3 rounded-2xl">
                     <Clock className="h-5 w-5 text-primary" />
                     <span className="font-medium">{selectedCase.project_duration}</span>
                   </div>
@@ -232,7 +232,7 @@ const Cases = () => {
               </div>
 
               {/* Description */}
-              <div className="bg-gradient-to-br from-card/50 to-secondary/30 backdrop-blur-sm rounded-3xl p-8 border border-border/50">
+              <div className="bg-card border border-border rounded-3xl p-8">
                 <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                     О проекте
@@ -268,7 +268,7 @@ const Cases = () => {
 
             <div className="space-y-8">
               {/* Project Info Card */}
-              <div className="bg-gradient-to-br from-card/50 to-secondary/30 backdrop-blur-sm rounded-3xl p-8 border border-border/50">
+              <div className="bg-card border border-border rounded-3xl p-8">
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-xl font-heading font-bold mb-4">Категория</h3>
@@ -297,7 +297,7 @@ const Cases = () => {
 
               {/* Results Card */}
               {selectedCase.results.length > 0 && (
-                <div className="bg-gradient-to-br from-card/50 to-secondary/30 backdrop-blur-sm rounded-3xl p-8 border border-border/50">
+                <div className="bg-card border border-border rounded-3xl p-8">
                   <h3 className="text-xl font-heading font-bold mb-6 flex items-center gap-3">
                     <TrendingUp className="h-6 w-6 text-green-600" />
                     <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
@@ -381,7 +381,7 @@ const Cases = () => {
               className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 text-sm ${
                 selectedCategory === 'all'
                   ? 'bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg transform scale-105'
-                  : 'bg-gradient-to-r from-card/50 to-secondary/30 text-muted-foreground hover:text-foreground hover:scale-105 backdrop-blur-sm border border-border/50'
+                  : 'bg-card border border-border text-muted-foreground hover:text-foreground hover:scale-105'
               }`}
             >
               Все проекты
@@ -393,7 +393,7 @@ const Cases = () => {
                 className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 text-sm ${
                   selectedCategory === category
                     ? 'bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg transform scale-105'
-                    : 'bg-gradient-to-r from-card/50 to-secondary/30 text-muted-foreground hover:text-foreground hover:scale-105 backdrop-blur-sm border border-border/50'
+                    : 'bg-card border border-border text-muted-foreground hover:text-foreground hover:scale-105'
                 }`}
               >
                 {categoryNames[category] || category}
@@ -419,7 +419,7 @@ const Cases = () => {
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                   {filteredCases.map((caseItem, index) => (
                     <Link key={caseItem.id} to={`/cases/${caseItem.slug}`} className="group cursor-pointer animate-on-scroll block" style={{ animationDelay: `${index * 100}ms` }}>
-                      <div className="border-0 bg-gradient-to-br from-card/50 to-secondary/30 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-500 backdrop-blur-sm hover:scale-105">
+                      <div className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-500 hover:scale-105">
                         <div className="aspect-video overflow-hidden relative">
                           <img 
                             src={caseItem.main_image} 
