@@ -224,12 +224,26 @@ const About = () => {
           {company.description}
         </p>
         
-        <div className="bg-red-100 border border-red-300 p-4 mb-8 rounded text-red-800">
-          <h2 className="font-bold text-xl mb-2">ТЕСТ: Этот блок должен быть виден!</h2>
-          <p>Компания основана: {company.founding_year}</p>
-          <p>Размер команды: {company.team_size}</p>
-          <p>Команда: {teamMembers.length} человек(а)</p>
-          <p>Проектов завершено: {company.projects_completed}</p>
+        {/* Mission & Vision */}
+        <div className="grid md:grid-cols-2 gap-8 mb-16">
+          <Card className="animate-on-scroll">
+            <CardContent className="p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <Target className="h-8 w-8 text-primary" />
+                <h3 className="text-2xl font-bold">Наша миссия</h3>
+              </div>
+              <p className="text-muted-foreground leading-relaxed">{company.mission}</p>
+            </CardContent>
+          </Card>
+          <Card className="animate-on-scroll">
+            <CardContent className="p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <Award className="h-8 w-8 text-primary" />
+                <h3 className="text-2xl font-bold">Наше видение</h3>
+              </div>
+              <p className="text-muted-foreground leading-relaxed">{company.vision}</p>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Stats */}
@@ -245,22 +259,41 @@ const About = () => {
           ))}
         </div>
 
+        {/* Values */}
+        <div className="text-center mb-16">
+          <h2 className="text-3xl font-bold mb-8">Наши ценности</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {values.map((value, index) => (
+              <Card key={index} className="animate-on-scroll hover:shadow-lg transition-shadow">
+                <CardContent className="p-6 text-center">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+                    <value.icon className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-3">{value.title}</h3>
+                  <p className="text-sm text-muted-foreground">{value.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
         {/* Team */}
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold mb-8">Наша команда</h2>
           <div className="grid md:grid-cols-3 gap-8">
             {teamMembers.map((member) => (
-              <Card key={member.id} className="overflow-hidden">
+              <Card key={member.id} className="overflow-hidden animate-on-scroll hover:shadow-lg transition-shadow">
                 <div className="aspect-square overflow-hidden">
                   <img 
                     src={member.image} 
                     alt={member.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   />
                 </div>
                 <CardContent className="p-6">
                   <h3 className="text-xl font-semibold mb-2">{member.name}</h3>
-                  <p className="text-primary font-medium mb-3">{member.position}</p>
+                  <p className="text-primary font-medium mb-2">{member.position}</p>
+                  <p className="text-sm text-muted-foreground mb-2">{member.experience}</p>
                   <p className="text-sm text-muted-foreground mb-4">{member.description}</p>
                   <div className="flex flex-wrap gap-2">
                     {member.skills.map((skill, skillIndex) => (
@@ -273,6 +306,24 @@ const About = () => {
               </Card>
             ))}
           </div>
+        </div>
+
+        {/* CTA Section */}
+        <div className="text-center">
+          <Card className="bg-gradient-to-r from-primary/10 to-secondary/10">
+            <CardContent className="p-12">
+              <h3 className="text-2xl font-bold mb-4">Готовы начать проект?</h3>
+              <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+                Свяжитесь с нами для обсуждения вашего проекта. Мы поможем воплотить ваши идеи в жизнь.
+              </p>
+              <Button asChild size="lg" className="hover-scale">
+                <Link to="/#contact">
+                  Связаться с нами
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
