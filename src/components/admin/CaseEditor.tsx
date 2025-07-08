@@ -63,6 +63,8 @@ const CaseEditor = ({ caseId, onBack }: CaseEditorProps) => {
   const [newTechnology, setNewTechnology] = useState('');
   const [newResult, setNewResult] = useState('');
   const [newGalleryImage, setNewGalleryImage] = useState('');
+  const [uploadingMainImage, setUploadingMainImage] = useState(false);
+  const [uploadingGalleryImage, setUploadingGalleryImage] = useState(false);
   
   const [formData, setFormData] = useState<CaseData>({
     title: '',
@@ -236,6 +238,81 @@ const CaseEditor = ({ caseId, onBack }: CaseEditorProps) => {
     }));
   };
 
+  const uploadImage = async (file: File): Promise<string | null> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    
+    const { data, error } = await supabase.storage
+      .from('case-images')
+      .upload(fileName, file);
+      
+    if (error) {
+      toast({
+        title: 'Ошибка загрузки',
+        description: error.message,
+        variant: 'destructive',
+      });
+      return null;
+    }
+    
+    const { data: { publicUrl } } = supabase.storage
+      .from('case-images')
+      .getPublicUrl(fileName);
+      
+    return publicUrl;
+  };
+
+  const handleMainImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      toast({
+        title: 'Неподдерживаемый формат',
+        description: 'Поддерживаются только JPEG, PNG и WebP',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    setUploadingMainImage(true);
+    const imageUrl = await uploadImage(file);
+    if (imageUrl) {
+      updateField('main_image', imageUrl);
+    }
+    setUploadingMainImage(false);
+    event.target.value = ''; // Reset input
+  };
+
+  const handleGalleryImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      toast({
+        title: 'Неподдерживаемый формат',
+        description: 'Поддерживаются только JPEG, PNG и WebP',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    setUploadingGalleryImage(true);
+    const imageUrl = await uploadImage(file);
+    if (imageUrl) {
+      setFormData(prev => ({
+        ...prev,
+        gallery_images: [...prev.gallery_images, imageUrl]
+      }));
+    }
+    setUploadingGalleryImage(false);
+    event.target.value = ''; // Reset input
+  };
+
   const updateField = (field: keyof CaseData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
@@ -369,50 +446,109 @@ const CaseEditor = ({ caseId, onBack }: CaseEditorProps) => {
                 Изображения
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
                 <Label>Главное изображение</Label>
-                <Input
-                  value={formData.main_image}
-                  onChange={(e) => updateField('main_image', e.target.value)}
-                  placeholder="https://images.unsplash.com/..."
-                />
+                
+                {/* Upload button */}
+                <div className="flex gap-2">
+                  <input
+                    type="file"
+                    id="main-image-upload"
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handleMainImageUpload}
+                    className="hidden"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => document.getElementById('main-image-upload')?.click()}
+                    disabled={uploadingMainImage}
+                    className="flex items-center gap-2"
+                  >
+                    <Upload className="h-4 w-4" />
+                    {uploadingMainImage ? 'Загрузка...' : 'Загрузить файл'}
+                  </Button>
+                  <span className="text-sm text-muted-foreground self-center">
+                    JPEG, PNG, WebP
+                  </span>
+                </div>
+
+                {/* Manual URL input */}
+                <div className="space-y-2">
+                  <Label className="text-sm">или введите URL</Label>
+                  <Input
+                    value={formData.main_image}
+                    onChange={(e) => updateField('main_image', e.target.value)}
+                    placeholder="https://images.unsplash.com/..."
+                  />
+                </div>
+
+                {/* Preview */}
                 {formData.main_image && (
                   <div className="mt-2">
                     <img 
                       src={formData.main_image} 
-                      alt="Предпросмотр"
-                      className="w-32 h-24 object-cover rounded-lg"
+                      alt="Предпросмотр главного изображения"
+                      className="w-48 h-32 object-cover rounded-lg border"
                     />
                   </div>
                 )}
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-4">
                 <Label>Галерея изображений</Label>
+                
+                {/* Upload button for gallery */}
+                <div className="flex gap-2">
+                  <input
+                    type="file"
+                    id="gallery-image-upload"
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handleGalleryImageUpload}
+                    className="hidden"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => document.getElementById('gallery-image-upload')?.click()}
+                    disabled={uploadingGalleryImage}
+                    className="flex items-center gap-2"
+                  >
+                    <Upload className="h-4 w-4" />
+                    {uploadingGalleryImage ? 'Загрузка...' : 'Добавить файл'}
+                  </Button>
+                  <span className="text-sm text-muted-foreground self-center">
+                    JPEG, PNG, WebP
+                  </span>
+                </div>
+
+                {/* Manual URL input for gallery */}
                 <div className="flex gap-2">
                   <Input
                     value={newGalleryImage}
                     onChange={(e) => setNewGalleryImage(e.target.value)}
-                    placeholder="URL изображения для галереи..."
+                    placeholder="или введите URL изображения..."
                     onKeyPress={(e) => e.key === 'Enter' && addGalleryImage()}
                   />
                   <Button type="button" onClick={addGalleryImage}>
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
+
+                {/* Gallery grid */}
                 {formData.gallery_images.length > 0 && (
-                  <div className="grid grid-cols-4 gap-2 mt-3">
+                  <div className="grid grid-cols-4 gap-3 mt-4">
                     {formData.gallery_images.map((image, index) => (
                       <div key={index} className="relative group">
                         <img 
                           src={image} 
                           alt={`Галерея ${index + 1}`}
-                          className="w-full h-20 object-cover rounded-lg"
+                          className="w-full h-24 object-cover rounded-lg border hover:opacity-75 transition-opacity"
                         />
                         <button 
                           onClick={() => removeGalleryImage(index)}
-                          className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
                         >
                           <X className="h-3 w-3" />
                         </button>
