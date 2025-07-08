@@ -191,7 +191,6 @@
   .animate-pulse-slow {
     animation: pulse-slow 15s ease-in-out infinite;
   }
-  }
   
   /* Grid Pattern Background */
   .bg-grid-pattern {
