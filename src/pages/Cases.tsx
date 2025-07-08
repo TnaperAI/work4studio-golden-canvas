@@ -85,6 +85,19 @@ const Cases = () => {
     fetchCases();
   }, []);
 
+  // Перезапускаем анимацию скролла после загрузки данных
+  useEffect(() => {
+    if (!loading) {
+      // Даем время DOM обновиться, затем повторно запускаем анимацию
+      setTimeout(() => {
+        const elements = document.querySelectorAll('.animate-on-scroll');
+        elements.forEach(el => {
+          el.classList.add('in-view');
+        });
+      }, 100);
+    }
+  }, [loading]);
+
   useEffect(() => {
     if (slug && cases.length > 0) {
       const caseItem = cases.find(c => c.slug === slug);
