@@ -107,6 +107,45 @@ export type Database = {
         }
         Relationships: []
       }
+      company_info: {
+        Row: {
+          clients_served: string | null
+          created_at: string
+          description: string | null
+          founding_year: string | null
+          id: string
+          mission: string | null
+          projects_completed: string | null
+          team_size: string | null
+          updated_at: string
+          vision: string | null
+        }
+        Insert: {
+          clients_served?: string | null
+          created_at?: string
+          description?: string | null
+          founding_year?: string | null
+          id?: string
+          mission?: string | null
+          projects_completed?: string | null
+          team_size?: string | null
+          updated_at?: string
+          vision?: string | null
+        }
+        Update: {
+          clients_served?: string | null
+          created_at?: string
+          description?: string | null
+          founding_year?: string | null
+          id?: string
+          mission?: string | null
+          projects_completed?: string | null
+          team_size?: string | null
+          updated_at?: string
+          vision?: string | null
+        }
+        Relationships: []
+      }
       contact_submissions: {
         Row: {
           created_at: string
@@ -281,6 +320,48 @@ export type Database = {
           section?: string
           updated_at?: string
           value?: string
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          created_at: string
+          description: string | null
+          experience: string | null
+          id: string
+          image: string | null
+          is_active: boolean
+          name: string
+          position: string
+          skills: string[] | null
+          sort_order: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          experience?: string | null
+          id?: string
+          image?: string | null
+          is_active?: boolean
+          name: string
+          position: string
+          skills?: string[] | null
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          experience?: string | null
+          id?: string
+          image?: string | null
+          is_active?: boolean
+          name?: string
+          position?: string
+          skills?: string[] | null
+          sort_order?: number | null
+          updated_at?: string
         }
         Relationships: []
       }

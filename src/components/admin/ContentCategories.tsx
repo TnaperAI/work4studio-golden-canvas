@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import CasesManagement from './CasesManagement';
 import CaseEditor from './CaseEditor';
+import AboutManagement from './AboutManagement';
 import { 
   FileText, 
   ChevronRight, 
@@ -39,6 +40,7 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
   const [showServiceEditor, setShowServiceEditor] = useState(false);
   const [showCaseEditor, setShowCaseEditor] = useState(false);
+  const [showAboutManagement, setShowAboutManagement] = useState(false);
 
   const categories: Category[] = [
     {
@@ -182,6 +184,28 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
     );
   }
 
+  // Show about management 
+  if (showAboutManagement) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center space-x-4">
+          <Button 
+            variant="ghost" 
+            onClick={() => {
+              setShowAboutManagement(false);
+              setSelectedCategory(null);
+            }}
+            className="p-2"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Назад к категориям
+          </Button>
+        </div>
+        <AboutManagement />
+      </div>
+    );
+  }
+
   if (selectedCategory && selectedCategoryData) {
     return (
       <div className="space-y-6">
@@ -211,7 +235,13 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
             <Card 
               key={page.slug} 
               className="cursor-pointer hover:shadow-md transition-shadow"
-              onClick={() => onPageSelect(page.slug)}
+              onClick={() => {
+                if (page.slug === 'about') {
+                  setShowAboutManagement(true);
+                } else {
+                  onPageSelect(page.slug);
+                }
+              }}
             >
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
