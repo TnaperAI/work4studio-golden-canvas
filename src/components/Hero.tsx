@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import ContactFormModal from './ContactFormModal';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const Hero = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const { getContent } = useSiteContent();
+
   return (
     <section className="min-h-screen flex items-center justify-center relative pt-16">
       <div className="container-custom relative z-10">
@@ -10,12 +13,12 @@ const Hero = () => {
           {/* Main heading */}
           <div className="space-y-6">
             <h1 className="text-glow text-center px-4">
-              Создаём сайты,<br className="sm:hidden" /> которые{' '}
+              {getContent('hero', 'title').split('работают за вас')[0]}
+              <br className="sm:hidden" />
               <span className="text-primary">работают за вас</span>
             </h1>
             <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto px-4 leading-relaxed">
-              Разработка и поддержка сайтов на новой скорости. 
-              От идеи до запуска — всего за 3 дня.
+              {getContent('hero', 'subtitle')}
             </p>
           </div>
           
@@ -25,23 +28,29 @@ const Hero = () => {
               className="btn-gold"
               onClick={() => setIsContactModalOpen(true)}
             >
-              Обсудить проект
+              {getContent('hero', 'cta_button')}
             </button>
           </div>
           
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-16 max-w-2xl mx-auto">
             <div className="text-center">
-              <div className="text-4xl font-heading font-bold text-primary mb-2">3</div>
-              <div className="text-muted-foreground">дня до запуска</div>
+              <div className="text-4xl font-heading font-bold text-primary mb-2">
+                {getContent('stats', 'days')}
+              </div>
+              <div className="text-muted-foreground">{getContent('stats', 'days_text')}</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-heading font-bold text-primary mb-2">24/7</div>
-              <div className="text-muted-foreground">поддержка</div>
+              <div className="text-4xl font-heading font-bold text-primary mb-2">
+                {getContent('stats', 'support')}
+              </div>
+              <div className="text-muted-foreground">{getContent('stats', 'support_text')}</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-heading font-bold text-primary mb-2">100%</div>
-              <div className="text-muted-foreground">открытый код</div>
+              <div className="text-4xl font-heading font-bold text-primary mb-2">
+                {getContent('stats', 'code')}
+              </div>
+              <div className="text-muted-foreground">{getContent('stats', 'code_text')}</div>
             </div>
           </div>
         </div>
