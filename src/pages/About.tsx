@@ -217,87 +217,121 @@ const About = () => {
         </div>
       </section>
 
-      {/* TEST CONTENT */}
-      <div className="container mx-auto px-4 py-16">
-        <h1 className="text-4xl font-bold text-center mb-8">О нашей студии</h1>
-        <p className="text-center text-lg mb-8 max-w-3xl mx-auto">
-          {company.description}
-        </p>
-        
-        {/* Mission & Vision */}
-        <div className="grid md:grid-cols-2 gap-8 mb-16">
-          <Card className="animate-on-scroll">
-            <CardContent className="p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <Target className="h-8 w-8 text-primary" />
-                <h3 className="text-2xl font-bold">Наша миссия</h3>
-              </div>
-              <p className="text-muted-foreground leading-relaxed">{company.mission}</p>
-            </CardContent>
-          </Card>
-          <Card className="animate-on-scroll">
-            <CardContent className="p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <Award className="h-8 w-8 text-primary" />
-                <h3 className="text-2xl font-bold">Наше видение</h3>
-              </div>
-              <p className="text-muted-foreground leading-relaxed">{company.vision}</p>
-            </CardContent>
-          </Card>
+      {/* Hero Section */}
+      <section className="relative py-20 overflow-hidden bg-gradient-to-br from-background via-background to-muted/30">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        <div className="container mx-auto px-4 relative">
+          <div className="text-center animate-on-scroll">
+            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6">
+              О нашей студии
+            </h1>
+            <p className="text-xl text-muted-foreground mb-12 max-w-4xl mx-auto leading-relaxed">
+              {company.description}
+            </p>
+          </div>
         </div>
+      </section>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
-          {stats.map((stat, index) => (
-            <div key={index} className="text-center p-4 bg-white rounded-lg shadow">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-                <stat.icon className="h-8 w-8 text-primary" />
-              </div>
-              <div className="text-3xl font-bold text-primary mb-2">{stat.value}</div>
-              <div className="text-muted-foreground">{stat.label}</div>
-            </div>
-          ))}
-        </div>
+      <div className="container mx-auto px-4 py-16">
+        {/* Stats Section */}
+        <section className="mb-20">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map((stat, index) => (
+              <Card key={index} className="animate-on-scroll text-center p-6 hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-background to-muted/50">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-2xl mb-4">
+                  <stat.icon className="h-10 w-10 text-primary" />
+                </div>
+                <div className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+                  {stat.value}
+                </div>
+                <div className="text-muted-foreground font-medium">{stat.label}</div>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* Mission & Vision */}
+        <section className="mb-20">
+          <div className="grid md:grid-cols-2 gap-8">
+            <Card className="animate-on-scroll border-0 bg-gradient-to-br from-primary/5 to-primary/10 hover:shadow-xl transition-all duration-300">
+              <CardContent className="p-8">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="p-3 bg-gradient-to-br from-primary/20 to-primary/30 rounded-xl">
+                    <Target className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-2xl font-bold">Наша миссия</h3>
+                </div>
+                <p className="text-muted-foreground leading-relaxed text-lg">{company.mission}</p>
+              </CardContent>
+            </Card>
+            <Card className="animate-on-scroll border-0 bg-gradient-to-br from-secondary/5 to-secondary/10 hover:shadow-xl transition-all duration-300">
+              <CardContent className="p-8">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="p-3 bg-gradient-to-br from-secondary/20 to-secondary/30 rounded-xl">
+                    <Award className="h-8 w-8 text-secondary" />
+                  </div>
+                  <h3 className="text-2xl font-bold">Наше видение</h3>
+                </div>
+                <p className="text-muted-foreground leading-relaxed text-lg">{company.vision}</p>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
 
         {/* Values */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-8">Наши ценности</h2>
+        <section className="mb-20">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+              Наши ценности
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Принципы, которые направляют нашу работу и отношения с клиентами
+            </p>
+          </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((value, index) => (
-              <Card key={index} className="animate-on-scroll hover:shadow-lg transition-shadow">
+              <Card key={index} className="animate-on-scroll hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-background to-muted/30 group">
                 <CardContent className="p-6 text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
                     <value.icon className="h-8 w-8 text-primary" />
                   </div>
                   <h3 className="text-lg font-semibold mb-3">{value.title}</h3>
-                  <p className="text-sm text-muted-foreground">{value.description}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{value.description}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
-        </div>
+        </section>
 
         {/* Team */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-8">Наша команда</h2>
+        <section className="mb-20">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+              Наша команда
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Профессионалы, которые воплощают ваши идеи в жизнь
+            </p>
+          </div>
           <div className="grid md:grid-cols-3 gap-8">
             {teamMembers.map((member) => (
-              <Card key={member.id} className="overflow-hidden animate-on-scroll hover:shadow-lg transition-shadow">
-                <div className="aspect-square overflow-hidden">
+              <Card key={member.id} className="overflow-hidden animate-on-scroll hover:shadow-2xl transition-all duration-300 border-0 bg-gradient-to-br from-background to-muted/30 group">
+                <div className="aspect-square overflow-hidden relative">
                   <img 
                     src={member.image} 
                     alt={member.name}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-2">{member.name}</h3>
-                  <p className="text-primary font-medium mb-2">{member.position}</p>
-                  <p className="text-sm text-muted-foreground mb-2">{member.experience}</p>
-                  <p className="text-sm text-muted-foreground mb-4">{member.description}</p>
+                <CardContent className="p-8">
+                  <h3 className="text-xl font-bold mb-2">{member.name}</h3>
+                  <p className="text-primary font-semibold mb-2">{member.position}</p>
+                  <p className="text-sm text-muted-foreground mb-2 font-medium">{member.experience}</p>
+                  <p className="text-sm text-muted-foreground mb-6 leading-relaxed">{member.description}</p>
                   <div className="flex flex-wrap gap-2">
                     {member.skills.map((skill, skillIndex) => (
-                      <Badge key={skillIndex} variant="secondary" className="text-xs">
+                      <Badge key={skillIndex} variant="secondary" className="text-xs bg-gradient-to-r from-primary/10 to-secondary/10 hover:from-primary/20 hover:to-secondary/20 transition-colors">
                         {skill}
                       </Badge>
                     ))}
@@ -306,25 +340,28 @@ const About = () => {
               </Card>
             ))}
           </div>
-        </div>
+        </section>
 
         {/* CTA Section */}
-        <div className="text-center">
-          <Card className="bg-gradient-to-r from-primary/10 to-secondary/10">
-            <CardContent className="p-12">
-              <h3 className="text-2xl font-bold mb-4">Готовы начать проект?</h3>
-              <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                Свяжитесь с нами для обсуждения вашего проекта. Мы поможем воплотить ваши идеи в жизнь.
+        <section>
+          <Card className="border-0 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 relative overflow-hidden">
+            <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+            <CardContent className="p-12 text-center relative">
+              <h3 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                Готовы начать проект?
+              </h3>
+              <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
+                Свяжитесь с нами для обсуждения вашего проекта. Мы поможем воплотить ваши идеи в жизнь и создать что-то удивительное вместе.
               </p>
-              <Button asChild size="lg" className="hover-scale">
+              <Button asChild size="lg" className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white px-8 py-3 hover:scale-105 transition-all duration-300 shadow-lg">
                 <Link to="/#contact">
                   Связаться с нами
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
             </CardContent>
           </Card>
-        </div>
+        </section>
       </div>
 
       <Footer />
