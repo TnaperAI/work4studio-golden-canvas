@@ -1,4 +1,8 @@
+import { useState } from 'react';
+import ContactFormModal from './ContactFormModal';
+
 const Hero = () => {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   return (
     <section className="min-h-screen flex items-center justify-center relative">
       <div className="container-custom relative z-10">
@@ -17,7 +21,10 @@ const Hero = () => {
           
           {/* CTA Button */}
           <div className="pt-4">
-            <button className="btn-gold">
+            <button 
+              className="btn-gold"
+              onClick={() => setIsContactModalOpen(true)}
+            >
               Обсудить проект
             </button>
           </div>
@@ -39,6 +46,11 @@ const Hero = () => {
           </div>
         </div>
       </div>
+      
+      <ContactFormModal 
+        isOpen={isContactModalOpen} 
+        onClose={() => setIsContactModalOpen(false)} 
+      />
     </section>
   );
 };
