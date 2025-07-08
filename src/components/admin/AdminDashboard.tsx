@@ -3,7 +3,7 @@ import Dashboard from './Dashboard';
 import ContentManagement from './ContentManagement';
 import PageEditor from './PageEditor';
 
-type AdminView = 'dashboard' | 'content' | 'page-editor';
+type AdminView = 'dashboard' | 'content' | 'page-editor' | 'submissions' | 'settings';
 
 const AdminDashboard = () => {
   const [currentView, setCurrentView] = useState<AdminView>('dashboard');
@@ -14,6 +14,10 @@ const AdminDashboard = () => {
       const hash = window.location.hash.replace('#', '');
       if (hash === 'content') {
         setCurrentView('content');
+      } else if (hash === 'submissions') {
+        setCurrentView('submissions');
+      } else if (hash === 'settings') {
+        setCurrentView('settings');
       } else if (hash === 'dashboard' || hash === '') {
         setCurrentView('dashboard');
       }
@@ -56,6 +60,38 @@ const AdminDashboard = () => {
   if (currentView === 'content') {
     return (
       <ContentManagement onPageSelect={handlePageSelect} />
+    );
+  }
+
+  if (currentView === 'submissions') {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-heading font-bold">Заявки</h1>
+          <p className="text-muted-foreground">
+            Управление контактными заявками с сайта
+          </p>
+        </div>
+        <div className="text-center py-12 text-muted-foreground">
+          <p>Раздел заявок находится в разработке</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentView === 'settings') {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-heading font-bold">Настройки</h1>
+          <p className="text-muted-foreground">
+            Общие настройки административной панели
+          </p>
+        </div>
+        <div className="text-center py-12 text-muted-foreground">
+          <p>Раздел настроек находится в разработке</p>
+        </div>
+      </div>
     );
   }
 

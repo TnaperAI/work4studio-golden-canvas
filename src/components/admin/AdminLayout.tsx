@@ -38,6 +38,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     const hash = window.location.hash.replace('#', '');
     if (path === '#dashboard') return hash === 'dashboard' || hash === '';
     if (path === '#content') return hash === 'content';
+    if (path === '#submissions') return hash === 'submissions';
+    if (path === '#settings') return hash === 'settings';
     return false;
   };
 

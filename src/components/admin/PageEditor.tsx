@@ -213,8 +213,104 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
                   </div>
                 </>
               )}
-              
-              {/* Добавьте другие поля контента для разных страниц */}
+
+              {pageSlug === 'services' && (
+                <>
+                  <div className="space-y-2">
+                    <Label>Заголовок страницы</Label>
+                    <Input
+                      value={contentFields.title || ''}
+                      onChange={(e) => updateContentField('title', e.target.value)}
+                      placeholder="Разрабатываем сайты. Быстро, по делу, под задачи бизнеса."
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Подзаголовок</Label>
+                    <Textarea
+                      value={contentFields.subtitle || ''}
+                      onChange={(e) => updateContentField('subtitle', e.target.value)}
+                      placeholder="Выберите подходящий формат — от простого лендинга до интернет-магазина."
+                      rows={3}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Заголовок CTA секции</Label>
+                    <Input
+                      value={contentFields.cta_title || ''}
+                      onChange={(e) => updateContentField('cta_title', e.target.value)}
+                      placeholder="Не знаете, какой формат подойдёт?"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Подзаголовок CTA секции</Label>
+                    <Textarea
+                      value={contentFields.cta_subtitle || ''}
+                      onChange={(e) => updateContentField('cta_subtitle', e.target.value)}
+                      placeholder="Расскажите о своих задачах — поможем выбрать оптимальное решение"
+                      rows={2}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Текст кнопки CTA</Label>
+                    <Input
+                      value={contentFields.cta_button || ''}
+                      onChange={(e) => updateContentField('cta_button', e.target.value)}
+                      placeholder="Получить консультацию"
+                    />
+                  </div>
+                </>
+              )}
+
+              {pageSlug === 'about' && (
+                <>
+                  <div className="space-y-2">
+                    <Label>Заголовок страницы</Label>
+                    <Input
+                      value={contentFields.title || ''}
+                      onChange={(e) => updateContentField('title', e.target.value)}
+                      placeholder="О нас"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Описание</Label>
+                    <Textarea
+                      value={contentFields.description || ''}
+                      onChange={(e) => updateContentField('description', e.target.value)}
+                      placeholder="Описание компании"
+                      rows={4}
+                    />
+                  </div>
+                </>
+              )}
+
+              {pageSlug === 'contact' && (
+                <>
+                  <div className="space-y-2">
+                    <Label>Заголовок страницы</Label>
+                    <Input
+                      value={contentFields.title || ''}
+                      onChange={(e) => updateContentField('title', e.target.value)}
+                      placeholder="Контакты"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Описание</Label>
+                    <Textarea
+                      value={contentFields.description || ''}
+                      onChange={(e) => updateContentField('description', e.target.value)}
+                      placeholder="Свяжитесь с нами"
+                      rows={3}
+                    />
+                  </div>
+                </>
+              )}
+
+              {!['home', 'services', 'about', 'contact'].includes(pageSlug) && (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p>Контент для страницы "{pageSlug}" пока не настроен.</p>
+                  <p className="text-sm mt-2">Добавьте поля контента в компонент PageEditor.</p>
+                </div>
+              )}
               
               <Button onClick={handleContentSave}>
                 Сохранить контент
