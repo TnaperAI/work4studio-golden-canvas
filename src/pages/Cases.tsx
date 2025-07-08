@@ -83,9 +83,17 @@ const Cases = () => {
   }, []);
 
   useEffect(() => {
+    console.log('URL slug changed:', slug);
+    console.log('Cases loaded:', cases.length);
+    
     if (slug && cases.length > 0) {
       const caseItem = cases.find(c => c.slug === slug);
+      console.log('Found case:', caseItem?.title);
       setSelectedCase(caseItem || null);
+    } else if (!slug) {
+      // Если нет slug в URL, показываем список кейсов
+      console.log('No slug, showing case list');
+      setSelectedCase(null);
     }
   }, [slug, cases]);
 
