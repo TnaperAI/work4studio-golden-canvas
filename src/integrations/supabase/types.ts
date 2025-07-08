@@ -14,6 +14,99 @@ export type Database = {
   }
   public: {
     Tables: {
+      cases: {
+        Row: {
+          budget_range: string | null
+          canonical_url: string | null
+          category: Database["public"]["Enums"]["case_category"]
+          client_name: string | null
+          created_at: string
+          description: string | null
+          gallery_images: string[] | null
+          h1_tag: string | null
+          id: string
+          is_active: boolean
+          is_featured: boolean | null
+          main_image: string | null
+          meta_description: string | null
+          meta_keywords: string | null
+          meta_title: string | null
+          og_description: string | null
+          og_image: string | null
+          og_title: string | null
+          project_date: string | null
+          project_duration: string | null
+          project_url: string | null
+          results: string[] | null
+          short_description: string | null
+          slug: string
+          sort_order: number | null
+          technologies: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          budget_range?: string | null
+          canonical_url?: string | null
+          category?: Database["public"]["Enums"]["case_category"]
+          client_name?: string | null
+          created_at?: string
+          description?: string | null
+          gallery_images?: string[] | null
+          h1_tag?: string | null
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean | null
+          main_image?: string | null
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          project_date?: string | null
+          project_duration?: string | null
+          project_url?: string | null
+          results?: string[] | null
+          short_description?: string | null
+          slug: string
+          sort_order?: number | null
+          technologies?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          budget_range?: string | null
+          canonical_url?: string | null
+          category?: Database["public"]["Enums"]["case_category"]
+          client_name?: string | null
+          created_at?: string
+          description?: string | null
+          gallery_images?: string[] | null
+          h1_tag?: string | null
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean | null
+          main_image?: string | null
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          project_date?: string | null
+          project_duration?: string | null
+          project_url?: string | null
+          results?: string[] | null
+          short_description?: string | null
+          slug?: string
+          sort_order?: number | null
+          technologies?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contact_submissions: {
         Row: {
           created_at: string
@@ -227,6 +320,14 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "editor"
+      case_category:
+        | "website"
+        | "ecommerce"
+        | "mobile"
+        | "landing"
+        | "corporate"
+        | "startup"
+        | "redesign"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -355,6 +456,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "editor"],
+      case_category: [
+        "website",
+        "ecommerce",
+        "mobile",
+        "landing",
+        "corporate",
+        "startup",
+        "redesign",
+      ],
     },
   },
 } as const

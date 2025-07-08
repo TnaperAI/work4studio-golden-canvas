@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import ServicesManagement from './ServicesManagement';
-import ServiceEditor from './ServiceEditor';
+import CasesManagement from './CasesManagement';
+import CaseEditor from './CaseEditor';
 import { 
   FileText, 
   ChevronRight, 
@@ -11,7 +11,8 @@ import {
   Briefcase,
   Home,
   Mail,
-  Info
+  Info,
+  Image
 } from 'lucide-react';
 
 interface Category {
@@ -35,7 +36,9 @@ interface ContentCategoriesProps {
 const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
+  const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
   const [showServiceEditor, setShowServiceEditor] = useState(false);
+  const [showCaseEditor, setShowCaseEditor] = useState(false);
 
   const categories: Category[] = [
     {
@@ -64,13 +67,11 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
       ]
     },
     {
-      id: 'portfolio',
-      name: 'Портфолио',
-      description: 'Кейсы и примеры работ',
-      icon: FileText,
-      pages: [
-        { slug: 'cases', title: 'Кейсы', h1: 'Наши работы' }
-      ]
+      id: 'cases',
+      name: 'Кейсы',
+      description: 'Портфолио и примеры работ',
+      icon: Image,
+      pages: []
     }
   ];
 
@@ -92,18 +93,34 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
     setSelectedServiceId(null);
   };
 
-  // Show service editor
-  if (showServiceEditor) {
+  // Handle case management
+  const handleCaseEdit = (caseId: string) => {
+    setSelectedCaseId(caseId);
+    setShowCaseEditor(true);
+  };
+
+  const handleCaseCreate = () => {
+    setSelectedCaseId(null);
+    setShowCaseEditor(true);
+  };
+
+  const handleBackFromCaseEditor = () => {
+    setShowCaseEditor(false);
+    setSelectedCaseId(null);
+  };
+
+  // Show case editor
+  if (showCaseEditor) {
     return (
-      <ServiceEditor 
-        serviceId={selectedServiceId || undefined}
-        onBack={handleBackFromServiceEditor}
+      <CaseEditor 
+        caseId={selectedCaseId || undefined}
+        onBack={handleBackFromCaseEditor}
       />
     );
   }
 
-  // Show services management
-  if (selectedCategory === 'services') {
+  // Show cases management
+  if (selectedCategory === 'cases') {
     return (
       <div className="space-y-6">
         <div className="flex items-center space-x-4">
@@ -117,10 +134,50 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
           </Button>
         </div>
 
-        <ServicesManagement 
-          onServiceEdit={handleServiceEdit}
-          onServiceCreate={handleServiceCreate}
+        <CasesManagement 
+          onCaseEdit={handleCaseEdit}
+          onCaseCreate={handleCaseCreate}
         />
+      </div>
+    );
+  }
+
+  // Show services management
+  if (selectedCategory === 'services') {
+    // Import services components dynamically
+    const ServicesManagement = React.lazy(() => import('./ServicesManagement'));
+    const ServiceEditor = React.lazy(() => import('./ServiceEditor'));
+
+    if (showServiceEditor) {
+      return (
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <ServiceEditor 
+            serviceId={selectedServiceId || undefined}
+            onBack={handleBackFromServiceEditor}
+          />
+        </React.Suspense>
+      );
+    }
+
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center space-x-4">
+          <Button 
+            variant="ghost" 
+            onClick={() => setSelectedCategory(null)}
+            className="p-2"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Назад к категориям
+          </Button>
+        </div>
+
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <ServicesManagement 
+            onServiceEdit={handleServiceEdit}
+            onServiceCreate={handleServiceCreate}
+          />
+        </React.Suspense>
       </div>
     );
   }
@@ -179,7 +236,6 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
             </Card>
           ))}
         </div>
-
       </div>
     );
   }
@@ -214,7 +270,10 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
               </CardHeader>
               <CardContent>
                 <div className="text-sm text-muted-foreground">
-                  {category.pages.length} страниц{category.pages.length === 1 ? 'а' : ''}
+                  {category.id === 'cases' 
+                    ? 'Управление кейсами' 
+                    : `${category.pages.length} страниц${category.pages.length === 1 ? 'а' : ''}`
+                  }
                 </div>
               </CardContent>
             </Card>
