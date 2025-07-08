@@ -34,8 +34,13 @@ const ServiceDetail = () => {
 
   useEffect(() => {
     const fetchService = async () => {
-      if (!service) return;
+      if (!service) {
+        setLoading(false);
+        return;
+      }
 
+      console.log('🔍 Fetching service with slug:', service);
+      
       const { data, error } = await supabase
         .from('services')
         .select('*')
@@ -43,8 +48,12 @@ const ServiceDetail = () => {
         .eq('is_active', true)
         .maybeSingle();
 
+      console.log('📦 Service data:', data);
+      console.log('❌ Service error:', error);
+
       if (error) {
         console.error('Error fetching service:', error);
+        setServiceData(null);
       } else {
         setServiceData(data);
       }
@@ -91,23 +100,27 @@ const ServiceDetail = () => {
     }
   };
 
-  const currentService = serviceData || fallbackData[service as keyof typeof fallbackData];
+  const currentService = serviceData;
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-white">Загружаем услугу...</p>
+        </div>
       </div>
     );
   }
 
-  if (!currentService) {
+  if (!serviceData) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Услуга не найдена</h1>
+          <h1 className="text-2xl font-bold mb-4 text-white">Услуга не найдена</h1>
+          <p className="text-gray-400 mb-6">Услуга с адресом "{service}" не существует</p>
           <Link to="/services">
-            <Button>Вернуться к услугам</Button>
+            <Button className="bg-primary hover:bg-primary/80">Вернуться к услугам</Button>
           </Link>
         </div>
       </div>
