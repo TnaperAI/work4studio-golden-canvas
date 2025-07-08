@@ -178,4 +178,32 @@
     opacity: 1;
     transform: translateY(0);
   }
+
+  /* Background animations */
+  .animate-float-slow {
+    animation: float-slow 20s ease-in-out infinite;
+  }
+
+  .animate-float-reverse {
+    animation: float-reverse 25s ease-in-out infinite;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse-slow 15s ease-in-out infinite;
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(1deg); }
+}
+
+@keyframes float-reverse {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(10px) rotate(-1deg); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.3; }
 }
