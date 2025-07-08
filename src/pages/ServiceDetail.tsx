@@ -148,7 +148,7 @@ const ServiceDetail = () => {
 
       {/* Features Section */}
       {serviceData.features && serviceData.features.length > 0 && (
-        <section className="py-16 bg-muted/30">
+        <section className="py-16 bg-secondary">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
@@ -219,7 +219,7 @@ const ServiceDetail = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-primary/5">
+      <section className="py-16 bg-secondary/50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <Card className="bg-card border-border">
