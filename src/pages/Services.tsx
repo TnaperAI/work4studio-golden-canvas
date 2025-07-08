@@ -115,13 +115,13 @@ const Services = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-3xl font-heading font-bold mb-4">
-              Не знаете, какой формат подойдёт?
+              {getContent('services', 'cta_title') || 'Не знаете, какой формат подойдёт?'}
             </h2>
             <p className="text-muted-foreground mb-8">
-              Расскажите о своих задачах — поможем выбрать оптимальное решение
+              {getContent('services', 'cta_subtitle') || 'Расскажите о своих задачах — поможем выбрать оптимальное решение'}
             </p>
             <Button size="lg" className="bg-primary hover:bg-primary/90">
-              Получить консультацию
+              {getContent('services', 'cta_button') || 'Получить консультацию'}
             </Button>
           </div>
         </div>
