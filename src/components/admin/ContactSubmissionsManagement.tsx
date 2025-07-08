@@ -42,6 +42,7 @@ const ContactSubmissionsManagement = () => {
   const { toast } = useToast();
 
   const fetchSubmissions = async () => {
+    console.log('Fetching contact submissions...');
     const { data, error } = await supabase
       .from('contact_submissions')
       .select('*')
@@ -55,6 +56,7 @@ const ContactSubmissionsManagement = () => {
         variant: 'destructive',
       });
     } else {
+      console.log('Contact submissions fetched successfully:', data);
       setSubmissions(data || []);
     }
     setLoading(false);

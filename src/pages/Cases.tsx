@@ -98,6 +98,7 @@ const Cases = () => {
   }, [slug, cases]);
 
   const fetchCases = async () => {
+    console.log('Fetching cases...');
     const { data, error } = await supabase
       .from('cases')
       .select('*')
@@ -108,6 +109,7 @@ const Cases = () => {
     if (error) {
       console.error('Error fetching cases:', error);
     } else {
+      console.log('Cases fetched successfully:', data);
       setCases(data || []);
     }
     setLoading(false);
@@ -124,6 +126,11 @@ const Cases = () => {
   const regularCases = filteredCases.filter(c => !c.is_featured);
 
   const categories = Array.from(new Set(cases.map(c => c.category)));
+  
+  console.log('Cases state:', cases.length);
+  console.log('Featured cases:', featuredCases.length);
+  console.log('Regular cases:', regularCases.length);
+  console.log('Loading state:', loading);
 
   if (selectedCase) {
     return (
