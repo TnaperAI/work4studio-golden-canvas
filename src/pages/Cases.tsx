@@ -127,10 +127,15 @@ const Cases = () => {
 
   const categories = Array.from(new Set(cases.map(c => c.category)));
   
-  console.log('Cases state:', cases.length);
-  console.log('Featured cases:', featuredCases.length);
-  console.log('Regular cases:', regularCases.length);
-  console.log('Loading state:', loading);
+  console.log('Filter Debug:');
+  console.log('- Search term:', searchTerm);
+  console.log('- Selected category:', selectedCategory);
+  console.log('- Cases total:', cases.length);
+  console.log('- Filtered cases:', filteredCases.length);
+  console.log('- Featured cases:', featuredCases.length);
+  console.log('- Regular cases:', regularCases.length);
+  console.log('- Loading state:', loading);
+  console.log('- Categories:', categories);
 
   if (selectedCase) {
     return (
@@ -404,10 +409,6 @@ const Cases = () => {
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          </div>
-        ) : filteredCases.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Кейсы не найдены</p>
           </div>
         ) : (
           <div className="space-y-12">
