@@ -21,7 +21,7 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-border">
       <div className="absolute inset-0 bg-gradient-to-r from-secondary/80 via-secondary/90 to-secondary/80"></div>
-      <nav className="w-full relative z-10 px-4 sm:px-6 lg:px-8">
+      <nav className="container-custom relative z-10">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="text-2xl md:text-3xl font-heading font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent hover:scale-105 transition-transform duration-300">
