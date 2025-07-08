@@ -4,7 +4,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { 
   Breadcrumb,
   BreadcrumbList,
@@ -17,8 +16,6 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { 
-  Search, 
-  Filter,
   Calendar,
   Clock,
   ExternalLink,
@@ -76,7 +73,6 @@ const Cases = () => {
   const [cases, setCases] = useState<Case[]>([]);
   const [selectedCase, setSelectedCase] = useState<Case | null>(null);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   
   useScrollAnimation();
@@ -124,10 +120,8 @@ const Cases = () => {
   };
 
   const filteredCases = cases.filter(caseItem => {
-    const matchesSearch = caseItem.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         caseItem.client_name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || caseItem.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+    return matchesCategory;
   });
 
   const featuredCases = filteredCases.filter(c => c.is_featured);
@@ -371,33 +365,32 @@ const Cases = () => {
 
       <main className="container mx-auto px-4 py-8">
 
-        {/* Filters */}
-        <div className="mb-16 space-y-6">
-          <div className="flex flex-col sm:flex-row gap-6">
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input
-                placeholder="Поиск по названию или клиенту..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 h-14 text-lg bg-gradient-to-r from-card/50 to-secondary/30 backdrop-blur-sm border border-border/50 rounded-2xl"
-              />
-            </div>
-            <div className="flex items-center gap-4">
-              <Filter className="h-5 w-5 text-muted-foreground" />
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="border border-border/50 rounded-2xl px-6 py-4 bg-gradient-to-r from-card/50 to-secondary/30 backdrop-blur-sm text-foreground text-lg min-w-[200px]"
+        {/* Category Tabs */}
+        <div className="mb-16">
+          <div className="flex flex-wrap justify-center gap-3">
+            <button
+              onClick={() => setSelectedCategory('all')}
+              className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 text-sm ${
+                selectedCategory === 'all'
+                  ? 'bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg transform scale-105'
+                  : 'bg-gradient-to-r from-card/50 to-secondary/30 text-muted-foreground hover:text-foreground hover:scale-105 backdrop-blur-sm border border-border/50'
+              }`}
+            >
+              Все проекты
+            </button>
+            {categories.map(category => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 text-sm ${
+                  selectedCategory === category
+                    ? 'bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg transform scale-105'
+                    : 'bg-gradient-to-r from-card/50 to-secondary/30 text-muted-foreground hover:text-foreground hover:scale-105 backdrop-blur-sm border border-border/50'
+                }`}
               >
-                <option value="all">Все категории</option>
-                {categories.map(category => (
-                  <option key={category} value={category}>
-                    {categoryNames[category] || category}
-                  </option>
-                ))}
-              </select>
-            </div>
+                {categoryNames[category] || category}
+              </button>
+            ))}
           </div>
         </div>
 
