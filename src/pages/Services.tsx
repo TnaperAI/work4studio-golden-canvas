@@ -131,31 +131,20 @@ const Services = () => {
               От быстрого лендинга до полноценного интернет-магазина — найдём решение под ваши задачи и бюджет
             </p>
           </div>
-          {(() => {
-            console.log('Rendering state - loading:', loading, 'services length:', services.length, 'services:', services);
-            
-            if (loading) {
-              return (
-                <div className="flex items-center justify-center h-64">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                </div>
-              );
-            }
-            
-            if (services.length === 0) {
-              return (
-                <div className="flex items-center justify-center h-64">
-                  <div className="text-center">
-                    <p className="text-xl text-muted-foreground mb-4">Услуги не найдены</p>
-                    <p className="text-sm text-muted-foreground">Обратитесь к администратору</p>
-                  </div>
-                </div>
-              );
-            }
-
-            return (
-              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
-                {services.map((service, index) => (
+          {loading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : services.length === 0 ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="text-center">
+                <p className="text-xl text-muted-foreground mb-4">Услуги не найдены</p>
+                <p className="text-sm text-muted-foreground">Обратитесь к администратору</p>
+              </div>
+            </div>
+          ) : (
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
+              {services.map((service, index) => (
                 <div key={service.id} className="animate-on-scroll group" style={{ animationDelay: `${index * 150}ms` }}>
                   <div className="h-full border-0 bg-gradient-to-br from-card/50 to-secondary/30 p-8 rounded-3xl relative overflow-hidden hover:shadow-2xl transition-all duration-500 backdrop-blur-sm hover:scale-105">
                     <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -202,9 +191,8 @@ const Services = () => {
                   </div>
                 </div>
               ))}
-              </div>
-            );
-          })()}
+            </div>
+          )}
         </div>
       </section>
 
