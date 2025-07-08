@@ -124,6 +124,12 @@ const Cases = () => {
     return matchesCategory;
   });
 
+  // Debug logging
+  console.log('Selected category:', selectedCategory);
+  console.log('Total cases:', cases.length);
+  console.log('Filtered cases:', filteredCases.length);
+  console.log('Cases data:', cases);
+
   const featuredCases = filteredCases.filter(c => c.is_featured);
   const regularCases = filteredCases.filter(c => !c.is_featured);
 
