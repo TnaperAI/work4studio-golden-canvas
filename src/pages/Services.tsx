@@ -139,19 +139,36 @@ const Services = () => {
             </p>
           </div>
           
-          {loading ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-              <p className="ml-4">Загружаем услуги...</p>
-            </div>
-          ) : services.length === 0 ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="text-center">
-                <p className="text-xl text-muted-foreground mb-4">Услуги не найдены</p>
-                <p className="text-sm text-muted-foreground">Обратитесь к администратору</p>
-              </div>
-            </div>
-          ) : (
+          {(() => {
+            console.log('🎯 FINAL CHECK:');
+            console.log('   loading:', loading);
+            console.log('   services:', services); 
+            console.log('   services length:', services?.length || 0);
+            console.log('   is array:', Array.isArray(services));
+            
+            if (loading) {
+              return (
+                <div className="flex items-center justify-center h-64">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  <p className="ml-4 text-foreground">Загружаем услуги...</p>
+                </div>
+              );
+            }
+            
+            if (!Array.isArray(services) || services.length === 0) {
+              return (
+                <div className="flex items-center justify-center h-64">
+                  <div className="text-center">
+                    <p className="text-xl text-muted-foreground mb-4">Услуги не найдены</p>
+                    <p className="text-sm text-muted-foreground">
+                      Debug: services = {JSON.stringify(services)} | length = {services?.length || 'undefined'}
+                    </p>
+                  </div>
+                </div>
+              );
+            }
+
+            return (
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
               {services.map((service, index) => (
                 <div key={service.id} className="animate-on-scroll group" style={{ animationDelay: `${index * 150}ms` }}>
@@ -201,7 +218,8 @@ const Services = () => {
                 </div>
               ))}
             </div>
-          )}
+            );
+          })()}
         </div>
       </section>
 
