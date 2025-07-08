@@ -9,11 +9,11 @@ const Hero = () => {
         <div className="text-center max-w-4xl mx-auto space-y-8 animate-on-scroll">
           {/* Main heading */}
           <div className="space-y-6">
-            <h1 className="text-glow text-center">
-              Создаём сайты, которые{' '}
+            <h1 className="text-glow text-center px-4">
+              Создаём сайты,<br className="sm:hidden" /> которые{' '}
               <span className="text-primary">работают за вас</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto px-4 leading-relaxed">
               Разработка и поддержка сайтов на новой скорости. 
               От идеи до запуска — всего за 3 дня.
             </p>
