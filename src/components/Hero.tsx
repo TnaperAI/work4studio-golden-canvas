@@ -7,7 +7,7 @@ const Hero = () => {
   const { getContent } = useSiteContent();
 
   return (
-    <section className="min-h-screen flex items-center justify-center relative pt-16 overflow-hidden">
+    <section className="min-h-screen flex items-center justify-center relative pt-20 overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/5"></div>
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
