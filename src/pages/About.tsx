@@ -55,7 +55,7 @@ interface CompanyInfo {
 const About = () => {
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   useScrollAnimation();
 
   useEffect(() => {
@@ -187,19 +187,6 @@ const About = () => {
     }
   ];
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <div className="pt-20 flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-            <p>Загрузка страницы "О нас"...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
