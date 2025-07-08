@@ -24,7 +24,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navigation = [
-    { name: 'Главная страница', href: '/admin', icon: Home },
+    { name: 'Дашборд', href: '/admin', icon: Home },
     { name: 'Контент сайта', href: '/admin/content', icon: FileText },
     { name: 'Заявки', href: '/admin/submissions', icon: Users },
     { name: 'Настройки', href: '/admin/settings', icon: Settings },

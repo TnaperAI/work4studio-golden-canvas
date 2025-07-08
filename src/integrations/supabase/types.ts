@@ -47,6 +47,54 @@ export type Database = {
         }
         Relationships: []
       }
+      page_seo: {
+        Row: {
+          canonical_url: string | null
+          created_at: string
+          h1_tag: string | null
+          id: string
+          meta_description: string | null
+          meta_keywords: string | null
+          meta_title: string | null
+          og_description: string | null
+          og_image: string | null
+          og_title: string | null
+          page_slug: string
+          page_title: string | null
+          updated_at: string
+        }
+        Insert: {
+          canonical_url?: string | null
+          created_at?: string
+          h1_tag?: string | null
+          id?: string
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          page_slug: string
+          page_title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          canonical_url?: string | null
+          created_at?: string
+          h1_tag?: string | null
+          id?: string
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          page_slug?: string
+          page_title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           created_at: string
