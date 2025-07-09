@@ -30,6 +30,7 @@ const CasesSection = () => {
 
   const fetchFeaturedCases = async () => {
     try {
+      console.log('🔄 Starting to fetch cases...');
       const { data, error } = await supabase
         .from('cases')
         .select('id, title, description, category, main_image, results, is_featured')
@@ -38,13 +39,16 @@ const CasesSection = () => {
         .order('sort_order')
         .limit(6);
 
+      console.log('📊 Cases query result:', { data, error });
+
       if (error) {
-        console.error('Error fetching featured cases:', error);
+        console.error('❌ Error fetching featured cases:', error);
       } else {
+        console.log('✅ Successfully loaded cases:', data);
         setCases(data || []);
       }
     } catch (error) {
-      console.error('Error fetching featured cases:', error);
+      console.error('💥 Exception fetching featured cases:', error);
     } finally {
       setLoading(false);
     }
