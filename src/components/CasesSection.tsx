@@ -76,18 +76,18 @@ const CasesSection = () => {
   }
 
   return (
-    <section className="section-padding relative overflow-hidden bg-background">
+    <section className="section-padding relative overflow-hidden bg-gray-50">
       {/* Background elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background to-secondary/10"></div>
-      <div className="absolute top-20 right-0 w-72 h-72 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-3xl"></div>
+      <div className="absolute top-20 right-0 w-72 h-72 bg-gradient-to-br from-blue-200/30 to-transparent rounded-full blur-3xl"></div>
+      <div className="absolute bottom-20 left-0 w-48 h-48 bg-gradient-to-br from-purple-200/30 to-transparent rounded-full blur-xl"></div>
       
       <div className="container-custom relative z-10">
         <div className="text-center mb-20 animate-on-scroll">
           <h2 className="text-4xl md:text-6xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">Наши</span>{' '}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">кейсы</span>
+            <span className="text-gray-800">Наши</span>{' '}
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">кейсы</span>
           </h2>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
             Примеры успешных проектов, которые приносят реальные результаты бизнесу
           </p>
         </div>
@@ -99,7 +99,7 @@ const CasesSection = () => {
               <Link 
                 key={caseItem.id} 
                 to={`/cases/${caseItem.id}`}
-                className="block bg-card border border-border rounded-2xl group cursor-pointer animate-on-scroll h-full hover:shadow-2xl transition-all duration-500 hover:scale-105 overflow-hidden"
+                className="block bg-white border border-gray-200 rounded-2xl group cursor-pointer animate-on-scroll h-full hover:shadow-xl transition-all duration-500 hover:scale-105 overflow-hidden"
               >
                 <div className="relative overflow-hidden">
                   {caseItem.main_image ? (
@@ -109,12 +109,12 @@ const CasesSection = () => {
                       className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
                     />
                   ) : (
-                    <div className="w-full h-48 bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
-                      <span className="text-muted-foreground">Изображение не загружено</span>
+                    <div className="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                      <span className="text-gray-500">Изображение не загружено</span>
                     </div>
                   )}
                   <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 bg-gradient-to-r from-primary to-accent text-primary-foreground text-xs font-bold rounded-full shadow-lg">
+                    <span className="px-3 py-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs font-bold rounded-full shadow-lg">
                       {caseItem.category}
                     </span>
                   </div>
@@ -126,17 +126,17 @@ const CasesSection = () => {
                   </div>
                 </div>
                 
-                <div className="p-8 bg-card">
-                  <h3 className="text-xl md:text-2xl font-heading font-bold mb-4 text-foreground">
+                <div className="p-8 bg-white">
+                  <h3 className="text-xl md:text-2xl font-heading font-bold mb-4 text-gray-800">
                     {caseItem.title}
                   </h3>
                   
-                  <p className="text-muted-foreground mb-6 leading-relaxed">
+                  <p className="text-gray-600 mb-6 leading-relaxed">
                     {caseItem.description || 'Описание проекта'}
                   </p>
                   
                   {caseItem.results && caseItem.results.length > 0 && (
-                    <div className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                    <div className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                       {caseItem.results[0]}
                     </div>
                   )}
@@ -146,7 +146,7 @@ const CasesSection = () => {
           </div>
           
           <div className="text-center mt-16 animate-on-scroll">
-            <Link to="/cases" className="bg-card text-foreground px-8 py-4 rounded-xl font-medium border border-border text-lg hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/10 hover:border-primary/50 transition-all duration-300 inline-flex items-center space-x-3 hover:scale-105">
+            <Link to="/cases" className="bg-white text-gray-800 px-8 py-4 rounded-xl font-medium border border-gray-200 text-lg hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 inline-flex items-center space-x-3 hover:scale-105 shadow-lg">
               <span>Посмотреть все кейсы</span>
               <ArrowRight className="w-5 h-5" />
             </Link>

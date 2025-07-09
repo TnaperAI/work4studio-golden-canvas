@@ -19,8 +19,7 @@ const Header = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-border">
-      <div className="absolute inset-0 bg-gradient-to-r from-secondary/80 via-secondary/90 to-secondary/80"></div>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-border shadow-sm">
       <nav className="container-custom relative z-10">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
@@ -67,7 +66,7 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="lg:hidden absolute top-full left-0 right-0 bg-background border-b border-border shadow-xl">
+          <div className="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-border shadow-lg">
             <div className="px-4 py-6 space-y-4">
               {navigation.map((item) => (
                 <Link
