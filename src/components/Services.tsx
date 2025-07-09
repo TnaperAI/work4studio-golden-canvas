@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { ArrowRight, Globe, Wrench } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslatedContent } from '@/hooks/useTranslatedContent';
+import ServiceItem from './ServiceItem';
 
 interface Service {
   id: string;
@@ -16,6 +18,11 @@ interface Service {
 const Services = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Переводимые тексты для заголовков
+  const { translatedText: servicesTitle } = useTranslatedContent('Наши услуги');
+  const { translatedText: servicesSubtitle } = useTranslatedContent('Полный цикл работы с вашим веб-проектом — от идеи до постоянной поддержки');
+  const { translatedText: detailsLink } = useTranslatedContent('Подробнее');
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -75,56 +82,17 @@ const Services = () => {
     <section className="section-padding">
       <div className="container-custom">
         <div className="text-center mb-16 animate-on-scroll">
-          <h2 className="mb-6">
-            Наши <span className="text-primary">услуги</span>
-          </h2>
+          <h2 className="mb-6" dangerouslySetInnerHTML={{
+            __html: servicesTitle.replace('услуги', '<span class="text-primary">услуги</span>').replace('services', '<span class="text-primary">services</span>')
+          }} />
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Полный цикл работы с вашим веб-проектом — от идеи до постоянной поддержки
+            {servicesSubtitle}
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {displayServices.map((service, index) => (
-            <div
-              key={service.id}
-              className="card-premium p-8 group cursor-pointer animate-on-scroll"
-              style={{ animationDelay: `${index * 200}ms` }}
-            >
-              <div className="flex items-start space-x-6">
-                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
-                  <Globe className="w-8 h-8 text-primary" />
-                </div>
-                
-                <div className="flex-1">
-                  <h3 className="text-2xl font-heading font-semibold mb-4">
-                    {service.title}
-                  </h3>
-                  
-                  <p className="text-muted-foreground mb-6 leading-relaxed">
-                    {service.short_description}
-                  </p>
-                  
-                  {service.features && service.features.length > 0 && (
-                    <ul className="space-y-2 mb-8">
-                      {service.features.slice(0, 4).map((feature, idx) => (
-                        <li key={idx} className="flex items-center text-sm">
-                          <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  
-                  <Link
-                    to={`/services/${service.slug}`}
-                    className="inline-flex items-center text-primary hover:text-primary/80 transition-colors font-medium"
-                  >
-                    Подробнее
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </div>
-              </div>
-            </div>
+            <ServiceItem key={service.id} service={service} index={index} />
           ))}
         </div>
       </div>
