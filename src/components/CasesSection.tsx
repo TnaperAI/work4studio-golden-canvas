@@ -94,57 +94,39 @@ const CasesSection = () => {
 
         <div className="relative max-w-6xl mx-auto">
           {/* Debug info - показать количество кейсов */}
-          <div className="text-center mb-8 text-sm text-muted-foreground">
-            Показано {cases.length} кейсов на главной
+          <div className="text-center mb-8 p-4 bg-yellow-500 text-black rounded">
+            <div>Показано {cases.length} кейсов на главной</div>
+            <div>Loading: {loading ? 'true' : 'false'}</div>
+            <div>Cases data: {JSON.stringify(cases.map(c => ({ id: c.id, title: c.title })))}</div>
           </div>
           
           {/* Простая сетка вместо карусели для отладки */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 bg-red-500 p-4">
+            <div className="bg-green-500 p-4 text-black">TEST CARD - Видна ли эта карточка?</div>
             {cases.map((caseItem, index) => (
-              <div key={caseItem.id} className="block bg-card border border-border rounded-2xl group cursor-pointer animate-on-scroll h-full hover:shadow-2xl transition-all duration-500 hover:scale-105 overflow-hidden">
-                <div className="relative overflow-hidden">
-                  {caseItem.main_image ? (
-                    <img
-                      src={caseItem.main_image}
-                      alt={caseItem.title}
-                      className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
-                      onError={(e) => {
-                        console.log('Image failed to load:', caseItem.main_image);
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-48 bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
-                      <span className="text-muted-foreground">Изображение не загружено</span>
-                    </div>
-                  )}
-                  <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 bg-gradient-to-r from-primary to-accent text-primary-foreground text-xs font-bold rounded-full shadow-lg">
-                      {caseItem.category}
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                    <div className="text-center text-white">
-                      <ExternalLink className="w-8 h-8 mx-auto mb-2" />
-                      <span className="text-sm font-medium">Посмотреть проект</span>
-                    </div>
-                  </div>
+              <div key={caseItem.id} className="bg-white text-black border-4 border-red-500 rounded-2xl p-4 min-h-[400px]">
+                <div className="bg-blue-500 text-white p-2 mb-4">
+                  CASE #{index + 1}: {caseItem.title}
                 </div>
                 
-                <div className="p-8 bg-card">
-                  <h3 className="text-xl md:text-2xl font-heading font-bold mb-4 text-foreground">
-                    {caseItem.title}
-                  </h3>
-                  
-                  <p className="text-muted-foreground mb-6 leading-relaxed">
-                    {caseItem.description || 'Описание проекта'}
-                  </p>
-                  
-                  {caseItem.results && caseItem.results.length > 0 && (
-                    <div className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                      {caseItem.results[0]}
-                    </div>
-                  )}
+                <div className="bg-gray-200 p-2 mb-2">
+                  ID: {caseItem.id}
+                </div>
+                
+                <div className="bg-gray-200 p-2 mb-2">
+                  Category: {caseItem.category}
+                </div>
+                
+                <div className="bg-gray-200 p-2 mb-2">
+                  Description: {caseItem.description}
+                </div>
+                
+                <div className="bg-gray-200 p-2 mb-2">
+                  Image: {caseItem.main_image ? 'YES' : 'NO'}
+                </div>
+                
+                <div className="bg-gray-200 p-2">
+                  Results: {caseItem.results ? caseItem.results.length : 0} items
                 </div>
               </div>
             ))}
