@@ -98,64 +98,57 @@ const CasesSection = () => {
             Показано {cases.length} кейсов на главной
           </div>
           
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-            className="w-full"
-          >
-            <CarouselContent className="-ml-4 md:-ml-6">
-              {cases.map((caseItem, index) => (
-                <CarouselItem key={caseItem.id} className="pl-4 md:pl-6 md:basis-1/2 lg:basis-1/3">
-                  <div className="block bg-card border border-border rounded-2xl group cursor-pointer animate-on-scroll h-full hover:shadow-2xl transition-all duration-500 hover:scale-105 overflow-hidden">
-                    <div className="relative overflow-hidden">
-                      {caseItem.main_image ? (
-                        <img
-                          src={caseItem.main_image}
-                          alt={caseItem.title}
-                          className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
-                        />
-                      ) : (
-                        <div className="w-full h-48 bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
-                          <span className="text-muted-foreground">Изображение не загружено</span>
-                        </div>
-                      )}
-                      <div className="absolute top-4 left-4">
-                        <span className="px-3 py-1 bg-gradient-to-r from-primary to-accent text-primary-foreground text-xs font-bold rounded-full shadow-lg">
-                          {caseItem.category}
-                        </span>
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                        <div className="text-center text-white">
-                          <ExternalLink className="w-8 h-8 mx-auto mb-2" />
-                          <span className="text-sm font-medium">Посмотреть проект</span>
-                        </div>
-                      </div>
+          {/* Простая сетка вместо карусели для отладки */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {cases.map((caseItem, index) => (
+              <div key={caseItem.id} className="block bg-card border border-border rounded-2xl group cursor-pointer animate-on-scroll h-full hover:shadow-2xl transition-all duration-500 hover:scale-105 overflow-hidden">
+                <div className="relative overflow-hidden">
+                  {caseItem.main_image ? (
+                    <img
+                      src={caseItem.main_image}
+                      alt={caseItem.title}
+                      className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
+                      onError={(e) => {
+                        console.log('Image failed to load:', caseItem.main_image);
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-48 bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
+                      <span className="text-muted-foreground">Изображение не загружено</span>
                     </div>
-                    
-                    <div className="p-8 bg-card">
-                      <h3 className="text-xl md:text-2xl font-heading font-bold mb-4 text-foreground">
-                        {caseItem.title}
-                      </h3>
-                      
-                      <p className="text-muted-foreground mb-6 leading-relaxed">
-                        {caseItem.description || 'Описание проекта'}
-                      </p>
-                      
-                      {caseItem.results && caseItem.results.length > 0 && (
-                        <div className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                          {caseItem.results[0]}
-                        </div>
-                      )}
+                  )}
+                  <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1 bg-gradient-to-r from-primary to-accent text-primary-foreground text-xs font-bold rounded-full shadow-lg">
+                      {caseItem.category}
+                    </span>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                    <div className="text-center text-white">
+                      <ExternalLink className="w-8 h-8 mx-auto mb-2" />
+                      <span className="text-sm font-medium">Посмотреть проект</span>
                     </div>
                   </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="hidden md:flex -left-6 bg-card border-border hover:shadow-xl" />
-            <CarouselNext className="hidden md:flex -right-6 bg-card border-border hover:shadow-xl" />
-          </Carousel>
+                </div>
+                
+                <div className="p-8 bg-card">
+                  <h3 className="text-xl md:text-2xl font-heading font-bold mb-4 text-foreground">
+                    {caseItem.title}
+                  </h3>
+                  
+                  <p className="text-muted-foreground mb-6 leading-relaxed">
+                    {caseItem.description || 'Описание проекта'}
+                  </p>
+                  
+                  {caseItem.results && caseItem.results.length > 0 && (
+                    <div className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                      {caseItem.results[0]}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
           
           <div className="text-center mt-16 animate-on-scroll">
             <Link to="/cases" className="bg-card text-foreground px-8 py-4 rounded-xl font-medium border border-border text-lg hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/10 hover:border-primary/50 transition-all duration-300 inline-flex items-center space-x-3 hover:scale-105">
