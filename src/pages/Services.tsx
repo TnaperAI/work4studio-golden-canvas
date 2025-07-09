@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, DollarSign, Target, Zap } from 'lucide-react';
+import { ArrowRight, Target, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';

@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { DollarSign, ArrowLeft, CheckCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle } from 'lucide-react';
 import ContactFormModal from '@/components/ContactFormModal';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -121,8 +121,7 @@ const ServiceDetail = () => {
             
             <Card className="mb-8 bg-card border-border">
               <CardContent className="p-6">
-                <div className="flex items-center justify-center gap-4">
-                  <DollarSign className="h-6 w-6 text-primary" />
+                <div className="flex items-center justify-center">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-foreground">
                       от {serviceData.price_from?.toLocaleString()} ₽
