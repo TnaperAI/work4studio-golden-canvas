@@ -103,7 +103,7 @@ const CasesSection = () => {
               <Link 
                 key={caseItem.id} 
                 to={`/cases/${caseItem.id}`}
-                className="block bg-card border border-border rounded-2xl group cursor-pointer animate-on-scroll h-full hover:shadow-xl transition-all duration-500 hover:scale-105 overflow-hidden"
+                className="block bg-white border border-gray-200 rounded-2xl group cursor-pointer animate-on-scroll h-full hover:shadow-xl transition-all duration-500 hover:scale-105 overflow-hidden"
               >
                 <div className="relative overflow-hidden">
                   {caseItem.main_image ? (
@@ -130,12 +130,12 @@ const CasesSection = () => {
                   </div>
                 </div>
                 
-                <div className="p-8 bg-card">
-                  <h3 className="text-xl md:text-2xl font-heading font-bold mb-4 text-card-foreground">
+                <div className="p-8 bg-white">
+                  <h3 className="text-xl md:text-2xl font-heading font-bold mb-4 text-gray-900">
                     {caseItem.title}
                   </h3>
                   
-                  <p className="text-muted-foreground mb-6 leading-relaxed">
+                  <p className="text-gray-600 mb-6 leading-relaxed">
                     {caseItem.description || 'Описание проекта'}
                   </p>
                   
