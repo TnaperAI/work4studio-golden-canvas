@@ -86,7 +86,7 @@ const CasesSection = () => {
       <div className="absolute bottom-20 left-0 w-48 h-48 bg-gradient-to-br from-purple-500/10 to-transparent rounded-full blur-xl"></div>
       
       <div className="container-custom relative z-10">
-        <div className="text-center mb-20 animate-on-scroll">
+        <div className="text-center mb-20">
           <h2 className="text-4xl md:text-6xl font-bold mb-6">
             <span className="text-foreground">Наши</span>{' '}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">кейсы</span>
@@ -103,7 +103,7 @@ const CasesSection = () => {
               <Link 
                 key={caseItem.id} 
                 to={`/cases/${caseItem.id}`}
-                className="block bg-white border border-gray-200 rounded-2xl group cursor-pointer animate-on-scroll h-full hover:shadow-xl transition-all duration-500 hover:scale-105 overflow-hidden"
+                className="block bg-white border border-gray-200 rounded-2xl group cursor-pointer h-full hover:shadow-xl transition-all duration-500 hover:scale-105 overflow-hidden"
               >
                 <div className="relative overflow-hidden">
                   {caseItem.main_image ? (
@@ -149,7 +149,7 @@ const CasesSection = () => {
             ))}
           </div>
           
-          <div className="text-center mt-16 animate-on-scroll">
+          <div className="text-center mt-16">
             <Link to="/cases" className="bg-card text-card-foreground px-8 py-4 rounded-xl font-medium border border-border text-lg hover:bg-secondary hover:border-primary/30 transition-all duration-300 inline-flex items-center space-x-3 hover:scale-105 shadow-lg">
               <span>Посмотреть все кейсы</span>
               <ArrowRight className="w-5 h-5" />
