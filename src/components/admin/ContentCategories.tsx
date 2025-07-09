@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import CasesManagement from './CasesManagement';
 import CaseEditor from './CaseEditor';
 import AboutManagement from './AboutManagement';
+import ServicesManagement from './ServicesManagement';
+import ServiceEditor from './ServiceEditor';
 import { 
   FileText, 
   ChevronRight, 
@@ -146,18 +148,12 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
 
   // Show services management
   if (selectedCategory === 'services') {
-    // Import services components dynamically
-    const ServicesManagement = React.lazy(() => import('./ServicesManagement'));
-    const ServiceEditor = React.lazy(() => import('./ServiceEditor'));
-
     if (showServiceEditor) {
       return (
-        <React.Suspense fallback={<div>Loading...</div>}>
-          <ServiceEditor 
-            serviceId={selectedServiceId || undefined}
-            onBack={handleBackFromServiceEditor}
-          />
-        </React.Suspense>
+        <ServiceEditor 
+          serviceId={selectedServiceId || undefined}
+          onBack={handleBackFromServiceEditor}
+        />
       );
     }
 
@@ -174,12 +170,10 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
           </Button>
         </div>
 
-        <React.Suspense fallback={<div>Loading...</div>}>
-          <ServicesManagement 
-            onServiceEdit={handleServiceEdit}
-            onServiceCreate={handleServiceCreate}
-          />
-        </React.Suspense>
+        <ServicesManagement 
+          onServiceEdit={handleServiceEdit}
+          onServiceCreate={handleServiceCreate}
+        />
       </div>
     );
   }
