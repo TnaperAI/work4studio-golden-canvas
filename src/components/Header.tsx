@@ -67,8 +67,8 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="lg:hidden absolute top-full left-0 right-0 backdrop-blur-md border-b border-border/50">
-            <div className="bg-gradient-to-b from-background/95 to-background/98 px-4 py-6 space-y-4">
+          <div className="lg:hidden absolute top-full left-0 right-0 bg-background border-b border-border shadow-xl">
+            <div className="px-4 py-6 space-y-4">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
