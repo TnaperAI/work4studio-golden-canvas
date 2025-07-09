@@ -80,10 +80,10 @@ const CasesSection = () => {
   }
 
   return (
-    <section className="section-padding relative overflow-hidden bg-secondary/30">
+    <section className="section-padding relative overflow-hidden" style={{ backgroundColor: '#f8f9fa' }}>
       {/* Background elements */}
-      <div className="absolute top-20 right-0 w-72 h-72 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-3xl"></div>
-      <div className="absolute bottom-20 left-0 w-48 h-48 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-xl"></div>
+      <div className="absolute top-20 right-0 w-72 h-72 bg-gradient-to-br from-blue-500/10 to-transparent rounded-full blur-3xl"></div>
+      <div className="absolute bottom-20 left-0 w-48 h-48 bg-gradient-to-br from-purple-500/10 to-transparent rounded-full blur-xl"></div>
       
       <div className="container-custom relative z-10">
         <div className="text-center mb-20 animate-on-scroll">
