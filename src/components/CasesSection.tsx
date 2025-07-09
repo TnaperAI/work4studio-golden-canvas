@@ -66,7 +66,7 @@ const CasesSection = () => {
     );
   }
 
-  if (cases.length === 0) {
+  if (!loading && cases.length === 0) {
     return (
       <section className="section-padding relative overflow-hidden">
         <div className="container-custom">
