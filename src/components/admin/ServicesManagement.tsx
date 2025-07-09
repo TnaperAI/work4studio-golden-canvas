@@ -49,23 +49,42 @@ const ServicesManagement = ({ onServiceEdit, onServiceCreate }: ServicesManageme
   const [loading, setLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [serviceToDelete, setServiceToDelete] = useState<Service | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const fetchServices = async () => {
-    const { data, error } = await supabase
-      .from('services')
-      .select('*')
-      .order('sort_order', { ascending: true });
+  console.log('ServicesManagement rendered, loading:', loading, 'error:', error);
 
-    if (error) {
-      console.error('Error fetching services:', error);
+  const fetchServices = async () => {
+    try {
+      console.log('Fetching services...');
+      setError(null);
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .order('sort_order', { ascending: true });
+
+      console.log('Services fetch result:', { data, error });
+
+      if (error) {
+        console.error('Error fetching services:', error);
+        setError(`Ошибка загрузки услуг: ${error.message}`);
+        toast({
+          title: 'Ошибка',
+          description: 'Не удалось загрузить услуги',
+          variant: 'destructive',
+        });
+      } else {
+        console.log('Services loaded successfully:', data);
+        setServices(data || []);
+      }
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      setError(`Неожиданная ошибка: ${err}`);
       toast({
         title: 'Ошибка',
-        description: 'Не удалось загрузить услуги',
+        description: 'Произошла неожиданная ошибка',
         variant: 'destructive',
       });
-    } else {
-      setServices(data || []);
     }
     setLoading(false);
   };
@@ -160,6 +179,18 @@ const ServicesManagement = ({ onServiceEdit, onServiceCreate }: ServicesManageme
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <h2 className="text-xl font-bold mb-4 text-destructive">Ошибка</h2>
+          <p className="text-muted-foreground mb-4">{error}</p>
+          <Button onClick={fetchServices}>Попробовать снова</Button>
+        </div>
       </div>
     );
   }

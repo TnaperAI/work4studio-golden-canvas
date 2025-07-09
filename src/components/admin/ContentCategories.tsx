@@ -6,6 +6,8 @@ import CaseEditor from './CaseEditor';
 import AboutManagement from './AboutManagement';
 import ServicesManagement from './ServicesManagement';
 import ServiceEditor from './ServiceEditor';
+import ErrorBoundary from './ErrorBoundary';
+import { useToast } from '@/hooks/use-toast';
 import { 
   FileText, 
   ChevronRight, 
@@ -43,6 +45,13 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
   const [showServiceEditor, setShowServiceEditor] = useState(false);
   const [showCaseEditor, setShowCaseEditor] = useState(false);
   const [showAboutManagement, setShowAboutManagement] = useState(false);
+  const { toast } = useToast();
+
+  console.log('ContentCategories rendered:', { 
+    selectedCategory, 
+    showServiceEditor, 
+    selectedServiceId 
+  });
 
   const categories: Category[] = [
     {
@@ -170,10 +179,12 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
           </Button>
         </div>
 
-        <ServicesManagement 
-          onServiceEdit={handleServiceEdit}
-          onServiceCreate={handleServiceCreate}
-        />
+        <ErrorBoundary>
+          <ServicesManagement 
+            onServiceEdit={handleServiceEdit}
+            onServiceCreate={handleServiceCreate}
+          />
+        </ErrorBoundary>
       </div>
     );
   }
