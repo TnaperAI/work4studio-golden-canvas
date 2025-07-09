@@ -1,6 +1,7 @@
+import { useState, useEffect } from 'react';
 import { ExternalLink, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import casesImage from '@/assets/cases-preview.jpg';
+import { supabase } from '@/integrations/supabase/client';
 import {
   Carousel,
   CarouselContent,
@@ -9,49 +10,70 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
+interface Case {
+  id: string;
+  title: string;
+  description: string | null;
+  category: string;
+  main_image: string | null;
+  results: string[] | null;
+  is_featured: boolean;
+}
+
 const CasesSection = () => {
-  const cases = [
-    {
-      id: 1,
-      title: 'E-commerce платформа',
-      description: 'Современный интернет-магазин с интеграцией платежных систем',
-      result: '+300% конверсии',
-      category: 'E-commerce',
-      image: casesImage
-    },
-    {
-      id: 2,
-      title: 'Корпоративный сайт',
-      description: 'Многоязычный сайт для международной компании',
-      result: '+150% лидов',
-      category: 'Corporate',
-      image: casesImage
-    },
-    {
-      id: 3,
-      title: 'SaaS Landing',
-      description: 'Конверсионная страница для SaaS продукта',
-      result: '+250% регистраций',
-      category: 'SaaS',
-      image: casesImage
-    },
-    {
-      id: 4,
-      title: 'Мобильное приложение',
-      description: 'Кроссплатформенное приложение для финтех стартапа',
-      result: '+400% пользователей',
-      category: 'Mobile',
-      image: casesImage
-    },
-    {
-      id: 5,
-      title: 'Образовательная платформа',
-      description: 'LMS система для онлайн обучения',
-      result: '+200% вовлечения',
-      category: 'EdTech',
-      image: casesImage
+  const [cases, setCases] = useState<Case[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchFeaturedCases();
+  }, []);
+
+  const fetchFeaturedCases = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('cases')
+        .select('id, title, description, category, main_image, results, is_featured')
+        .eq('is_active', true)
+        .eq('is_featured', true)
+        .order('sort_order')
+        .limit(6);
+
+      if (error) {
+        console.error('Error fetching featured cases:', error);
+      } else {
+        setCases(data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching featured cases:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  if (loading) {
+    return (
+      <section className="section-padding relative overflow-hidden">
+        <div className="container-custom">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (cases.length === 0) {
+    return (
+      <section className="section-padding relative overflow-hidden">
+        <div className="container-custom">
+          <div className="text-center py-16">
+            <h2 className="text-2xl font-heading font-bold mb-4">Кейсы скоро появятся</h2>
+            <p className="text-muted-foreground">Мы работаем над добавлением наших лучших проектов</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="section-padding relative overflow-hidden">
@@ -81,13 +103,19 @@ const CasesSection = () => {
             <CarouselContent className="-ml-4 md:-ml-6">
               {cases.map((caseItem, index) => (
                 <CarouselItem key={caseItem.id} className="pl-4 md:pl-6 md:basis-1/2 lg:basis-1/3">
-                  <Link to="/cases" className="block bg-card border border-border rounded-2xl group cursor-pointer animate-on-scroll h-full hover:shadow-2xl transition-all duration-500 hover:scale-105 overflow-hidden">
+                  <Link to={`/cases/${caseItem.id}`} className="block bg-card border border-border rounded-2xl group cursor-pointer animate-on-scroll h-full hover:shadow-2xl transition-all duration-500 hover:scale-105 overflow-hidden">
                     <div className="relative overflow-hidden">
-                      <img
-                        src={caseItem.image}
-                        alt={caseItem.title}
-                        className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
+                      {caseItem.main_image ? (
+                        <img
+                          src={caseItem.main_image}
+                          alt={caseItem.title}
+                          className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
+                        />
+                      ) : (
+                        <div className="w-full h-48 bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
+                          <span className="text-muted-foreground">Изображение не загружено</span>
+                        </div>
+                      )}
                       <div className="absolute top-4 left-4">
                         <span className="px-3 py-1 bg-gradient-to-r from-primary to-accent text-primary-foreground text-xs font-bold rounded-full shadow-lg">
                           {caseItem.category}
@@ -107,12 +135,14 @@ const CasesSection = () => {
                       </h3>
                       
                       <p className="text-muted-foreground mb-6 leading-relaxed">
-                        {caseItem.description}
+                        {caseItem.description || 'Описание проекта'}
                       </p>
                       
-                      <div className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                        {caseItem.result}
-                      </div>
+                      {caseItem.results && caseItem.results.length > 0 && (
+                        <div className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                          {caseItem.results[0]}
+                        </div>
+                      )}
                     </div>
                   </Link>
                 </CarouselItem>

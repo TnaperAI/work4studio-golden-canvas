@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { 
   Pencil, 
@@ -245,9 +246,12 @@ const CasesManagement = ({ onCaseEdit, onCaseCreate }: CasesManagementProps) => 
                   <div className="space-y-2 flex-1">
                     <div className="flex items-center gap-2">
                       <CardTitle className="text-xl">{caseItem.title}</CardTitle>
-                      <div className="flex gap-1">
+                      <div className="flex items-center gap-2">
                         <Badge variant={caseItem.is_active ? 'default' : 'secondary'}>
                           {caseItem.is_active ? 'Активен' : 'Скрыт'}
+                        </Badge>
+                        <Badge variant={caseItem.is_featured ? 'default' : 'outline'}>
+                          {caseItem.is_featured ? 'На главной' : 'Скрыт с главной'}
                         </Badge>
                         {caseItem.is_featured && (
                           <Badge variant="outline" className="text-yellow-600 border-yellow-600">
@@ -353,11 +357,49 @@ const CasesManagement = ({ onCaseEdit, onCaseCreate }: CasesManagementProps) => 
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground line-clamp-2">
+              <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
                 {caseItem.short_description}
               </p>
+              
+              {/* Control switches */}
+              <div className="flex items-center gap-6 mb-4">
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={caseItem.is_active}
+                    onCheckedChange={async (checked) => {
+                      const { error } = await supabase
+                        .from('cases')
+                        .update({ is_active: checked })
+                        .eq('id', caseItem.id);
+                      
+                      if (!error) {
+                        fetchCases();
+                      }
+                    }}
+                  />
+                  <span className="text-sm text-muted-foreground">Активен</span>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={caseItem.is_featured}
+                    onCheckedChange={async (checked) => {
+                      const { error } = await supabase
+                        .from('cases')
+                        .update({ is_featured: checked })
+                        .eq('id', caseItem.id);
+                      
+                      if (!error) {
+                        fetchCases();
+                      }
+                    }}
+                  />
+                  <span className="text-sm text-muted-foreground">Показать на главной</span>
+                </div>
+              </div>
+              
               {caseItem.technologies.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-1">
                   {caseItem.technologies.slice(0, 6).map((tech, idx) => (
                     <Badge key={idx} variant="outline" className="text-xs">
                       {tech}
