@@ -171,7 +171,8 @@ const ServicesManagement = ({ onServiceEdit, onServiceCreate }: ServicesManageme
     }
   };
 
-  const formatPrice = (from: number, to: number) => {
+  const formatPrice = (from: number | null, to: number | null) => {
+    if (!from || !to) return 'Цена не указана';
     return `${from.toLocaleString()} - ${to.toLocaleString()} ₽`;
   };
 

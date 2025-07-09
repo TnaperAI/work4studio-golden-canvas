@@ -60,7 +60,8 @@ const Services = () => {
     fetchServices();
   }, []);
 
-  const formatPrice = (from: number, to: number) => {
+  const formatPrice = (from: number | null, to: number | null) => {
+    if (!from) return 'Цена не указана';
     return `от ${from.toLocaleString()} ₽`;
   };
 
@@ -157,7 +158,7 @@ const Services = () => {
                 </p>
                 <div className="flex items-center justify-between">
                   <span className="text-primary font-semibold">
-                    от {service.price_from?.toLocaleString()} ₽
+                    {service.price_from ? `от ${service.price_from.toLocaleString()} ₽` : 'Цена не указана'}
                   </span>
                   <Link to={`/services/${service.slug}`}>
                     <Button size="sm" className="bg-primary hover:bg-primary/80">

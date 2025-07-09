@@ -124,7 +124,7 @@ const ServiceDetail = () => {
                 <div className="flex items-center justify-center">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-foreground">
-                      от {serviceData.price_from?.toLocaleString()} ₽
+                      от {serviceData.price_from?.toLocaleString() || 'Цена не указана'}
                     </div>
                     <div className="text-muted-foreground">Стоимость работ</div>
                   </div>
