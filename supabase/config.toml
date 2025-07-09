@@ -1,1 +1,35 @@
 project_id = "xzovdewgajuhmxokeccj"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[auth]
+enabled = true
+port = 54322
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://c5bb4761-c3c0-42ab-8a4f-c21ed0af396d.lovableproject.com"]
+jwt_expiry = 3600
+
+[db]
+port = 54323
+
+[edge_functions]
+enabled = true
+
+[functions.translate-content]
+verify_jwt = false
+
+[inbucket]
+enabled = true
+port = 54324
+
+[logflare]
+enabled = false
+
+[studio]
+enabled = true
+port = 54323

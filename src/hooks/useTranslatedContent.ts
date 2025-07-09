@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 export const useTranslatedContent = (originalText: string) => {
   const { translateText, language } = useLanguage();
@@ -37,7 +38,6 @@ export const useTranslatedContent = (originalText: string) => {
 };
 
 export const useTranslatedSiteContent = (section: string, key: string, defaultValue: string = '') => {
-  const { useSiteContent } = require('@/hooks/useSiteContent');
   const { getContent } = useSiteContent();
   const originalContent = getContent(section, key) || defaultValue;
   

@@ -13,6 +13,8 @@ const LanguageSwitcher: React.FC = () => {
   const { language, setLanguage, isTranslating } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
 
+  console.log('LanguageSwitcher render:', { language, isTranslating });
+
   const languages: { code: Language; name: string; flag: string; nativeName: string }[] = [
     { code: 'ru', name: 'Russian', flag: '🇷🇺', nativeName: 'Русский' },
     { code: 'en', name: 'English', flag: '🇺🇸', nativeName: 'English' },

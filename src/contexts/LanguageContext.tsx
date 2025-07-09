@@ -23,9 +23,14 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   useEffect(() => {
     const detectLanguage = async () => {
       try {
+        console.log('🌍 Starting language detection...');
+        
         // Check saved preference first
         const savedLang = localStorage.getItem('preferred-language') as Language;
+        console.log('💾 Saved language:', savedLang);
+        
         if (savedLang && ['ru', 'en'].includes(savedLang)) {
+          console.log('✅ Using saved language:', savedLang);
           setLanguageState(savedLang);
           return;
         }
@@ -69,6 +74,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   }, []);
 
   const setLanguage = (lang: Language) => {
+    console.log('🔄 Switching language to:', lang);
     setLanguageState(lang);
     localStorage.setItem('preferred-language', lang);
   };
