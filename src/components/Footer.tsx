@@ -11,40 +11,40 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-white border-t border-gray-200">
+    <footer className="bg-background border-t border-border">
       <div className="container-custom py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* Logo and Description */}
           <div className="md:col-span-2">
-            <h3 className="text-3xl md:text-4xl font-heading font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
+            <h3 className="text-3xl md:text-4xl font-heading font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-6">
               Work4Studio
             </h3>
-            <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-lg leading-relaxed">
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-lg leading-relaxed">
               Создаём сайты, которые работают за вас. Разработка и поддержка на новой скорости с использованием современных технологий.
             </p>
             <div className="flex space-x-4">
               <a
                 href="mailto:hello@work4studio.com"
-                className="inline-flex items-center px-6 py-3 bg-white border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="inline-flex items-center px-6 py-3 bg-card border border-border rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
-                <Mail className="w-5 h-5 mr-3 text-blue-600" />
-                <span className="font-medium text-gray-800">Написать нам</span>
+                <Mail className="w-5 h-5 mr-3 text-primary" />
+                <span className="font-medium text-card-foreground">Написать нам</span>
               </a>
               <a
                 href="https://t.me/work4studio"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-6 py-3 bg-white border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="inline-flex items-center px-6 py-3 bg-card border border-border rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
-                <MessageCircle className="w-5 h-5 mr-3 text-blue-600" />
-                <span className="font-medium text-gray-800">Telegram</span>
+                <MessageCircle className="w-5 h-5 mr-3 text-primary" />
+                <span className="font-medium text-card-foreground">Telegram</span>
               </a>
             </div>
           </div>
 
           {/* Navigation */}
           <div>
-            <h4 className="text-xl font-heading font-bold mb-6 text-gray-800">
+            <h4 className="text-xl font-heading font-bold mb-6 text-foreground">
               Навигация
             </h4>
             <ul className="space-y-4">
@@ -52,10 +52,10 @@ const Footer = () => {
                 <li key={item.name}>
                   <Link
                     to={item.href}
-                    className="text-gray-600 hover:text-blue-600 transition-all duration-300 text-lg relative group"
+                    className="text-muted-foreground hover:text-primary transition-all duration-300 text-lg relative group"
                   >
                     {item.name}
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent transition-all duration-300 group-hover:w-full"></span>
                   </Link>
                 </li>
               ))}
