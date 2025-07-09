@@ -55,7 +55,7 @@ interface CompanyInfo {
 const About = () => {
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   useScrollAnimation();
 
   useEffect(() => {
