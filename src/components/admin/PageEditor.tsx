@@ -82,13 +82,26 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
     if (content.length > 0) {
       const pageContent: Record<string, string> = {};
       
-      // Get content for this page section
-      const sectionKey = pageSlug === 'home' ? 'hero' : pageSlug;
-      content
-        .filter(c => c.section === sectionKey)
-        .forEach(c => {
-          pageContent[c.key] = c.value;
-        });
+      if (pageSlug === 'home') {
+        // For home page, load both hero and stats sections
+        content
+          .filter(c => c.section === 'hero' || c.section === 'stats')
+          .forEach(c => {
+            if (c.section === 'stats') {
+              // Add stats_ prefix to stats section keys
+              pageContent[`stats_${c.key}`] = c.value;
+            } else {
+              pageContent[c.key] = c.value;
+            }
+          });
+      } else {
+        // For other pages, use page slug as section
+        content
+          .filter(c => c.section === pageSlug)
+          .forEach(c => {
+            pageContent[c.key] = c.value;
+          });
+      }
 
       setContentFields(pageContent);
     }
@@ -118,13 +131,27 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
 
   const handleContentSave = async () => {
     try {
-      const sectionKey = pageSlug === 'home' ? 'hero' : pageSlug;
-      
-      await Promise.all(
-        Object.entries(contentFields).map(([key, value]) =>
-          updateContent(sectionKey, key, value)
-        )
-      );
+      if (pageSlug === 'home') {
+        // For home page, save to both hero and stats sections
+        await Promise.all([
+          // Save hero section fields
+          ...Object.entries(contentFields)
+            .filter(([key]) => !key.startsWith('stats_'))
+            .map(([key, value]) => updateContent('hero', key, value)),
+          
+          // Save stats section fields
+          ...Object.entries(contentFields)
+            .filter(([key]) => key.startsWith('stats_'))
+            .map(([key, value]) => updateContent('stats', key.replace('stats_', ''), value))
+        ]);
+      } else {
+        // For other pages, use page slug as section
+        await Promise.all(
+          Object.entries(contentFields).map(([key, value]) =>
+            updateContent(pageSlug, key, value)
+          )
+        );
+      }
 
       toast({
         title: 'Успешно',
@@ -191,7 +218,7 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
                     <Input
                       value={contentFields.title || ''}
                       onChange={(e) => updateContentField('title', e.target.value)}
-                      placeholder="Основной заголовок"
+                      placeholder="Веб-сайты, которые работают за вас"
                     />
                   </div>
                   <div className="space-y-2">
@@ -210,6 +237,60 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
                       onChange={(e) => updateContentField('cta_button', e.target.value)}
                       placeholder="Обсудить проект"
                     />
+                  </div>
+                  
+                  <div className="mt-8">
+                    <h3 className="text-lg font-semibold mb-4">Статистика</h3>
+                    <div className="grid gap-4 md:grid-cols-3">
+                      <div className="space-y-2">
+                        <Label>Первая статистика - число</Label>
+                        <Input
+                          value={contentFields.stats_days || ''}
+                          onChange={(e) => updateContentField('stats_days', e.target.value)}
+                          placeholder="14"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Первая статистика - текст</Label>
+                        <Input
+                          value={contentFields.stats_days_text || ''}
+                          onChange={(e) => updateContentField('stats_days_text', e.target.value)}
+                          placeholder="дней на проект"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Вторая статистика - число</Label>
+                        <Input
+                          value={contentFields.stats_support || ''}
+                          onChange={(e) => updateContentField('stats_support', e.target.value)}
+                          placeholder="24/7"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Вторая статистика - текст</Label>
+                        <Input
+                          value={contentFields.stats_support_text || ''}
+                          onChange={(e) => updateContentField('stats_support_text', e.target.value)}
+                          placeholder="техподдержка"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Третья статистика - число</Label>
+                        <Input
+                          value={contentFields.stats_code || ''}
+                          onChange={(e) => updateContentField('stats_code', e.target.value)}
+                          placeholder="100%"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Третья статистика - текст</Label>
+                        <Input
+                          value={contentFields.stats_code_text || ''}
+                          onChange={(e) => updateContentField('stats_code_text', e.target.value)}
+                          placeholder="чистый код"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </>
               )}
