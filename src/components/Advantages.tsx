@@ -1,26 +1,28 @@
 import { Clock, Code, HeadphonesIcon, Users } from 'lucide-react';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const Advantages = () => {
+  const { getContent } = useSiteContent();
   const advantages = [
     {
       icon: Clock,
-      title: 'Быстрое создание от 3 дней',
-      description: 'Современная методология разработки позволяет запускать проекты в кратчайшие сроки без потери качества.'
+      title: getContent('advantages', '1_title') || 'Быстрое создание от 3 дней',
+      description: getContent('advantages', '1_description') || 'Современная методология разработки позволяет запускать проекты в кратчайшие сроки без потери качества.'
     },
     {
       icon: Code,
-      title: 'Открытый код и доступ к данным',
-      description: 'Полный доступ к исходному коду вашего сайта. Никаких ограничений и зависимостей от платформ.'
+      title: getContent('advantages', '2_title') || 'Открытый код и доступ к данным',
+      description: getContent('advantages', '2_description') || 'Полный доступ к исходному коду вашего сайта. Никаких ограничений и зависимостей от платформ.'
     },
     {
       icon: HeadphonesIcon,
-      title: 'Техническая поддержка команды',
-      description: 'Круглосуточная поддержка от нашей команды экспертов. Решаем любые технические вопросы.'
+      title: getContent('advantages', '3_title') || 'Техническая поддержка команды',
+      description: getContent('advantages', '3_description') || 'Круглосуточная поддержка от нашей команды экспертов. Решаем любые технические вопросы.'
     },
     {
       icon: Users,
-      title: 'Прямой контакт без посредников',
-      description: 'Работаете напрямую с командой разработчиков. Никаких менеджеров и потери времени на коммуникации.'
+      title: getContent('advantages', '4_title') || 'Прямой контакт без посредников',
+      description: getContent('advantages', '4_description') || 'Работаете напрямую с командой разработчиков. Никаких менеджеров и потери времени на коммуникации.'
     }
   ];
 
@@ -33,12 +35,13 @@ const Advantages = () => {
       <div className="container-custom relative z-10">
         <div className="text-center mb-20 animate-on-scroll">
           <h2 className="text-4xl md:text-6xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">Почему выбирают</span>{' '}
+            <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+              {(getContent('advantages', 'title') || 'Почему выбирают Work4Studio').split('Work4Studio')[0]}
+            </span>
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Work4Studio</span>
           </h2>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-            Мы объединили современные технологии, AI и человеческую экспертизу 
-            для создания идеального процесса разработки
+            {getContent('advantages', 'subtitle') || 'Мы объединили современные технологии, AI и человеческую экспертизу для создания идеального процесса разработки'}
           </p>
         </div>
 

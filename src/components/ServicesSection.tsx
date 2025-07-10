@@ -1,13 +1,9 @@
 import { Globe, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const ServicesSection = () => {
-  const service = {
-    icon: Globe,
-    title: 'Разработка сайтов',
-    description: 'Лендинги, многостраничные сайты и MVP. Современный дизайн, быстрая загрузка, SEO-оптимизация.',
-    features: ['Адаптивная вёрстка', 'SEO-ready', 'CMS на выбор', 'Интеграции']
-  };
+  const { getContent } = useSiteContent();
 
   return (
     <section className="section-padding relative overflow-hidden">
@@ -18,11 +14,13 @@ const ServicesSection = () => {
       <div className="container-custom relative z-10">
         <div className="text-center mb-20 animate-on-scroll">
           <h2 className="text-4xl md:text-6xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">Наши</span>{' '}
+            <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+              {getContent('services', 'title') || 'Наши'}
+            </span>{' '}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">услуги</span>
           </h2>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-            Полный цикл работы с вашим веб-проектом от идеи до запуска
+            {getContent('services', 'subtitle') || 'Полный цикл работы с вашим веб-проектом от идеи до запуска'}
           </p>
         </div>
 
@@ -39,25 +37,25 @@ const ServicesSection = () => {
                 
                 <div>
                   <h3 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-8 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    {service.title}
+                    {getContent('services', 'main_title') || 'Разработка сайтов'}
                   </h3>
                   
                   <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
-                    {service.description}
+                    {getContent('services', 'main_description') || 'Лендинги, многостраничные сайты и MVP. Современный дизайн, быстрая загрузка, SEO-оптимизация.'}
                   </p>
                 </div>
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-                  {service.features.map((feature, idx) => (
+                  {(getContent('services', 'features') || 'Адаптивная вёрстка,SEO-ready,CMS на выбор,Интеграции').split(',').map((feature, idx) => (
                     <div key={idx} className="flex items-center text-sm bg-gradient-to-r from-secondary/80 to-muted/50 rounded-xl px-4 py-3 border border-border/50 hover:border-primary/30 transition-colors group/feature">
                       <div className="w-2 h-2 bg-gradient-to-r from-primary to-accent rounded-full mr-3 flex-shrink-0 group-hover/feature:scale-125 transition-transform"></div>
-                      <span className="font-medium">{feature}</span>
+                      <span className="font-medium">{feature.trim()}</span>
                     </div>
                   ))}
                 </div>
 
                 <Link to="/services" className="bg-transparent text-foreground px-8 py-4 rounded-xl font-medium border border-border text-lg hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/10 hover:border-primary/50 transition-all duration-300 inline-flex items-center space-x-3 group/button">
-                  <span>Подробнее об услуге</span>
+                  <span>{getContent('services', 'button') || 'Подробнее об услуге'}</span>
                   <ArrowRight className="w-5 h-5 group-hover/button:translate-x-1 transition-transform" />
                 </Link>
               </div>

@@ -83,17 +83,20 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
       const pageContent: Record<string, string> = {};
       
       if (pageSlug === 'home') {
-        // For home page, load both hero and stats sections
-        content
-          .filter(c => c.section === 'hero' || c.section === 'stats')
-          .forEach(c => {
-            if (c.section === 'stats') {
-              // Add stats_ prefix to stats section keys
-              pageContent[`stats_${c.key}`] = c.value;
-            } else {
-              pageContent[c.key] = c.value;
-            }
-          });
+        // For home page, load hero, stats, services, advantages and cases sections
+        content.forEach(c => {
+          if (c.section === 'hero') {
+            pageContent[c.key] = c.value;
+          } else if (c.section === 'stats') {
+            pageContent[`stats_${c.key}`] = c.value;
+          } else if (c.section === 'services') {
+            pageContent[`services_${c.key}`] = c.value;
+          } else if (c.section === 'advantages') {
+            pageContent[`advantages_${c.key}`] = c.value;
+          } else if (c.section === 'cases') {
+            pageContent[`cases_${c.key}`] = c.value;
+          }
+        });
       } else {
         // For other pages, use page slug as section
         content
@@ -132,17 +135,32 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
   const handleContentSave = async () => {
     try {
       if (pageSlug === 'home') {
-        // For home page, save to both hero and stats sections
+        // For home page, save to multiple sections
         await Promise.all([
           // Save hero section fields
           ...Object.entries(contentFields)
-            .filter(([key]) => !key.startsWith('stats_'))
+            .filter(([key]) => !key.startsWith('stats_') && !key.startsWith('services_') && !key.startsWith('advantages_') && !key.startsWith('cases_'))
             .map(([key, value]) => updateContent('hero', key, value)),
           
           // Save stats section fields
           ...Object.entries(contentFields)
             .filter(([key]) => key.startsWith('stats_'))
-            .map(([key, value]) => updateContent('stats', key.replace('stats_', ''), value))
+            .map(([key, value]) => updateContent('stats', key.replace('stats_', ''), value)),
+            
+          // Save services section fields
+          ...Object.entries(contentFields)
+            .filter(([key]) => key.startsWith('services_'))
+            .map(([key, value]) => updateContent('services', key.replace('services_', ''), value)),
+            
+          // Save advantages section fields
+          ...Object.entries(contentFields)
+            .filter(([key]) => key.startsWith('advantages_') || key.startsWith('advantage_'))
+            .map(([key, value]) => updateContent('advantages', key.replace(/^advantages?_/, ''), value)),
+            
+          // Save cases section fields
+          ...Object.entries(contentFields)
+            .filter(([key]) => key.startsWith('cases_'))
+            .map(([key, value]) => updateContent('cases', key.replace('cases_', ''), value))
         ]);
       } else {
         // For other pages, use page slug as section
@@ -288,6 +306,186 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
                           value={contentFields.stats_code_text || ''}
                           onChange={(e) => updateContentField('stats_code_text', e.target.value)}
                           placeholder="чистый код"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-8">
+                    <h3 className="text-lg font-semibold mb-4">Блок "Наши услуги"</h3>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Заголовок секции</Label>
+                        <Input
+                          value={contentFields.services_title || ''}
+                          onChange={(e) => updateContentField('services_title', e.target.value)}
+                          placeholder="Наши услуги"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Подзаголовок секции</Label>
+                        <Textarea
+                          value={contentFields.services_subtitle || ''}
+                          onChange={(e) => updateContentField('services_subtitle', e.target.value)}
+                          placeholder="Полный цикл работы с вашим веб-проектом от идеи до запуска"
+                          rows={2}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Название услуги</Label>
+                        <Input
+                          value={contentFields.services_main_title || ''}
+                          onChange={(e) => updateContentField('services_main_title', e.target.value)}
+                          placeholder="Разработка сайтов"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Описание услуги</Label>
+                        <Textarea
+                          value={contentFields.services_main_description || ''}
+                          onChange={(e) => updateContentField('services_main_description', e.target.value)}
+                          placeholder="Лендинги, многостраничные сайты и MVP. Современный дизайн, быстрая загрузка, SEO-оптимизация."
+                          rows={3}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Особенности (через запятую)</Label>
+                        <Input
+                          value={contentFields.services_features || ''}
+                          onChange={(e) => updateContentField('services_features', e.target.value)}
+                          placeholder="Адаптивная вёрстка, SEO-ready, CMS на выбор, Интеграции"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Текст кнопки</Label>
+                        <Input
+                          value={contentFields.services_button || ''}
+                          onChange={(e) => updateContentField('services_button', e.target.value)}
+                          placeholder="Подробнее об услуге"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8">
+                    <h3 className="text-lg font-semibold mb-4">Блок "Преимущества"</h3>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Заголовок секции</Label>
+                        <Input
+                          value={contentFields.advantages_title || ''}
+                          onChange={(e) => updateContentField('advantages_title', e.target.value)}
+                          placeholder="Почему выбирают Work4Studio"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Подзаголовок секции</Label>
+                        <Textarea
+                          value={contentFields.advantages_subtitle || ''}
+                          onChange={(e) => updateContentField('advantages_subtitle', e.target.value)}
+                          placeholder="Мы объединили современные технологии, AI и человеческую экспертизу для создания идеального процесса разработки"
+                          rows={3}
+                        />
+                      </div>
+                      
+                      <div className="grid gap-4">
+                        <div className="border p-4 rounded-lg">
+                          <h4 className="font-medium mb-2">Преимущество 1</h4>
+                          <div className="grid gap-2">
+                            <Input
+                              value={contentFields.advantage_1_title || ''}
+                              onChange={(e) => updateContentField('advantage_1_title', e.target.value)}
+                              placeholder="Быстрое создание от 3 дней"
+                            />
+                            <Textarea
+                              value={contentFields.advantage_1_description || ''}
+                              onChange={(e) => updateContentField('advantage_1_description', e.target.value)}
+                              placeholder="Современная методология разработки позволяет запускать проекты в кратчайшие сроки без потери качества."
+                              rows={2}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="border p-4 rounded-lg">
+                          <h4 className="font-medium mb-2">Преимущество 2</h4>
+                          <div className="grid gap-2">
+                            <Input
+                              value={contentFields.advantage_2_title || ''}
+                              onChange={(e) => updateContentField('advantage_2_title', e.target.value)}
+                              placeholder="Открытый код и доступ к данным"
+                            />
+                            <Textarea
+                              value={contentFields.advantage_2_description || ''}
+                              onChange={(e) => updateContentField('advantage_2_description', e.target.value)}
+                              placeholder="Полный доступ к исходному коду вашего сайта. Никаких ограничений и зависимостей от платформ."
+                              rows={2}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="border p-4 rounded-lg">
+                          <h4 className="font-medium mb-2">Преимущество 3</h4>
+                          <div className="grid gap-2">
+                            <Input
+                              value={contentFields.advantage_3_title || ''}
+                              onChange={(e) => updateContentField('advantage_3_title', e.target.value)}
+                              placeholder="Техническая поддержка команды"
+                            />
+                            <Textarea
+                              value={contentFields.advantage_3_description || ''}
+                              onChange={(e) => updateContentField('advantage_3_description', e.target.value)}
+                              placeholder="Круглосуточная поддержка от нашей команды экспертов. Решаем любые технические вопросы."
+                              rows={2}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="border p-4 rounded-lg">
+                          <h4 className="font-medium mb-2">Преимущество 4</h4>
+                          <div className="grid gap-2">
+                            <Input
+                              value={contentFields.advantage_4_title || ''}
+                              onChange={(e) => updateContentField('advantage_4_title', e.target.value)}
+                              placeholder="Прямой контакт без посредников"
+                            />
+                            <Textarea
+                              value={contentFields.advantage_4_description || ''}
+                              onChange={(e) => updateContentField('advantage_4_description', e.target.value)}
+                              placeholder="Работаете напрямую с командой разработчиков. Никаких менеджеров и потери времени на коммуникации."
+                              rows={2}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8">
+                    <h3 className="text-lg font-semibold mb-4">Блок "Наши кейсы"</h3>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Заголовок секции</Label>
+                        <Input
+                          value={contentFields.cases_title || ''}
+                          onChange={(e) => updateContentField('cases_title', e.target.value)}
+                          placeholder="Наши кейсы"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Подзаголовок секции</Label>
+                        <Textarea
+                          value={contentFields.cases_subtitle || ''}
+                          onChange={(e) => updateContentField('cases_subtitle', e.target.value)}
+                          placeholder="Примеры успешных проектов, которые приносят реальные результаты бизнесу"
+                          rows={2}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Текст кнопки</Label>
+                        <Input
+                          value={contentFields.cases_button || ''}
+                          onChange={(e) => updateContentField('cases_button', e.target.value)}
+                          placeholder="Посмотреть все кейсы"
                         />
                       </div>
                     </div>

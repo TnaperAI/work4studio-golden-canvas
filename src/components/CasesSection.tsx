@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ExternalLink, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { useSiteContent } from '@/hooks/useSiteContent';
 import {
   Carousel,
   CarouselContent,
@@ -23,6 +24,7 @@ interface Case {
 const CasesSection = () => {
   const [cases, setCases] = useState<Case[]>([]);
   const [loading, setLoading] = useState(true);
+  const { getContent } = useSiteContent();
 
   useEffect(() => {
     fetchFeaturedCases();
@@ -88,11 +90,13 @@ const CasesSection = () => {
       <div className="container-custom relative z-10">
         <div className="text-center mb-20">
           <h2 className="text-4xl md:text-6xl font-bold mb-6">
-            <span className="text-foreground">Наши</span>{' '}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">кейсы</span>
+            <span className="text-foreground">{(getContent('cases', 'title') || 'Наши кейсы').split(' ')[0]}</span>{' '}
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              {(getContent('cases', 'title') || 'Наши кейсы').split(' ').slice(1).join(' ') || 'кейсы'}
+            </span>
           </h2>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-            Примеры успешных проектов, которые приносят реальные результаты бизнесу
+            {getContent('cases', 'subtitle') || 'Примеры успешных проектов, которые приносят реальные результаты бизнесу'}
           </p>
         </div>
 
@@ -151,7 +155,7 @@ const CasesSection = () => {
           
           <div className="text-center mt-16">
             <Link to="/cases" className="bg-card text-card-foreground px-8 py-4 rounded-xl font-medium border border-border text-lg hover:bg-secondary hover:border-primary/30 transition-all duration-300 inline-flex items-center space-x-3 hover:scale-105 shadow-lg">
-              <span>Посмотреть все кейсы</span>
+              <span>{getContent('cases', 'button') || 'Посмотреть все кейсы'}</span>
               <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
