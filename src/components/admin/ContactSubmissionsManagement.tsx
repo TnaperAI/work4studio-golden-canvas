@@ -1,28 +1,39 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { 
-  Mail, 
-  Phone, 
-  Calendar,
-  Eye,
-  EyeOff,
-  MessageCircle,
-  User,
+  LayoutGrid,
+  List,
   RefreshCw,
-  ExternalLink
+  Download,
+  Trash2,
+  Calendar as CalendarIcon,
+  MessageCircle,
+  AlertCircle
 } from 'lucide-react';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/ui/tabs';
+import ContactSubmissionCard from './ContactSubmissionCard';
+import ContactSubmissionFilters from './ContactSubmissionFilters';
+import ContactSubmissionKanban from './ContactSubmissionKanban';
 
 interface ContactSubmission {
   id: string;
@@ -38,7 +49,14 @@ interface ContactSubmission {
 const ContactSubmissionsManagement = () => {
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedSubmission, setSelectedSubmission] = useState<ContactSubmission | null>(null);
+  const [viewMode, setViewMode] = useState<'list' | 'kanban'>('list');
+  const [filters, setFilters] = useState({
+    search: '',
+    status: '',
+    dateFrom: undefined as Date | undefined,
+    dateTo: undefined as Date | undefined,
+    hasPhone: ''
+  });
   const { toast } = useToast();
 
   const fetchSubmissions = async () => {
@@ -66,36 +84,6 @@ const ContactSubmissionsManagement = () => {
     fetchSubmissions();
   }, []);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'new':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
-      case 'in_progress':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
-      case 'completed':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
-      default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'new':
-        return 'Новая';
-      case 'in_progress':
-        return 'В работе';
-      case 'completed':
-        return 'Завершена';
-      case 'cancelled':
-        return 'Отменена';
-      default:
-        return status;
-    }
-  };
-
   const updateStatus = async (submissionId: string, newStatus: string) => {
     const { error } = await supabase
       .from('contact_submissions')
@@ -117,6 +105,111 @@ const ContactSubmissionsManagement = () => {
     }
   };
 
+  const editSubmission = async (submission: ContactSubmission) => {
+    const { error } = await supabase
+      .from('contact_submissions')
+      .update({
+        name: submission.name,
+        email: submission.email,
+        phone: submission.phone,
+        message: submission.message
+      })
+      .eq('id', submission.id);
+
+    if (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить заявку',
+        variant: 'destructive',
+      });
+    } else {
+      toast({
+        title: 'Успешно',
+        description: 'Заявка обновлена',
+      });
+      fetchSubmissions();
+    }
+  };
+
+  const deleteSubmission = async (submissionId: string) => {
+    const { error } = await supabase
+      .from('contact_submissions')
+      .delete()
+      .eq('id', submissionId);
+
+    if (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось удалить заявку',
+        variant: 'destructive',
+      });
+    } else {
+      toast({
+        title: 'Успешно',
+        description: 'Заявка удалена',
+      });
+      fetchSubmissions();
+    }
+  };
+
+  const exportToCSV = () => {
+    const headers = ['Имя', 'Email', 'Телефон', 'Сообщение', 'Статус', 'Дата создания'];
+    const csvContent = [
+      headers.join(','),
+      ...filteredSubmissions.map(submission => [
+        submission.name,
+        submission.email,
+        submission.phone || '',
+        `"${submission.message.replace(/"/g, '""')}"`,
+        submission.status,
+        new Date(submission.created_at).toLocaleDateString('ru-RU')
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `заявки_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Filtered submissions
+  const filteredSubmissions = useMemo(() => {
+    return submissions.filter(submission => {
+      const matchesSearch = !filters.search || 
+        submission.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+        submission.email.toLowerCase().includes(filters.search.toLowerCase()) ||
+        (submission.phone && submission.phone.includes(filters.search)) ||
+        submission.message.toLowerCase().includes(filters.search.toLowerCase());
+      
+      const matchesStatus = !filters.status || submission.status === filters.status;
+      
+      const matchesPhone = !filters.hasPhone || 
+        (filters.hasPhone === 'yes' && submission.phone) ||
+        (filters.hasPhone === 'no' && !submission.phone);
+      
+      const matchesDateFrom = !filters.dateFrom || 
+        new Date(submission.created_at) >= filters.dateFrom;
+      
+      const matchesDateTo = !filters.dateTo || 
+        new Date(submission.created_at) <= filters.dateTo;
+      
+      return matchesSearch && matchesStatus && matchesPhone && matchesDateFrom && matchesDateTo;
+    });
+  }, [submissions, filters]);
+
+  const submissionCounts = useMemo(() => ({
+    total: submissions.length,
+    new: submissions.filter(s => s.status === 'new').length,
+    in_progress: submissions.filter(s => s.status === 'in_progress').length,
+    completed: submissions.filter(s => s.status === 'completed').length,
+    cancelled: submissions.filter(s => s.status === 'cancelled').length,
+  }), [submissions]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -127,216 +220,100 @@ const ContactSubmissionsManagement = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-heading font-bold">Заявки с сайта</h1>
           <p className="text-muted-foreground">
-            Управление заявками от клиентов
+            Управление заявками от клиентов ({filteredSubmissions.length} из {submissions.length})
           </p>
         </div>
-        <Button onClick={fetchSubmissions} variant="outline">
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Обновить
+        <div className="flex flex-wrap gap-2">
+          <Button onClick={exportToCSV} variant="outline" size="sm">
+            <Download className="h-4 w-4 mr-2" />
+            Экспорт CSV
+          </Button>
+          <Button onClick={fetchSubmissions} variant="outline" size="sm">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Обновить
+          </Button>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <ContactSubmissionFilters
+        filters={filters}
+        onFiltersChange={setFilters}
+        submissionCounts={submissionCounts}
+      />
+
+      {/* View Mode Switcher */}
+      <div className="flex items-center gap-2">
+        <Button
+          variant={viewMode === 'list' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setViewMode('list')}
+        >
+          <List className="h-4 w-4 mr-2" />
+          Список
+        </Button>
+        <Button
+          variant={viewMode === 'kanban' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setViewMode('kanban')}
+        >
+          <LayoutGrid className="h-4 w-4 mr-2" />
+          Канбан
         </Button>
       </div>
 
-      {/* Statistics */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Всего заявок</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{submissions.length}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Новые</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
-              {submissions.filter(s => s.status === 'new').length}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">В работе</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">
-              {submissions.filter(s => s.status === 'in_progress').length}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Завершены</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              {submissions.filter(s => s.status === 'completed').length}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Submissions List */}
-      <div className="space-y-4">
-        {submissions.map((submission) => (
-          <Card key={submission.id} className="relative">
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <User className="h-6 w-6 text-primary" />
-                  </div>
-                  
-                  <div className="space-y-2 flex-1">
-                    <div className="flex items-center gap-2">
-                      <CardTitle className="text-xl">{submission.name}</CardTitle>
-                      <Badge className={getStatusColor(submission.status)}>
-                        {getStatusLabel(submission.status)}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Mail className="h-4 w-4" />
-                        {submission.email}
-                      </div>
-                      {submission.phone && (
-                        <div className="flex items-center gap-1">
-                          <Phone className="h-4 w-4" />
-                          {submission.phone}
-                        </div>
-                      )}
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        {new Date(submission.created_at).toLocaleDateString('ru-RU', {
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="ghost" size="sm">
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-2xl">
-                      <DialogHeader>
-                        <DialogTitle>Детали заявки</DialogTitle>
-                        <DialogDescription>
-                          Заявка от {submission.name}
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <div className="grid gap-4 md:grid-cols-2">
-                          <div>
-                            <label className="text-sm font-medium text-muted-foreground">Имя</label>
-                            <p className="text-sm">{submission.name}</p>
-                          </div>
-                          <div>
-                            <label className="text-sm font-medium text-muted-foreground">Email</label>
-                            <p className="text-sm">{submission.email}</p>
-                          </div>
-                          {submission.phone && (
-                            <div>
-                              <label className="text-sm font-medium text-muted-foreground">Телефон</label>
-                              <p className="text-sm">{submission.phone}</p>
-                            </div>
-                          )}
-                          <div>
-                            <label className="text-sm font-medium text-muted-foreground">Дата</label>
-                            <p className="text-sm">
-                              {new Date(submission.created_at).toLocaleDateString('ru-RU', {
-                                day: '2-digit',
-                                month: 'long',
-                                year: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
-                            </p>
-                          </div>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-muted-foreground">Сообщение</label>
-                          <div className="mt-2 p-3 bg-muted rounded-lg">
-                            <p className="text-sm whitespace-pre-wrap">{submission.message}</p>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button 
-                            onClick={() => updateStatus(submission.id, 'in_progress')}
-                            variant="outline"
-                            size="sm"
-                          >
-                            В работу
-                          </Button>
-                          <Button 
-                            onClick={() => updateStatus(submission.id, 'completed')}
-                            variant="outline"
-                            size="sm"
-                          >
-                            Завершить
-                          </Button>
-                          <Button 
-                            onClick={() => updateStatus(submission.id, 'cancelled')}
-                            variant="outline"
-                            size="sm"
-                          >
-                            Отменить
-                          </Button>
-                        </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground line-clamp-2">
-                {submission.message}
-              </p>
-              <div className="mt-3 flex gap-2">
-                <Button 
-                  onClick={() => updateStatus(submission.id, 'in_progress')}
-                  variant="outline"
-                  size="sm"
-                  disabled={submission.status === 'in_progress'}
-                >
-                  В работу
+      {/* Content */}
+      {viewMode === 'kanban' ? (
+        <ContactSubmissionKanban
+          submissions={filteredSubmissions}
+          onStatusUpdate={updateStatus}
+          onEdit={editSubmission}
+          onDelete={deleteSubmission}
+        />
+      ) : (
+        <div className="space-y-4">
+          {filteredSubmissions.map((submission) => (
+            <ContactSubmissionCard
+              key={submission.id}
+              submission={submission}
+              onStatusUpdate={updateStatus}
+              onEdit={editSubmission}
+              onDelete={deleteSubmission}
+              viewMode="card"
+            />
+          ))}
+          
+          {filteredSubmissions.length === 0 && submissions.length > 0 && (
+            <Card className="text-center py-12">
+              <CardContent>
+                <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground mb-4">Заявки не найдены по заданным фильтрам</p>
+                <Button variant="outline" onClick={() => setFilters({
+                  search: '',
+                  status: '',
+                  dateFrom: undefined,
+                  dateTo: undefined,
+                  hasPhone: ''
+                })}>
+                  Сбросить фильтры
                 </Button>
-                <Button 
-                  onClick={() => updateStatus(submission.id, 'completed')}
-                  variant="outline"
-                  size="sm"
-                  disabled={submission.status === 'completed'}
-                >
-                  Завершить
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {submissions.length === 0 && (
-        <Card className="text-center py-12">
-          <CardContent>
-            <MessageCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground mb-4">Заявки не найдены</p>
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
+          )}
+          
+          {submissions.length === 0 && (
+            <Card className="text-center py-12">
+              <CardContent>
+                <MessageCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground mb-4">Заявки не найдены</p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       )}
     </div>
   );
