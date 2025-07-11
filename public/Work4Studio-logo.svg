@@ -1,0 +1,25 @@
+<svg width="400" height="120" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradient for the main text -->
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:hsl(262.1, 83.3%, 57.8%);stop-opacity:1" />
+      <stop offset="50%" style="stop-color:hsl(263, 70%, 50.4%);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:hsl(262.1, 83.3%, 57.8%);stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Solid primary color for the "4" -->
+    <linearGradient id="primaryColor" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:hsl(262.1, 83.3%, 57.8%);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:hsl(262.1, 83.3%, 57.8%);stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main logo text -->
+  <text x="200" y="60" 
+        text-anchor="middle" 
+        dominant-baseline="central"
+        font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif" 
+        font-weight="bold" 
+        font-size="48" 
+        fill="url(#logoGradient)">Work4Studio</text>
+</svg>
