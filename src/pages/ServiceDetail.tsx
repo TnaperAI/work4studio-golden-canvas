@@ -93,15 +93,19 @@ const ServiceDetail = () => {
       {/* Breadcrumb */}
       <section className="pt-24 pb-4 border-b border-border">
         <div className="container mx-auto px-4">
-          <div className="flex items-center gap-2 text-muted-foreground mb-4">
+          <div className="flex items-center gap-2 text-muted-foreground">
             <Link to="/" className="hover:text-primary transition-colors">Главная</Link>
             <span>/</span>
             <Link to="/services" className="hover:text-primary transition-colors">Услуги</Link>
             <span>/</span>
             <span className="text-foreground">{serviceData.title}</span>
           </div>
-          
-          {/* Back Button */}
+        </div>
+      </section>
+
+      {/* Back Button Section */}
+      <section className="py-4 bg-background">
+        <div className="container mx-auto px-4">
           <Link 
             to="/services" 
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors group"
