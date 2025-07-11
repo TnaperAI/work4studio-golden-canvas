@@ -191,7 +191,6 @@ const ContactSubmissionFilters = ({
                   <SelectValue placeholder="Все статусы" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Все статусы</SelectItem>
                   <SelectItem value="new">Новые</SelectItem>
                   <SelectItem value="in_progress">В работе</SelectItem>
                   <SelectItem value="completed">Завершены</SelectItem>
@@ -207,7 +206,6 @@ const ContactSubmissionFilters = ({
                   <SelectValue placeholder="Все источники" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Все источники</SelectItem>
                   <SelectItem value="homepage_form">Форма на главной</SelectItem>
                   <SelectItem value="homepage_cta">CTA на главной</SelectItem>
                   <SelectItem value="hero_section">Hero секция</SelectItem>
@@ -227,7 +225,6 @@ const ContactSubmissionFilters = ({
                   <SelectValue placeholder="Все" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Все</SelectItem>
                   <SelectItem value="yes">С телефоном</SelectItem>
                   <SelectItem value="no">Без телефона</SelectItem>
                 </SelectContent>
