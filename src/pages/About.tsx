@@ -52,9 +52,22 @@ interface CompanyInfo {
   description: string;
 }
 
+interface PageSEO {
+  page_title: string;
+  meta_title: string;
+  meta_description: string;
+  meta_keywords: string;
+  h1_tag: string;
+  canonical_url: string;
+  og_title: string;
+  og_description: string;
+  og_image: string;
+}
+
 const About = () => {
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
+  const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
   const [loading, setLoading] = useState(true);
   useScrollAnimation();
 
@@ -75,6 +88,58 @@ const About = () => {
     }
   }, [loading]);
 
+  // Обновляем SEO теги когда загружаются данные
+  useEffect(() => {
+    if (pageSEO) {
+      // Обновляем title
+      if (pageSEO.page_title) {
+        document.title = pageSEO.page_title;
+      }
+
+      // Обновляем meta теги
+      const updateMetaTag = (name: string, content: string) => {
+        if (!content) return;
+        let meta = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement;
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.name = name;
+          document.head.appendChild(meta);
+        }
+        meta.content = content;
+      };
+
+      const updatePropertyTag = (property: string, content: string) => {
+        if (!content) return;
+        let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.setAttribute('property', property);
+          document.head.appendChild(meta);
+        }
+        meta.content = content;
+      };
+
+      // Обновляем canonical URL
+      if (pageSEO.canonical_url) {
+        let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+        if (!canonical) {
+          canonical = document.createElement('link');
+          canonical.rel = 'canonical';
+          document.head.appendChild(canonical);
+        }
+        canonical.href = pageSEO.canonical_url;
+      }
+
+      // Устанавливаем мета теги
+      updateMetaTag('description', pageSEO.meta_description);
+      updateMetaTag('keywords', pageSEO.meta_keywords);
+      updatePropertyTag('og:title', pageSEO.og_title);
+      updatePropertyTag('og:description', pageSEO.og_description);
+      updatePropertyTag('og:image', pageSEO.og_image);
+      updatePropertyTag('og:type', 'website');
+    }
+  }, [pageSEO]);
+
   const fetchData = async () => {
     try {
       // Fetch team members
@@ -90,15 +155,26 @@ const About = () => {
         .select('*')
         .maybeSingle();
 
+      // Fetch page SEO
+      const { data: seoData, error: seoError } = await supabase
+        .from('page_seo')
+        .select('*')
+        .eq('page_slug', 'about')
+        .maybeSingle();
+
       if (teamError) {
         console.error('Team error:', teamError);
       }
       if (companyError) {
         console.error('Company error:', companyError);
       }
+      if (seoError) {
+        console.error('SEO error:', seoError);
+      }
 
       setTeam(teamData || []);
       setCompanyInfo(companyData);
+      setPageSEO(seoData);
     } catch (error) {
       console.error('Error fetching about data:', error);
     } finally {
@@ -222,13 +298,21 @@ const About = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-6xl mx-auto text-center animate-on-scroll">
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-10 leading-tight">
-              <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                Наша
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
-                студия
-              </span>
+              {pageSEO && pageSEO.h1_tag ? (
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
+                  {pageSEO.h1_tag}
+                </span>
+              ) : (
+                <>
+                  <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+                    Наша
+                  </span>
+                  <br />
+                  <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
+                    студия
+                  </span>
+                </>
+              )}
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-16 max-w-4xl mx-auto leading-relaxed">
               {company.description}
