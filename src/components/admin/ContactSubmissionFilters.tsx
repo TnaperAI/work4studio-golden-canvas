@@ -28,6 +28,7 @@ import { ru } from 'date-fns/locale';
 interface Filters {
   search: string;
   status: string;
+  source: string;
   dateFrom: Date | undefined;
   dateTo: Date | undefined;
   hasPhone: string;
@@ -63,13 +64,14 @@ const ContactSubmissionFilters = ({
     onFiltersChange({
       search: '',
       status: '',
+      source: '',
       dateFrom: undefined,
       dateTo: undefined,
       hasPhone: ''
     });
   };
 
-  const hasActiveFilters = filters.search || filters.status || filters.dateFrom || filters.dateTo || filters.hasPhone;
+  const hasActiveFilters = filters.search || filters.status || filters.source || filters.dateFrom || filters.dateTo || filters.hasPhone;
 
   const getStatusLabel = (status: string) => {
     switch (status) {
@@ -78,6 +80,20 @@ const ContactSubmissionFilters = ({
       case 'completed': return 'Завершены';
       case 'cancelled': return 'Отменены';
       default: return status;
+    }
+  };
+
+  const getSourceLabel = (source: string) => {
+    switch (source) {
+      case 'homepage_form': return 'Форма на главной';
+      case 'homepage_cta': return 'CTA на главной';
+      case 'hero_section': return 'Hero секция';
+      case 'header': return 'Шапка сайта';
+      case 'contact_page': return 'Страница контактов';
+      case 'services_page': return 'Страница услуг';
+      case 'service_detail_page': return 'Детали услуги';
+      case 'modal': return 'Модальное окно';
+      default: return source || 'Неизвестно';
     }
   };
 
@@ -185,6 +201,26 @@ const ContactSubmissionFilters = ({
             </div>
 
             <div>
+              <label className="text-sm font-medium mb-2 block">Источник</label>
+              <Select value={filters.source} onValueChange={(value) => updateFilter('source', value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Все источники" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Все источники</SelectItem>
+                  <SelectItem value="homepage_form">Форма на главной</SelectItem>
+                  <SelectItem value="homepage_cta">CTA на главной</SelectItem>
+                  <SelectItem value="hero_section">Hero секция</SelectItem>
+                  <SelectItem value="header">Шапка сайта</SelectItem>
+                  <SelectItem value="contact_page">Страница контактов</SelectItem>
+                  <SelectItem value="services_page">Страница услуг</SelectItem>
+                  <SelectItem value="service_detail_page">Детали услуги</SelectItem>
+                  <SelectItem value="modal">Модальное окно</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
               <label className="text-sm font-medium mb-2 block">Телефон</label>
               <Select value={filters.hasPhone} onValueChange={(value) => updateFilter('hasPhone', value)}>
                 <SelectTrigger>
@@ -197,7 +233,9 @@ const ContactSubmissionFilters = ({
                 </SelectContent>
               </Select>
             </div>
+          </div>
 
+          <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="text-sm font-medium mb-2 block">Дата от</label>
               <Popover>
@@ -301,6 +339,15 @@ const ContactSubmissionFilters = ({
                   <X 
                     className="h-3 w-3 cursor-pointer" 
                     onClick={() => updateFilter('hasPhone', '')}
+                  />
+                </Badge>
+              )}
+              {filters.source && (
+                <Badge variant="outline" className="gap-1">
+                  Источник: {getSourceLabel(filters.source)}
+                  <X 
+                    className="h-3 w-3 cursor-pointer" 
+                    onClick={() => updateFilter('source', '')}
                   />
                 </Badge>
               )}

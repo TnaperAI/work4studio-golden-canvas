@@ -39,6 +39,7 @@ interface ContactSubmission {
   phone: string | null;
   message: string;
   status: string;
+  source?: string;
   created_at: string;
   updated_at: string;
 }
@@ -78,6 +79,29 @@ const ContactSubmissionCard = ({
         return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
       default:
         return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
+    }
+  };
+
+  const getSourceLabel = (source: string) => {
+    switch (source) {
+      case 'homepage_form':
+        return 'Форма на главной';
+      case 'homepage_cta':
+        return 'CTA на главной';
+      case 'hero_section':
+        return 'Hero секция';
+      case 'header':
+        return 'Шапка сайта';
+      case 'contact_page':
+        return 'Страница контактов';
+      case 'services_page':
+        return 'Страница услуг';
+      case 'service_detail_page':
+        return 'Детали услуги';
+      case 'modal':
+        return 'Модальное окно';
+      default:
+        return source || 'Неизвестно';
     }
   };
 
@@ -134,6 +158,11 @@ const ContactSubmissionCard = ({
                     <Phone className="h-3 w-3" />
                     {submission.phone}
                   </div>
+                )}
+                {submission.source && (
+                  <Badge variant="outline" className="text-xs">
+                    {getSourceLabel(submission.source)}
+                  </Badge>
                 )}
                 <div className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
@@ -198,6 +227,12 @@ const ContactSubmissionCard = ({
                           })}
                         </p>
                       </div>
+                      {submission.source && (
+                        <div>
+                          <label className="text-sm font-medium text-muted-foreground">Источник</label>
+                          <p className="text-sm">{getSourceLabel(submission.source)}</p>
+                        </div>
+                      )}
                     </div>
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">Сообщение</label>

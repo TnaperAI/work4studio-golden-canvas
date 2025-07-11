@@ -70,6 +70,7 @@ const Hero = () => {
       <ContactFormModal 
         isOpen={isContactModalOpen} 
         onClose={() => setIsContactModalOpen(false)} 
+        source="hero_section"
       />
     </section>
   );

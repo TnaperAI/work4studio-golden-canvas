@@ -10,6 +10,7 @@ interface ContactSubmission {
   phone: string | null;
   message: string;
   status: string;
+  source?: string;
   created_at: string;
   updated_at: string;
 }

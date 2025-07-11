@@ -42,6 +42,7 @@ interface ContactSubmission {
   phone: string | null;
   message: string;
   status: string;
+  source?: string;
   created_at: string;
   updated_at: string;
 }
@@ -53,6 +54,7 @@ const ContactSubmissionsManagement = () => {
   const [filters, setFilters] = useState({
     search: '',
     status: '',
+    source: '',
     dateFrom: undefined as Date | undefined,
     dateTo: undefined as Date | undefined,
     hasPhone: ''
@@ -153,7 +155,7 @@ const ContactSubmissionsManagement = () => {
   };
 
   const exportToCSV = () => {
-    const headers = ['Имя', 'Email', 'Телефон', 'Сообщение', 'Статус', 'Дата создания'];
+    const headers = ['Имя', 'Email', 'Телефон', 'Сообщение', 'Статус', 'Источник', 'Дата создания'];
     const csvContent = [
       headers.join(','),
       ...filteredSubmissions.map(submission => [
@@ -162,6 +164,7 @@ const ContactSubmissionsManagement = () => {
         submission.phone || '',
         `"${submission.message.replace(/"/g, '""')}"`,
         submission.status,
+        submission.source || '',
         new Date(submission.created_at).toLocaleDateString('ru-RU')
       ].join(','))
     ].join('\n');
@@ -188,6 +191,8 @@ const ContactSubmissionsManagement = () => {
       
       const matchesStatus = !filters.status || submission.status === filters.status;
       
+      const matchesSource = !filters.source || submission.source === filters.source;
+      
       const matchesPhone = !filters.hasPhone || 
         (filters.hasPhone === 'yes' && submission.phone) ||
         (filters.hasPhone === 'no' && !submission.phone);
@@ -198,7 +203,7 @@ const ContactSubmissionsManagement = () => {
       const matchesDateTo = !filters.dateTo || 
         new Date(submission.created_at) <= filters.dateTo;
       
-      return matchesSearch && matchesStatus && matchesPhone && matchesDateFrom && matchesDateTo;
+      return matchesSearch && matchesStatus && matchesSource && matchesPhone && matchesDateFrom && matchesDateTo;
     });
   }, [submissions, filters]);
 
@@ -295,6 +300,7 @@ const ContactSubmissionsManagement = () => {
                 <Button variant="outline" onClick={() => setFilters({
                   search: '',
                   status: '',
+                  source: '',
                   dateFrom: undefined,
                   dateTo: undefined,
                   hasPhone: ''

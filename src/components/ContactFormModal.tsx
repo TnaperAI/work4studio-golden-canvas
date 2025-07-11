@@ -10,9 +10,10 @@ import { useToast } from "@/hooks/use-toast";
 interface ContactFormModalProps {
   isOpen: boolean;
   onClose: () => void;
+  source?: string; // Добавляем пропс для источника
 }
 
-const ContactFormModal = ({ isOpen, onClose }: ContactFormModalProps) => {
+const ContactFormModal = ({ isOpen, onClose, source = 'modal' }: ContactFormModalProps) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -34,7 +35,8 @@ const ContactFormModal = ({ isOpen, onClose }: ContactFormModalProps) => {
             name: formData.name,
             email: formData.email,
             phone: formData.phone || null,
-            message: formData.message
+            message: formData.message,
+            source: source
           }
         ]);
 

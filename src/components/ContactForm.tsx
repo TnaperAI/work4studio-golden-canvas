@@ -25,7 +25,8 @@ const ContactForm = () => {
             name: formData.name,
             email: formData.email,
             phone: formData.phone || null,
-            message: formData.message
+            message: formData.message,
+            source: 'homepage_form'
           }
         ]);
 

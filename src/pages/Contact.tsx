@@ -61,7 +61,8 @@ const Contact = () => {
           name: formData.name,
           email: formData.email,
           phone: formData.phone || null,
-          message: formData.message
+          message: formData.message,
+          source: 'contact_page'
         }]);
 
       if (error) {
