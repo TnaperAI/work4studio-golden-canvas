@@ -42,6 +42,7 @@ const AboutManagement = () => {
   const [editingTeamMember, setEditingTeamMember] = useState<TeamMember | null>(null);
   const [showTeamForm, setShowTeamForm] = useState(false);
   const [newSkill, setNewSkill] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   const emptyTeamMember: Omit<TeamMember, 'id'> = {
     name: '',
@@ -188,6 +189,73 @@ const AboutManagement = () => {
         ...editingTeamMember,
         skills: editingTeamMember.skills.filter((_, i) => i !== index)
       });
+    }
+  };
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !editingTeamMember) return;
+
+    // Validate file type
+    if (!file.type.match(/^image\/(jpeg|jpg|png)$/)) {
+      toast({
+        title: 'Ошибка',
+        description: 'Поддерживаются только файлы JPEG и PNG',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: 'Ошибка',
+        description: 'Размер файла не должен превышать 5MB',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      // Create unique filename
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `team/${fileName}`;
+
+      // Upload file to Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('team-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('team-images')
+        .getPublicUrl(filePath);
+
+      // Update team member with new image URL
+      setEditingTeamMember({
+        ...editingTeamMember,
+        image: publicUrl
+      });
+
+      toast({
+        title: 'Успешно',
+        description: 'Изображение загружено',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось загрузить изображение',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploading(false);
+      // Clear the file input
+      event.target.value = '';
     }
   };
 
@@ -460,15 +528,42 @@ const AboutManagement = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Изображение (URL)</Label>
-                  <Input
-                    value={editingTeamMember.image}
-                    onChange={(e) => setEditingTeamMember({
-                      ...editingTeamMember,
-                      image: e.target.value
-                    })}
-                    placeholder="https://..."
-                  />
+                  <Label>Изображение</Label>
+                  <div className="space-y-2">
+                    {editingTeamMember.image && (
+                      <div className="flex items-center gap-2 p-2 border rounded">
+                        <img 
+                          src={editingTeamMember.image} 
+                          alt="Предпросмотр" 
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                        <span className="text-sm text-muted-foreground">Текущее изображение</span>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setEditingTeamMember({
+                            ...editingTeamMember,
+                            image: ''
+                          })}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                    <Input
+                      type="file"
+                      accept="image/jpeg,image/png,image/jpg"
+                      onChange={handleImageUpload}
+                      disabled={uploading}
+                    />
+                    {uploading && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                        Загрузка изображения...
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="space-y-2">
