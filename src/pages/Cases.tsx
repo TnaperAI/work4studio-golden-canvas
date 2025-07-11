@@ -143,7 +143,7 @@ const Cases = () => {
         
         {/* Breadcrumb */}
         <section className="pt-24 pb-4 bg-gradient-to-r from-background/95 via-background/98 to-background/95 border-b border-border/50 backdrop-blur-sm">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 max-w-7xl">
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
@@ -328,7 +328,7 @@ const Cases = () => {
       
       {/* Breadcrumb */}
       <section className="pt-24 pb-4 bg-gradient-to-r from-background/95 via-background/98 to-background/95 border-b border-border/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-7xl">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
