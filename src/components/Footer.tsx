@@ -132,10 +132,13 @@ const Footer = () => {
                 Пользовательское соглашение
               </Link>
             </div>
-            <div className="flex items-center space-x-6">
-              <span className="text-sm text-muted-foreground">Сделано с</span>
-              <span className="text-red-500 text-xl">♥</span>
-              <span className="text-sm text-muted-foreground">в России</span>
+            <div className="flex items-center space-x-3">
+              <span className="text-sm text-muted-foreground">Разработано</span>
+              <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+                <span className="font-logo font-bold text-lg bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                  Work<span className="text-primary">4</span>Studio
+                </span>
+              </Link>
             </div>
           </div>
         </div>
