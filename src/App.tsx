@@ -12,6 +12,7 @@ import ServiceDetail from "./pages/ServiceDetail";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import BackgroundAnimation from "./components/BackgroundAnimation";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -37,6 +38,7 @@ const App = () => (
               <Route path="/services/:service" element={<ServiceDetail />} />
               <Route path="/login" element={<Login />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/legal/:type" element={<PrivacyPolicy />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

@@ -115,6 +115,20 @@ const Footer = () => {
               © 2024 Work4Studio. Все права защищены.
             </p>
             <div className="flex items-center space-x-6">
+              <Link 
+                to="/legal/privacy_policy" 
+                className="text-sm text-muted-foreground hover:text-primary transition-colors underline"
+              >
+                Политика конфиденциальности
+              </Link>
+              <Link 
+                to="/legal/terms_of_service" 
+                className="text-sm text-muted-foreground hover:text-primary transition-colors underline"
+              >
+                Пользовательское соглашение
+              </Link>
+            </div>
+            <div className="flex items-center space-x-6">
               <span className="text-sm text-muted-foreground">Сделано с</span>
               <span className="text-red-500 text-xl">♥</span>
               <span className="text-sm text-muted-foreground">в России</span>

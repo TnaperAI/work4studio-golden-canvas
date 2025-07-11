@@ -144,6 +144,25 @@ const ContactForm = () => {
                     />
                   </div>
 
+                  <div className="text-sm text-muted-foreground">
+                    Отправляя заявку, вы соглашаетесь с{' '}
+                    <a 
+                      href="/legal/privacy_policy" 
+                      target="_blank"
+                      className="text-primary hover:underline"
+                    >
+                      политикой конфиденциальности
+                    </a>{' '}
+                    и{' '}
+                    <a 
+                      href="/legal/terms_of_service" 
+                      target="_blank"
+                      className="text-primary hover:underline"
+                    >
+                      пользовательским соглашением
+                    </a>
+                  </div>
+
                   <button
                     type="submit"
                     disabled={isSubmitting}
