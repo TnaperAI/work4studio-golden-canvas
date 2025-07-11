@@ -16,9 +16,61 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* Logo and Description */}
           <div className="md:col-span-2">
-            <h3 className="text-3xl md:text-4xl font-heading font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-6">
-              Work4Studio
-            </h3>
+          <div className="mb-6">
+            <svg
+              width="250"
+              height="60"
+              viewBox="0 0 250 60"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="hover:scale-105 transition-transform duration-300"
+            >
+              <defs>
+                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="hsl(217 91% 60%)" />
+                  <stop offset="50%" stopColor="hsl(262 83% 58%)" />
+                  <stop offset="100%" stopColor="hsl(217 91% 60%)" />
+                </linearGradient>
+                <linearGradient id="numberGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="hsl(217 91% 60%)" />
+                  <stop offset="100%" stopColor="hsl(262 83% 58%)" />
+                </linearGradient>
+              </defs>
+              
+              <text
+                x="5"
+                y="35"
+                fontFamily="Orbitron, monospace"
+                fontSize="28"
+                fontWeight="bold"
+                fill="url(#logoGradient)"
+              >
+                Work
+              </text>
+              
+              <text
+                x="95"
+                y="35"
+                fontFamily="Orbitron, monospace"
+                fontSize="28"
+                fontWeight="bold"
+                fill="url(#numberGradient)"
+              >
+                4
+              </text>
+              
+              <text
+                x="115"
+                y="35"
+                fontFamily="Orbitron, monospace"
+                fontSize="28"
+                fontWeight="bold"
+                fill="url(#logoGradient)"
+              >
+                Studio
+              </text>
+            </svg>
+          </div>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-lg leading-relaxed">
               Создаём сайты, которые работают за вас. Разработка и поддержка на новой скорости с использованием современных технологий.
             </p>
