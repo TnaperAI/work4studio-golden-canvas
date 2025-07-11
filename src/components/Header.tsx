@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { Menu, X, Download } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import ContactFormModal from './ContactFormModal';
-import { downloadLogo } from '../utils/logoToImage';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,30 +23,19 @@ const Header = () => {
       <nav className="container-custom relative z-10">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
-            <Link to="/" className="group flex items-center hover:scale-105 transition-transform duration-300">
+          <Link to="/" className="group flex items-center hover:scale-105 transition-transform duration-300">
+            <div className="relative">
+              {/* Background glow */}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-accent/30 blur-lg group-hover:blur-xl transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
+              
+              {/* Logo text */}
               <div className="relative">
-                {/* Background glow */}
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-accent/30 blur-lg group-hover:blur-xl transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
-                
-                {/* Logo text */}
-                <div className="relative">
-                  <span className="font-logo font-bold text-2xl md:text-3xl bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent group-hover:from-accent group-hover:via-primary group-hover:to-accent transition-all duration-500">
-                    Work<span className="text-primary group-hover:text-accent transition-colors duration-500">4</span>Studio
-                  </span>
-                </div>
+                <span className="font-logo font-bold text-2xl md:text-3xl bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent group-hover:from-accent group-hover:via-primary group-hover:to-accent transition-all duration-500">
+                  Work<span className="text-primary group-hover:text-accent transition-colors duration-500">4</span>Studio
+                </span>
               </div>
-            </Link>
-            
-            {/* Download logo button */}
-            <button
-              onClick={() => downloadLogo('png')}
-              className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-secondary/50 transition-all duration-300 opacity-60 hover:opacity-100"
-              title="Скачать логотип"
-            >
-              <Download size={18} />
-            </button>
-          </div>
+            </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
