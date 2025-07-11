@@ -1,7 +1,17 @@
 import { Link } from 'react-router-dom';
 import { Mail, MessageCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+
+interface Service {
+  id: string;
+  title: string;
+  slug: string;
+}
 
 const Footer = () => {
+  const [services, setServices] = useState<Service[]>([]);
+
   const navigation = [
     { name: 'Главная', href: '/' },
     { name: 'Услуги', href: '/services' },
@@ -9,6 +19,23 @@ const Footer = () => {
     { name: 'О нас', href: '/about' },
     { name: 'Контакты', href: '/contact' },
   ];
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      const { data } = await supabase
+        .from('services')
+        .select('id, title, slug')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+        .limit(4);
+
+      if (data) {
+        setServices(data);
+      }
+    };
+
+    fetchServices();
+  }, []);
 
   return (
     <footer className="bg-background border-t border-border">
@@ -70,42 +97,17 @@ const Footer = () => {
               Услуги
             </h4>
             <ul className="space-y-4">
-              <li>
-                <Link
-                  to="/services"
-                  className="text-muted-foreground hover:text-primary transition-all duration-300 text-lg relative group"
-                >
-                  Разработка сайтов
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent transition-all duration-300 group-hover:w-full"></span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/services"
-                  className="text-muted-foreground hover:text-primary transition-all duration-300 text-lg relative group"
-                >
-                  Лендинги
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent transition-all duration-300 group-hover:w-full"></span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/services"
-                  className="text-muted-foreground hover:text-primary transition-all duration-300 text-lg relative group"
-                >
-                  E-commerce
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent transition-all duration-300 group-hover:w-full"></span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/services"
-                  className="text-muted-foreground hover:text-primary transition-all duration-300 text-lg relative group"
-                >
-                  Поддержка
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent transition-all duration-300 group-hover:w-full"></span>
-                </Link>
-              </li>
+              {services.map((service) => (
+                <li key={service.id}>
+                  <Link
+                    to={`/services/${service.slug}`}
+                    className="text-muted-foreground hover:text-primary transition-all duration-300 text-lg relative group"
+                  >
+                    {service.title}
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent transition-all duration-300 group-hover:w-full"></span>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
