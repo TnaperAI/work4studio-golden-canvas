@@ -49,7 +49,7 @@ const Footer = () => {
               </text>
               
               <text
-                x="95"
+                x="78"
                 y="35"
                 fontFamily="Orbitron, monospace"
                 fontSize="28"
@@ -60,7 +60,7 @@ const Footer = () => {
               </text>
               
               <text
-                x="115"
+                x="95"
                 y="35"
                 fontFamily="Orbitron, monospace"
                 fontSize="28"
