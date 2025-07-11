@@ -23,7 +23,12 @@ interface PageSEO {
   og_image: string;
 }
 
-const pages = [
+interface ServicePage {
+  slug: string;
+  title: string;
+}
+
+const staticPages = [
   { slug: 'home', name: 'Главная страница' },
   { slug: 'services', name: 'Услуги' },
   { slug: 'cases', name: 'Кейсы' },
@@ -37,6 +42,39 @@ const PageSEOManagement = () => {
   const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [servicePagesLoading, setServicePagesLoading] = useState(true);
+  const [servicePages, setServicePages] = useState<ServicePage[]>([]);
+  const [allPages, setAllPages] = useState(staticPages);
+
+  useEffect(() => {
+    fetchServicePages();
+  }, []);
+
+  const fetchServicePages = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('services')
+        .select('slug, title')
+        .eq('is_active', true)
+        .order('title');
+
+      if (error) {
+        console.error('Error fetching services:', error);
+      } else {
+        setServicePages(data || []);
+        // Объединяем статические страницы с страницами услуг
+        const dynamicPages = (data || []).map(service => ({
+          slug: `service-${service.slug}`,
+          name: `Услуга: ${service.title}`
+        }));
+        setAllPages([...staticPages, ...dynamicPages]);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setServicePagesLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchPageSEO();
@@ -45,14 +83,51 @@ const PageSEOManagement = () => {
   const fetchPageSEO = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('page_seo')
-        .select('*')
-        .eq('page_slug', selectedPage)
-        .maybeSingle();
+      let data = null;
+      let error = null;
 
-      if (error) {
-        console.error('Error fetching page SEO:', error);
+      if (selectedPage.startsWith('service-')) {
+        // Это страница услуги - берем SEO данные из таблицы services
+        const serviceSlug = selectedPage.replace('service-', '');
+        const { data: serviceData, error: serviceError } = await supabase
+          .from('services')
+          .select('meta_title, meta_description, meta_keywords, h1_tag, canonical_url, og_title, og_description, og_image, title')
+          .eq('slug', serviceSlug)
+          .maybeSingle();
+
+        if (serviceError) {
+          console.error('Error fetching service SEO:', serviceError);
+        }
+
+        if (serviceData) {
+          data = {
+            id: '',
+            page_slug: selectedPage,
+            page_title: serviceData.meta_title || serviceData.title,
+            meta_title: serviceData.meta_title,
+            meta_description: serviceData.meta_description,
+            meta_keywords: serviceData.meta_keywords,
+            h1_tag: serviceData.h1_tag,
+            canonical_url: serviceData.canonical_url,
+            og_title: serviceData.og_title,
+            og_description: serviceData.og_description,
+            og_image: serviceData.og_image
+          };
+        }
+      } else {
+        // Это обычная страница - берем SEO данные из таблицы page_seo
+        const { data: pageData, error: pageError } = await supabase
+          .from('page_seo')
+          .select('*')
+          .eq('page_slug', selectedPage)
+          .maybeSingle();
+
+        data = pageData;
+        error = pageError;
+
+        if (error) {
+          console.error('Error fetching page SEO:', error);
+        }
       }
 
       if (data) {
@@ -85,16 +160,37 @@ const PageSEOManagement = () => {
 
     setSaving(true);
     try {
-      const seoData = {
-        ...pageSEO,
-        page_slug: selectedPage
-      };
+      if (selectedPage.startsWith('service-')) {
+        // Сохраняем SEO данные услуги в таблицу services
+        const serviceSlug = selectedPage.replace('service-', '');
+        const { error } = await supabase
+          .from('services')
+          .update({
+            meta_title: pageSEO.meta_title,
+            meta_description: pageSEO.meta_description,
+            meta_keywords: pageSEO.meta_keywords,
+            h1_tag: pageSEO.h1_tag,
+            canonical_url: pageSEO.canonical_url,
+            og_title: pageSEO.og_title,
+            og_description: pageSEO.og_description,
+            og_image: pageSEO.og_image
+          })
+          .eq('slug', serviceSlug);
 
-      const { error } = await supabase
-        .from('page_seo')
-        .upsert(seoData, { onConflict: 'page_slug' });
+        if (error) throw error;
+      } else {
+        // Сохраняем SEO данные обычной страницы в таблицу page_seo
+        const seoData = {
+          ...pageSEO,
+          page_slug: selectedPage
+        };
 
-      if (error) throw error;
+        const { error } = await supabase
+          .from('page_seo')
+          .upsert(seoData, { onConflict: 'page_slug' });
+
+        if (error) throw error;
+      }
 
       toast({
         title: 'Успешно',
@@ -114,7 +210,7 @@ const PageSEOManagement = () => {
     }
   };
 
-  const selectedPageName = pages.find(p => p.slug === selectedPage)?.name || selectedPage;
+  const selectedPageName = allPages.find(p => p.slug === selectedPage)?.name || selectedPage;
 
   return (
     <div className="space-y-6">
@@ -138,12 +234,15 @@ const PageSEOManagement = () => {
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label>Страница</Label>
-              <Select value={selectedPage} onValueChange={setSelectedPage}>
+              <Select value={selectedPage} onValueChange={setSelectedPage} disabled={servicePagesLoading}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {pages.map((page) => (
+                  <SelectItem disabled value="">
+                    {servicePagesLoading ? 'Загружаем страницы...' : 'Выберите страницу'}
+                  </SelectItem>
+                  {allPages.map((page) => (
                     <SelectItem key={page.slug} value={page.slug}>
                       {page.name}
                     </SelectItem>

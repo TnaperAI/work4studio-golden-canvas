@@ -28,6 +28,14 @@ interface ServiceData {
   price_to: number;
   features: string[];
   is_active: boolean;
+  meta_title: string;
+  meta_description: string;
+  meta_keywords: string;
+  h1_tag: string;
+  canonical_url: string;
+  og_title: string;
+  og_description: string;
+  og_image: string;
 }
 
 const ServiceDetail = () => {
@@ -61,6 +69,60 @@ const ServiceDetail = () => {
 
     fetchService();
   }, [service]);
+
+  // Обновляем SEO теги когда загружается услуга
+  useEffect(() => {
+    if (serviceData) {
+      // Обновляем title
+      if (serviceData.meta_title) {
+        document.title = serviceData.meta_title;
+      } else {
+        document.title = `${serviceData.title} - Work4Studio`;
+      }
+
+      // Обновляем meta теги
+      const updateMetaTag = (name: string, content: string) => {
+        if (!content) return;
+        let meta = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement;
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.name = name;
+          document.head.appendChild(meta);
+        }
+        meta.content = content;
+      };
+
+      const updatePropertyTag = (property: string, content: string) => {
+        if (!content) return;
+        let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.setAttribute('property', property);
+          document.head.appendChild(meta);
+        }
+        meta.content = content;
+      };
+
+      // Обновляем canonical URL
+      if (serviceData.canonical_url) {
+        let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+        if (!canonical) {
+          canonical = document.createElement('link');
+          canonical.rel = 'canonical';
+          document.head.appendChild(canonical);
+        }
+        canonical.href = serviceData.canonical_url;
+      }
+
+      // Устанавливаем мета теги
+      updateMetaTag('description', serviceData.meta_description || serviceData.short_description);
+      updateMetaTag('keywords', serviceData.meta_keywords);
+      updatePropertyTag('og:title', serviceData.og_title || serviceData.title);
+      updatePropertyTag('og:description', serviceData.og_description || serviceData.short_description);
+      updatePropertyTag('og:image', serviceData.og_image);
+      updatePropertyTag('og:type', 'website');
+    }
+  }, [serviceData]);
 
   if (loading) {
     return (
@@ -147,7 +209,7 @@ const ServiceDetail = () => {
               </Badge>
               
               <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground">
-                {serviceData.short_description}
+                {serviceData.h1_tag || serviceData.short_description}
               </h1>
               
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
