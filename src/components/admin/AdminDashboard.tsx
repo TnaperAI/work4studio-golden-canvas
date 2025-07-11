@@ -3,6 +3,7 @@ import Dashboard from './Dashboard';
 import ContentManagement from './ContentManagement';
 import ContactSubmissionsManagement from './ContactSubmissionsManagement';
 import PageEditor from './PageEditor';
+import Settings from './Settings';
 
 type AdminView = 'dashboard' | 'content' | 'page-editor' | 'submissions' | 'settings';
 
@@ -69,19 +70,7 @@ const AdminDashboard = () => {
   }
 
   if (currentView === 'settings') {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-heading font-bold">Настройки</h1>
-          <p className="text-muted-foreground">
-            Общие настройки административной панели
-          </p>
-        </div>
-        <div className="text-center py-12 text-muted-foreground">
-          <p>Раздел настроек находится в разработке</p>
-        </div>
-      </div>
-    );
+    return <Settings />;
   }
 
   return <Dashboard />;
