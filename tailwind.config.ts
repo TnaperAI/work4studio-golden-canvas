@@ -69,6 +69,9 @@ export default {
 				}
 			},
 			fontFamily: {
+				sans: ["Inter", "sans-serif"],
+				heading: ["Space Grotesk", "sans-serif"],
+				logo: ["Orbitron", "monospace"],
 				'heading': ['var(--font-heading)'],
 				'body': ['var(--font-body)']
 			},

@@ -23,8 +23,18 @@ const Header = () => {
       <nav className="container-custom relative z-10">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="text-2xl md:text-3xl font-heading font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent hover:scale-105 transition-transform duration-300">
-            Work4Studio
+          <Link to="/" className="group flex items-center space-x-3 hover:scale-105 transition-transform duration-300">
+            <div className="relative">
+              {/* Background glow */}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-accent/30 rounded-xl blur-lg group-hover:blur-xl transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
+              
+              {/* Logo text */}
+              <div className="relative px-4 py-2 bg-gradient-to-r from-background/80 to-background/60 backdrop-blur-sm rounded-xl border border-border/50 group-hover:border-primary/30 transition-all duration-300">
+                <span className="font-logo font-bold text-2xl md:text-3xl bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent group-hover:from-accent group-hover:via-primary group-hover:to-accent transition-all duration-500">
+                  Work<span className="text-primary group-hover:text-accent transition-colors duration-500">4</span>Studio
+                </span>
+              </div>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
