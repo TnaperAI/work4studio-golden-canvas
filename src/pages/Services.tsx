@@ -24,18 +24,32 @@ interface Service {
   sort_order: number;
 }
 
+interface PageSEO {
+  page_title: string;
+  meta_title: string;
+  meta_description: string;
+  meta_keywords: string;
+  h1_tag: string;
+  canonical_url: string;
+  og_title: string;
+  og_description: string;
+  og_image: string;
+}
+
 const Services = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [services, setServices] = useState<Service[]>([]);
+  const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
   const [loading, setLoading] = useState(true);
   const { getContent } = useSiteContent();
   useScrollAnimation();
 
   useEffect(() => {
-    const fetchServices = async () => {
+    const fetchData = async () => {
       try {
         console.log('🔄 Starting to fetch services...');
         
+        // Fetch services
         const { data, error } = await supabase
           .from('services')
           .select('*')
@@ -49,16 +63,81 @@ const Services = () => {
           console.log('✅ Successfully loaded services:', data);
           setServices(data || []);
         }
-      } catch (err) {
-        console.error('💥 Unexpected error:', err);
+
+        // Fetch SEO data
+        const { data: seoData, error: seoError } = await supabase
+          .from('page_seo')
+          .select('*')
+          .eq('page_slug', 'services')
+          .maybeSingle();
+
+        if (seoError) {
+          console.error('SEO error:', seoError);
+        } else {
+          setPageSEO(seoData);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
         setServices([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchServices();
+    fetchData();
   }, []);
+
+  // Обновляем SEO теги когда загружаются данные
+  useEffect(() => {
+    if (pageSEO) {
+      // Обновляем title
+      if (pageSEO.page_title) {
+        document.title = pageSEO.page_title;
+      }
+
+      // Обновляем meta теги
+      const updateMetaTag = (name: string, content: string) => {
+        if (!content) return;
+        let meta = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement;
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.name = name;
+          document.head.appendChild(meta);
+        }
+        meta.content = content;
+      };
+
+      const updatePropertyTag = (property: string, content: string) => {
+        if (!content) return;
+        let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.setAttribute('property', property);
+          document.head.appendChild(meta);
+        }
+        meta.content = content;
+      };
+
+      // Обновляем canonical URL
+      if (pageSEO.canonical_url) {
+        let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+        if (!canonical) {
+          canonical = document.createElement('link');
+          canonical.rel = 'canonical';
+          document.head.appendChild(canonical);
+        }
+        canonical.href = pageSEO.canonical_url;
+      }
+
+      // Устанавливаем мета теги
+      updateMetaTag('description', pageSEO.meta_description);
+      updateMetaTag('keywords', pageSEO.meta_keywords);
+      updatePropertyTag('og:title', pageSEO.og_title);
+      updatePropertyTag('og:description', pageSEO.og_description);
+      updatePropertyTag('og:image', pageSEO.og_image);
+      updatePropertyTag('og:type', 'website');
+    }
+  }, [pageSEO]);
 
   const formatPrice = (from: number | null, to: number | null) => {
     if (!from) return 'Цена не указана';

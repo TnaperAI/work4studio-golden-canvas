@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,6 +30,18 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+interface PageSEO {
+  page_title: string;
+  meta_title: string;
+  meta_description: string;
+  meta_keywords: string;
+  h1_tag: string;
+  canonical_url: string;
+  og_title: string;
+  og_description: string;
+  og_image: string;
+}
+
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -37,10 +49,85 @@ const Contact = () => {
     phone: '',
     message: ''
   });
+  const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   
   useScrollAnimation();
+
+  useEffect(() => {
+    const fetchSEO = async () => {
+      try {
+        const { data: seoData, error } = await supabase
+          .from('page_seo')
+          .select('*')
+          .eq('page_slug', 'contact')
+          .maybeSingle();
+
+        if (error) {
+          console.error('SEO error:', error);
+        } else {
+          setPageSEO(seoData);
+        }
+      } catch (error) {
+        console.error('Error fetching SEO data:', error);
+      }
+    };
+
+    fetchSEO();
+  }, []);
+
+  // Обновляем SEO теги когда загружаются данные
+  useEffect(() => {
+    if (pageSEO) {
+      // Обновляем title
+      if (pageSEO.page_title) {
+        document.title = pageSEO.page_title;
+      }
+
+      // Обновляем meta теги
+      const updateMetaTag = (name: string, content: string) => {
+        if (!content) return;
+        let meta = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement;
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.name = name;
+          document.head.appendChild(meta);
+        }
+        meta.content = content;
+      };
+
+      const updatePropertyTag = (property: string, content: string) => {
+        if (!content) return;
+        let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.setAttribute('property', property);
+          document.head.appendChild(meta);
+        }
+        meta.content = content;
+      };
+
+      // Обновляем canonical URL
+      if (pageSEO.canonical_url) {
+        let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+        if (!canonical) {
+          canonical = document.createElement('link');
+          canonical.rel = 'canonical';
+          document.head.appendChild(canonical);
+        }
+        canonical.href = pageSEO.canonical_url;
+      }
+
+      // Устанавливаем мета теги
+      updateMetaTag('description', pageSEO.meta_description);
+      updateMetaTag('keywords', pageSEO.meta_keywords);
+      updatePropertyTag('og:title', pageSEO.og_title);
+      updatePropertyTag('og:description', pageSEO.og_description);
+      updatePropertyTag('og:image', pageSEO.og_image);
+      updatePropertyTag('og:type', 'website');
+    }
+  }, [pageSEO]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

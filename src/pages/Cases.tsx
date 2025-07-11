@@ -49,6 +49,18 @@ interface Case {
   sort_order: number;
 }
 
+interface PageSEO {
+  page_title: string;
+  meta_title: string;
+  meta_description: string;
+  meta_keywords: string;
+  h1_tag: string;
+  canonical_url: string;
+  og_title: string;
+  og_description: string;
+  og_image: string;
+}
+
 const categoryNames: Record<string, string> = {
   website: 'Веб-сайт',
   ecommerce: 'Интернет-магазин',
@@ -73,14 +85,102 @@ const Cases = () => {
   const { slug } = useParams();
   const [cases, setCases] = useState<Case[]>([]);
   const [selectedCase, setSelectedCase] = useState<Case | null>(null);
+  const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   
   useScrollAnimation();
 
   useEffect(() => {
-    fetchCases();
+    fetchCasesAndSEO();
   }, []);
+
+  const fetchCasesAndSEO = async () => {
+    try {
+      // Fetch cases
+      const { data, error } = await supabase
+        .from('cases')
+        .select('*')
+        .eq('is_active', true)
+        .order('is_featured', { ascending: false })
+        .order('sort_order', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching cases:', error);
+      } else {
+        setCases(data || []);
+      }
+
+      // Fetch SEO data
+      const { data: seoData, error: seoError } = await supabase
+        .from('page_seo')
+        .select('*')
+        .eq('page_slug', 'cases')
+        .maybeSingle();
+
+      if (seoError) {
+        console.error('SEO error:', seoError);
+      } else {
+        setPageSEO(seoData);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Обновляем SEO теги когда загружаются данные
+  useEffect(() => {
+    if (pageSEO) {
+      // Обновляем title
+      if (pageSEO.page_title) {
+        document.title = pageSEO.page_title;
+      }
+
+      // Обновляем meta теги
+      const updateMetaTag = (name: string, content: string) => {
+        if (!content) return;
+        let meta = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement;
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.name = name;
+          document.head.appendChild(meta);
+        }
+        meta.content = content;
+      };
+
+      const updatePropertyTag = (property: string, content: string) => {
+        if (!content) return;
+        let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.setAttribute('property', property);
+          document.head.appendChild(meta);
+        }
+        meta.content = content;
+      };
+
+      // Обновляем canonical URL
+      if (pageSEO.canonical_url) {
+        let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+        if (!canonical) {
+          canonical = document.createElement('link');
+          canonical.rel = 'canonical';
+          document.head.appendChild(canonical);
+        }
+        canonical.href = pageSEO.canonical_url;
+      }
+
+      // Устанавливаем мета теги
+      updateMetaTag('description', pageSEO.meta_description);
+      updateMetaTag('keywords', pageSEO.meta_keywords);
+      updatePropertyTag('og:title', pageSEO.og_title);
+      updatePropertyTag('og:description', pageSEO.og_description);
+      updatePropertyTag('og:image', pageSEO.og_image);
+      updatePropertyTag('og:type', 'website');
+    }
+  }, [pageSEO]);
 
   // Перезапускаем анимацию скролла после загрузки данных
   useEffect(() => {
@@ -103,22 +203,6 @@ const Cases = () => {
       setSelectedCase(null);
     }
   }, [slug, cases]);
-
-  const fetchCases = async () => {
-    const { data, error } = await supabase
-      .from('cases')
-      .select('*')
-      .eq('is_active', true)
-      .order('is_featured', { ascending: false })
-      .order('sort_order', { ascending: true });
-
-    if (error) {
-      console.error('Error fetching cases:', error);
-    } else {
-      setCases(data || []);
-    }
-    setLoading(false);
-  };
 
   const filteredCases = cases.filter(caseItem => {
     const matchesCategory = selectedCategory === 'all' || caseItem.category === selectedCategory;
