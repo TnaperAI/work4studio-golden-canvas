@@ -132,6 +132,25 @@ const ContactFormModal = ({ isOpen, onClose }: ContactFormModalProps) => {
               />
             </div>
           </div>
+
+          <div className="text-sm text-muted-foreground text-center mb-6">
+            Отправляя заявку, вы соглашаетесь с{' '}
+            <a 
+              href="/legal/privacy_policy" 
+              target="_blank"
+              className="text-primary hover:underline"
+            >
+              политикой конфиденциальности
+            </a>{' '}
+            и{' '}
+            <a 
+              href="/legal/terms_of_service" 
+              target="_blank"
+              className="text-primary hover:underline"
+            >
+              пользовательским соглашением
+            </a>
+          </div>
           
           <div className="flex gap-3">
             <button

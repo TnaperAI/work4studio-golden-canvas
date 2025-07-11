@@ -215,6 +215,26 @@ const Contact = () => {
                       className="text-lg bg-background border border-border rounded-2xl"
                     />
                   </div>
+                  
+                  <div className="text-sm text-muted-foreground text-center">
+                    Отправляя заявку, вы соглашаетесь с{' '}
+                    <Link 
+                      to="/legal/privacy_policy" 
+                      target="_blank"
+                      className="text-primary hover:underline"
+                    >
+                      политикой конфиденциальности
+                    </Link>{' '}
+                    и{' '}
+                    <Link 
+                      to="/legal/terms_of_service" 
+                      target="_blank"
+                      className="text-primary hover:underline"
+                    >
+                      пользовательским соглашением
+                    </Link>
+                  </div>
+                  
                   <Button
                     type="submit"
                     disabled={isSubmitting}
