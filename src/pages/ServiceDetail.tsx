@@ -93,13 +93,22 @@ const ServiceDetail = () => {
       {/* Breadcrumb */}
       <section className="pt-24 pb-4 border-b border-border">
         <div className="container mx-auto px-4">
-          <div className="flex items-center gap-2 text-muted-foreground">
+          <div className="flex items-center gap-2 text-muted-foreground mb-4">
             <Link to="/" className="hover:text-primary transition-colors">Главная</Link>
             <span>/</span>
             <Link to="/services" className="hover:text-primary transition-colors">Услуги</Link>
             <span>/</span>
             <span className="text-foreground">{serviceData.title}</span>
           </div>
+          
+          {/* Back Button */}
+          <Link 
+            to="/services" 
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors group"
+          >
+            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+            <span className="text-sm font-medium">Назад к услугам</span>
+          </Link>
         </div>
       </section>
 
@@ -109,15 +118,6 @@ const ServiceDetail = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Main Content */}
             <div className="lg:col-span-2">
-              {/* Back Button */}
-              <Link 
-                to="/services" 
-                className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6 group"
-              >
-                <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-                <span className="text-sm font-medium">Назад к услугам</span>
-              </Link>
-              
               <Badge variant="secondary" className="mb-4">
                 {serviceData.title}
               </Badge>
