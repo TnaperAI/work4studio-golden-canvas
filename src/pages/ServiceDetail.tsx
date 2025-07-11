@@ -105,41 +105,74 @@ const ServiceDetail = () => {
 
       {/* Hero Section */}
       <section className="py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <Badge variant="secondary" className="mb-4">
-              {serviceData.title}
-            </Badge>
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            {/* Main Content */}
+            <div className="lg:col-span-2">
+              <Badge variant="secondary" className="mb-4">
+                {serviceData.title}
+              </Badge>
+              
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground">
+                {serviceData.short_description}
+              </h1>
+              
+              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+                {serviceData.description}
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button 
+                  size="lg" 
+                  onClick={() => setShowContactForm(true)}
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
+                >
+                  Заказать {serviceData.title?.toLowerCase()}
+                </Button>
+                <Button 
+                  variant="outline"
+                  size="lg" 
+                  onClick={() => setShowContactForm(true)}
+                >
+                  Получить консультацию
+                </Button>
+              </div>
+            </div>
             
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground">
-              {serviceData.short_description}
-            </h1>
-            
-            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-              {serviceData.description}
-            </p>
-            
-            <Card className="mb-8 bg-card border-border">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-foreground">
+            {/* Sidebar with Price */}
+            <div className="lg:col-span-1">
+              <Card className="sticky top-24 bg-card border-border">
+                <CardContent className="p-6">
+                  <div className="text-center mb-6">
+                    <div className="text-3xl font-bold text-foreground mb-2">
                       от {serviceData.price_from?.toLocaleString() || 'Цена не указана'}
                     </div>
                     <div className="text-muted-foreground">Стоимость работ</div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <div className="text-center">
-              <Button 
-                size="lg" 
-                onClick={() => setShowContactForm(true)}
-                className="bg-primary text-primary-foreground hover:bg-primary/90"
-              >
-                Заказать {serviceData.title?.toLowerCase()}
-              </Button>
+                  
+                  <Button 
+                    className="w-full mb-4"
+                    onClick={() => setShowContactForm(true)}
+                  >
+                    Обсудить проект
+                  </Button>
+                  
+                  <div className="space-y-3 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                      <span>Бесплатная консультация</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                      <span>Ответим в течение часа</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                      <span>Поддержка 3 месяца</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
@@ -148,24 +181,22 @@ const ServiceDetail = () => {
       {/* Features Section */}
       {serviceData.features && serviceData.features.length > 0 && (
         <section className="py-16 bg-secondary">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
-                Что входит в работу
-              </h2>
-              
-              <div className="grid gap-4 md:grid-cols-2">
-                {serviceData.features.map((feature, index) => (
-                  <Card key={index} className="bg-card border-border">
-                    <CardContent className="p-6">
-                      <div className="flex items-start gap-4">
-                        <CheckCircle className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
-                        <span className="text-foreground font-medium">{feature}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+          <div className="container mx-auto px-4 max-w-7xl">
+            <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
+              Что входит в работу
+            </h2>
+            
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {serviceData.features.map((feature, index) => (
+                <Card key={index} className="bg-card border-border hover:shadow-lg transition-shadow duration-300">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <CheckCircle className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                      <span className="text-foreground font-medium">{feature}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </section>
@@ -173,62 +204,71 @@ const ServiceDetail = () => {
 
       {/* FAQ Section */}
       <section className="py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
-              Частые вопросы
-            </h2>
+        <div className="container mx-auto px-4 max-w-6xl">
+          <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
+            Частые вопросы
+          </h2>
+          
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card className="bg-card border-border hover:shadow-lg transition-shadow duration-300">
+              <CardContent className="p-6">
+                <h3 className="font-bold text-lg mb-3 text-foreground">
+                  Сколько времени займёт разработка?
+                </h3>
+                <p className="text-muted-foreground">
+                  В зависимости от сложности проекта, от 3 до 14 рабочих дней.
+                </p>
+              </CardContent>
+            </Card>
             
-            <div className="space-y-6">
-              <Card className="bg-card border-border">
-                <CardContent className="p-6">
-                  <h3 className="font-bold text-lg mb-3 text-foreground">
-                    Сколько времени займёт разработка?
-                  </h3>
-                  <p className="text-muted-foreground">
-                    В зависимости от сложности проекта, от 3 до 14 рабочих дней.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-card border-border">
-                <CardContent className="p-6">
-                  <h3 className="font-bold text-lg mb-3 text-foreground">
-                    Входит ли поддержка в стоимость?
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Да, базовая техническая поддержка входит в стоимость на 3 месяца.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-card border-border">
-                <CardContent className="p-6">
-                  <h3 className="font-bold text-lg mb-3 text-foreground">
-                    Можно ли вносить изменения?
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Конечно! Мы предусматриваем 2 раунда правок в рамках проекта.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
+            <Card className="bg-card border-border hover:shadow-lg transition-shadow duration-300">
+              <CardContent className="p-6">
+                <h3 className="font-bold text-lg mb-3 text-foreground">
+                  Входит ли поддержка в стоимость?
+                </h3>
+                <p className="text-muted-foreground">
+                  Да, базовая техническая поддержка входит в стоимость на 3 месяца.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-card border-border hover:shadow-lg transition-shadow duration-300">
+              <CardContent className="p-6">
+                <h3 className="font-bold text-lg mb-3 text-foreground">
+                  Можно ли вносить изменения?
+                </h3>
+                <p className="text-muted-foreground">
+                  Конечно! Мы предусматриваем 2 раунда правок в рамках проекта.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-card border-border hover:shadow-lg transition-shadow duration-300">
+              <CardContent className="p-6">
+                <h3 className="font-bold text-lg mb-3 text-foreground">
+                  Предоставляете ли гарантию?
+                </h3>
+                <p className="text-muted-foreground">
+                  Да, предоставляем гарантию на все выполненные работы сроком 6 месяцев.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="py-16 bg-secondary/50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <Card className="bg-card border-border">
-              <CardContent className="p-8">
-                <h2 className="text-3xl font-bold mb-4 text-foreground">
-                  Готовы начать проект?
-                </h2>
-                <p className="text-muted-foreground mb-8 text-lg">
-                  Обсудим ваши задачи, подберём оптимальное решение и запустим проект в кратчайшие сроки
-                </p>
+        <div className="container mx-auto px-4 max-w-5xl">
+          <Card className="bg-card border-border">
+            <CardContent className="p-8 md:p-12 text-center">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+                Готовы начать проект?
+              </h2>
+              <p className="text-muted-foreground mb-8 text-lg max-w-3xl mx-auto">
+                Обсудим ваши задачи, подберём оптимальное решение и запустим проект в кратчайшие сроки
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg" 
                   onClick={() => setShowContactForm(true)}
@@ -236,9 +276,16 @@ const ServiceDetail = () => {
                 >
                   Получить консультацию
                 </Button>
-              </CardContent>
-            </Card>
-          </div>
+                <Button 
+                  variant="outline"
+                  size="lg" 
+                  onClick={() => setShowContactForm(true)}
+                >
+                  Обсудить бюджет
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
