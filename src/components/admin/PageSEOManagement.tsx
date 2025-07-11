@@ -236,12 +236,9 @@ const PageSEOManagement = () => {
               <Label>Страница</Label>
               <Select value={selectedPage} onValueChange={setSelectedPage} disabled={servicePagesLoading}>
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder={servicePagesLoading ? 'Загружаем страницы...' : 'Выберите страницу'} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem disabled value="">
-                    {servicePagesLoading ? 'Загружаем страницы...' : 'Выберите страницу'}
-                  </SelectItem>
                   {allPages.map((page) => (
                     <SelectItem key={page.slug} value={page.slug}>
                       {page.name}
