@@ -11,7 +11,8 @@ import {
   LogOut, 
   Menu,
   X,
-  Scale
+  Scale,
+  Globe
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -28,6 +29,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     { name: 'Дашборд', href: '#dashboard', icon: Home },
     { name: 'Контент сайта', href: '#content', icon: FileText },
     { name: 'Заявки', href: '#submissions', icon: Users },
+    { name: 'SEO настройки', href: '#seo', icon: Globe },
     { name: 'Правовые документы', href: '#legal', icon: Scale },
     { name: 'Настройки', href: '#settings', icon: Settings },
   ];
@@ -41,6 +43,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     if (path === '#dashboard') return hash === 'dashboard' || hash === '';
     if (path === '#content') return hash === 'content';
     if (path === '#submissions') return hash === 'submissions';
+    if (path === '#seo') return hash === 'seo';
     if (path === '#legal') return hash === 'legal';
     if (path === '#settings') return hash === 'settings';
     return false;

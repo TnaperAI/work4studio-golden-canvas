@@ -5,8 +5,9 @@ import ContactSubmissionsManagement from './ContactSubmissionsManagement';
 import PageEditor from './PageEditor';
 import Settings from './Settings';
 import LegalDocumentsManagement from './LegalDocumentsManagement';
+import PageSEOManagement from './PageSEOManagement';
 
-type AdminView = 'dashboard' | 'content' | 'page-editor' | 'submissions' | 'legal' | 'settings';
+type AdminView = 'dashboard' | 'content' | 'page-editor' | 'submissions' | 'legal' | 'seo' | 'settings';
 
 const AdminDashboard = () => {
   const [currentView, setCurrentView] = useState<AdminView>('dashboard');
@@ -21,6 +22,8 @@ const AdminDashboard = () => {
         setCurrentView('submissions');
       } else if (hash === 'legal') {
         setCurrentView('legal');
+      } else if (hash === 'seo') {
+        setCurrentView('seo');
       } else if (hash === 'settings') {
         setCurrentView('settings');
       } else if (hash === 'dashboard' || hash === '') {
@@ -74,6 +77,10 @@ const AdminDashboard = () => {
 
   if (currentView === 'legal') {
     return <LegalDocumentsManagement />;
+  }
+
+  if (currentView === 'seo') {
+    return <PageSEOManagement />;
   }
 
   if (currentView === 'settings') {

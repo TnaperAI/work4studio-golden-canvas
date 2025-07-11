@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart, Users, FileText, Settings, TrendingUp } from 'lucide-react';
+import { BarChart, Users, FileText, Settings, TrendingUp, Globe } from 'lucide-react';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -153,9 +153,12 @@ const Dashboard = () => {
                 <span className="text-sm">Просмотреть заявки</span>
               </div>
             </button>
-            <button className="w-full text-left p-2 rounded hover:bg-muted transition-colors">
+            <button 
+              className="w-full text-left p-2 rounded hover:bg-muted transition-colors"
+              onClick={() => window.location.hash = 'seo'}
+            >
               <div className="flex items-center space-x-2">
-                <Settings className="h-4 w-4" />
+                <Globe className="h-4 w-4" />
                 <span className="text-sm">Настройки SEO</span>
               </div>
             </button>
