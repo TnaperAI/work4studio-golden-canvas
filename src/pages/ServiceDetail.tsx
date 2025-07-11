@@ -5,6 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb';
 import ContactFormModal from '@/components/ContactFormModal';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -91,15 +99,27 @@ const ServiceDetail = () => {
       <Header />
       
       {/* Breadcrumb */}
-      <section className="pt-24 pb-4 border-b border-border">
+      <section className="pt-24 pb-4 bg-gradient-to-r from-background/95 via-background/98 to-background/95 border-b border-border/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 max-w-7xl">
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Link to="/" className="hover:text-primary transition-colors">Главная</Link>
-            <span>/</span>
-            <Link to="/services" className="hover:text-primary transition-colors">Услуги</Link>
-            <span>/</span>
-            <span className="text-foreground">{serviceData.title}</span>
-          </div>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/">Главная</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/services">Услуги</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{serviceData.title}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
         </div>
       </section>
 
