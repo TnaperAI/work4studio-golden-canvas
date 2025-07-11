@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, X, Edit, Trash2, Users, Building } from 'lucide-react';
+import { Plus, X, Edit, Trash2, Users, Building, Globe } from 'lucide-react';
 
 interface TeamMember {
   id: string;
@@ -34,10 +34,25 @@ interface CompanyInfo {
   description: string;
 }
 
+interface PageSEO {
+  id: string;
+  page_slug: string;
+  page_title: string;
+  meta_title: string;
+  meta_description: string;
+  meta_keywords: string;
+  h1_tag: string;
+  canonical_url: string;
+  og_title: string;
+  og_description: string;
+  og_image: string;
+}
+
 const AboutManagement = () => {
   const { toast } = useToast();
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
+  const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
   const [loading, setLoading] = useState(true);
   const [editingTeamMember, setEditingTeamMember] = useState<TeamMember | null>(null);
   const [showTeamForm, setShowTeamForm] = useState(false);
@@ -77,8 +92,18 @@ const AboutManagement = () => {
 
       if (companyError) throw companyError;
 
+      // Fetch page SEO
+      const { data: seoData, error: seoError } = await supabase
+        .from('page_seo')
+        .select('*')
+        .eq('page_slug', 'about')
+        .maybeSingle();
+
+      if (seoError) throw seoError;
+
       setTeam(teamData || []);
       setCompanyInfo(companyData);
+      setPageSEO(seoData);
     } catch (error: any) {
       toast({
         title: 'Ошибка',
@@ -144,6 +169,34 @@ const AboutManagement = () => {
       toast({
         title: 'Ошибка',
         description: 'Не удалось сохранить участника команды',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const savePageSEO = async () => {
+    if (!pageSEO) return;
+
+    try {
+      const seoData = {
+        ...pageSEO,
+        page_slug: 'about'
+      };
+
+      const { error } = await supabase
+        .from('page_seo')
+        .upsert(seoData, { onConflict: 'page_slug' });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Успешно',
+        description: 'SEO настройки страницы обновлены',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось сохранить SEO настройки',
         variant: 'destructive',
       });
     }
@@ -285,6 +338,7 @@ const AboutManagement = () => {
         <TabsList>
           <TabsTrigger value="company">Информация о компании</TabsTrigger>
           <TabsTrigger value="team">Команда</TabsTrigger>
+          <TabsTrigger value="seo">SEO настройки</TabsTrigger>
         </TabsList>
 
         <TabsContent value="company" className="space-y-4">
@@ -631,6 +685,162 @@ const AboutManagement = () => {
               </CardContent>
             </Card>
           )}
+        </TabsContent>
+
+        <TabsContent value="seo" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Globe className="h-5 w-5" />
+                SEO настройки страницы "О нас"
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {pageSEO ? (
+                <>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Заголовок страницы (Page Title)</Label>
+                      <Input
+                        value={pageSEO.page_title || ''}
+                        onChange={(e) => setPageSEO({
+                          ...pageSEO,
+                          page_title: e.target.value
+                        })}
+                        placeholder="О нас - Название компании"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>H1 заголовок</Label>
+                      <Input
+                        value={pageSEO.h1_tag || ''}
+                        onChange={(e) => setPageSEO({
+                          ...pageSEO,
+                          h1_tag: e.target.value
+                        })}
+                        placeholder="О нашей компании"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Meta Title</Label>
+                      <Input
+                        value={pageSEO.meta_title || ''}
+                        onChange={(e) => setPageSEO({
+                          ...pageSEO,
+                          meta_title: e.target.value
+                        })}
+                        placeholder="О нас | Название компании"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Meta Keywords (через запятую)</Label>
+                      <Input
+                        value={pageSEO.meta_keywords || ''}
+                        onChange={(e) => setPageSEO({
+                          ...pageSEO,
+                          meta_keywords: e.target.value
+                        })}
+                        placeholder="компания, команда, опыт"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Meta Description</Label>
+                    <Textarea
+                      value={pageSEO.meta_description || ''}
+                      onChange={(e) => setPageSEO({
+                        ...pageSEO,
+                        meta_description: e.target.value
+                      })}
+                      placeholder="Краткое описание страницы для поисковых систем"
+                      rows={3}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Canonical URL</Label>
+                    <Input
+                      value={pageSEO.canonical_url || ''}
+                      onChange={(e) => setPageSEO({
+                        ...pageSEO,
+                        canonical_url: e.target.value
+                      })}
+                      placeholder="https://yoursite.com/about"
+                    />
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Open Graph Title</Label>
+                      <Input
+                        value={pageSEO.og_title || ''}
+                        onChange={(e) => setPageSEO({
+                          ...pageSEO,
+                          og_title: e.target.value
+                        })}
+                        placeholder="О нас - Название компании"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Open Graph Image URL</Label>
+                      <Input
+                        value={pageSEO.og_image || ''}
+                        onChange={(e) => setPageSEO({
+                          ...pageSEO,
+                          og_image: e.target.value
+                        })}
+                        placeholder="https://yoursite.com/og-about.jpg"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Open Graph Description</Label>
+                    <Textarea
+                      value={pageSEO.og_description || ''}
+                      onChange={(e) => setPageSEO({
+                        ...pageSEO,
+                        og_description: e.target.value
+                      })}
+                      placeholder="Описание для социальных сетей"
+                      rows={3}
+                    />
+                  </div>
+
+                  <Button onClick={savePageSEO}>
+                    Сохранить SEO настройки
+                  </Button>
+                </>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground mb-4">
+                    SEO настройки для страницы "О нас" не найдены
+                  </p>
+                  <Button 
+                    onClick={() => setPageSEO({
+                      id: '',
+                      page_slug: 'about',
+                      page_title: '',
+                      meta_title: '',
+                      meta_description: '',
+                      meta_keywords: '',
+                      h1_tag: '',
+                      canonical_url: '',
+                      og_title: '',
+                      og_description: '',
+                      og_image: ''
+                    })}
+                  >
+                    Создать SEO настройки
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
