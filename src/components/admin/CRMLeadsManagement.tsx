@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Building2, Mail, Phone, MapPin, Calendar, Plus, Search, Filter } from 'lucide-react';
+import { Building2, Mail, Phone, MapPin, Calendar, Plus, Search, Filter, Download, Play } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
@@ -63,6 +63,7 @@ const CRMLeadsManagement = () => {
   const [countryFilter, setCountryFilter] = useState('all');
   const [selectedCompany, setSelectedCompany] = useState<ParsedCompany | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isParsingLoading, setIsParsingLoading] = useState(false);
 
   const fetchCompanies = async () => {
     try {
@@ -149,6 +150,37 @@ const CRMLeadsManagement = () => {
     }
   };
 
+  const startParsing = async () => {
+    setIsParsingLoading(true);
+    try {
+      console.log('Starting Russian companies parsing...');
+      
+      const { data, error } = await supabase.functions.invoke('parse-russia-companies');
+      
+      if (error) throw error;
+      
+      const result = data;
+      
+      toast({
+        title: 'Парсинг завершен!',
+        description: `Найдено компаний: ${result.companies_found}, сохранено: ${result.companies_saved}`,
+      });
+      
+      // Обновляем список компаний
+      await fetchCompanies();
+      
+    } catch (error) {
+      console.error('Error during parsing:', error);
+      toast({
+        title: 'Ошибка парсинга',
+        description: 'Не удалось запустить парсинг компаний',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsParsingLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchCompanies();
   }, [searchTerm, statusFilter, countryFilter]);
@@ -165,10 +197,29 @@ const CRMLeadsManagement = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">CRM - Управление лидами</h1>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Добавить компанию
-        </Button>
+        <div className="flex space-x-3">
+          <Button 
+            onClick={startParsing}
+            disabled={isParsingLoading}
+            className="bg-green-600 hover:bg-green-700"
+          >
+            {isParsingLoading ? (
+              <>
+                <Download className="mr-2 h-4 w-4 animate-spin" />
+                Парсинг...
+              </>
+            ) : (
+              <>
+                <Play className="mr-2 h-4 w-4" />
+                Запустить парсинг РФ
+              </>
+            )}
+          </Button>
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            Добавить компанию
+          </Button>
+        </div>
       </div>
 
       {/* Статистика */}
