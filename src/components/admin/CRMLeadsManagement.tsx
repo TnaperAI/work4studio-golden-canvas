@@ -311,6 +311,7 @@ const CRMLeadsManagement = () => {
                 <TableHead>Локация</TableHead>
                 <TableHead>Контакты</TableHead>
                 <TableHead>Статус</TableHead>
+                <TableHead>Источник</TableHead>
                 <TableHead>Дата регистрации</TableHead>
                 <TableHead>Действия</TableHead>
               </TableRow>
@@ -318,13 +319,13 @@ const CRMLeadsManagement = () => {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8">
+                  <TableCell colSpan={8} className="text-center py-8">
                     Загрузка...
                   </TableCell>
                 </TableRow>
               ) : companies.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8">
+                  <TableCell colSpan={8} className="text-center py-8">
                     Компании не найдены
                   </TableCell>
                 </TableRow>
@@ -385,6 +386,11 @@ const CRMLeadsManagement = () => {
                           ))}
                         </SelectContent>
                       </Select>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={company.source_url === 'dadata.ru' ? 'default' : 'secondary'}>
+                        {company.source_url === 'dadata.ru' ? '🎯 DaData' : company.source_url === 'demo-data' ? '⚠️ Демо' : company.source_url || 'Неизвестно'}
+                      </Badge>
                     </TableCell>
                     <TableCell>
                       {company.registration_date ? (
