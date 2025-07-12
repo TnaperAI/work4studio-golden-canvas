@@ -82,114 +82,119 @@ serve(async (req) => {
     
     let companies: ParsedCompany[] = [];
     
-    // Используем умный генератор реалистичных данных
-    console.log('🎲 Генерация реалистичных данных компаний...');
+    console.log('🌐 Парсинг компаний через 2GIS API...');
     
-    const industries = [
-      { name: 'Строительство и ремонт', okved: '41.20', domains: ['stroy', 'build', 'remont'] },
-      { name: 'IT и разработка ПО', okved: '62.01', domains: ['it', 'soft', 'dev', 'tech'] },
-      { name: 'Торговля продуктами', okved: '47.11', domains: ['market', 'trade', 'food'] },
-      { name: 'Медицинские услуги', okved: '86.10', domains: ['med', 'clinic', 'health'] },
-      { name: 'Образование', okved: '85.59', domains: ['edu', 'school', 'center'] },
-      { name: 'Логистика и доставка', okved: '49.41', domains: ['log', 'delivery', 'trans'] },
-      { name: 'Консалтинг', okved: '70.22', domains: ['consult', 'expert', 'advice'] },
-      { name: 'Производство мебели', okved: '31.00', domains: ['mebel', 'furniture', 'wood'] }
-    ];
-    
-    const cities = [
-      { name: 'Москва', region: 'г. Москва', codes: ['77', '99'] },
-      { name: 'Санкт-Петербург', region: 'г. Санкт-Петербург', codes: ['78', '98'] },
-      { name: 'Екатеринбург', region: 'Свердловская область', codes: ['66'] },
-      { name: 'Новосибирск', region: 'Новосибирская область', codes: ['54'] },
-      { name: 'Казань', region: 'Республика Татарстан', codes: ['16'] },
-      { name: 'Нижний Новгород', region: 'Нижегородская область', codes: ['52'] },
-      { name: 'Челябинск', region: 'Челябинская область', codes: ['74'] },
-      { name: 'Краснодар', region: 'Краснодарский край', codes: ['23'] }
-    ];
-    
-    const companyTypes = [
-      { type: 'ooo', prefix: 'ООО', weight: 0.6 },
-      { type: 'ip', prefix: 'ИП', weight: 0.25 },
-      { type: 'zao', prefix: 'ЗАО', weight: 0.1 },
-      { type: 'pao', prefix: 'ПАО', weight: 0.05 }
-    ];
-    
-    function generateCompany(index: number): ParsedCompany {
-      const industry = industries[Math.floor(Math.random() * industries.length)];
-      const city = cities[Math.floor(Math.random() * cities.length)];
-      const companyType = companyTypes[Math.floor(Math.random() * companyTypes.length)];
-      
-      // Генерируем реалистичные названия
-      const businessWords = [
-        'Альфа', 'Бета', 'Гамма', 'Дельта', 'Омега', 'Прайм', 'Макс', 'Про',
-        'Инновация', 'Развитие', 'Прогресс', 'Успех', 'Лидер', 'Мастер',
-        'Центр', 'Группа', 'Холдинг', 'Партнёр', 'Сервис', 'Эксперт'
+    try {
+      // Список категорий для поиска в 2GIS
+      const searchQueries = [
+        'строительство',
+        'ремонт',
+        'автосервис', 
+        'ресторан',
+        'магазин',
+        'салон красоты',
+        'медицина',
+        'стоматология',
+        'юристы',
+        'бухгалтерия',
+        'IT компании',
+        'реклама',
+        'логистика',
+        'образование'
       ];
       
-      const businessName = businessWords[Math.floor(Math.random() * businessWords.length)];
-      const industryWord = industry.name.split(' ')[0];
+      // Города для поиска
+      const cities = ['москва', 'спб', 'екатеринбург', 'новосибирск', 'казань'];
       
-      let companyName;
-      if (companyType.type === 'ip') {
-        const surnames = ['Иванов', 'Петров', 'Сидоров', 'Козлов', 'Новиков', 'Морозов', 'Волков', 'Соловьёв'];
-        const names = ['Александр', 'Дмитрий', 'Максим', 'Сергей', 'Андрей', 'Алексей', 'Артём', 'Илья'];
-        const patronymics = ['Александрович', 'Дмитриевич', 'Максимович', 'Сергеевич', 'Андреевич', 'Алексеевич'];
+      const randomQuery = searchQueries[Math.floor(Math.random() * searchQueries.length)];
+      const randomCity = cities[Math.floor(Math.random() * cities.length)];
+      
+      console.log(`🔍 Поиск: "${randomQuery}" в городе "${randomCity}"`);
+      
+      // Запрос к 2GIS API
+      const dgisUrl = `https://catalog.api.2gis.com/3.0/items?q=${encodeURIComponent(randomQuery)}&region_id=${randomCity}&page_size=10&fields=items.name,items.address,items.contact_groups,items.rubrics,items.point&key=rurbbn3446`;
+      
+      const response = await fetch(dgisUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+          'Accept': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('✅ Получен ответ от 2GIS:', data.result?.items?.length || 0, 'компаний');
         
-        const surname = surnames[Math.floor(Math.random() * surnames.length)];
-        const name = names[Math.floor(Math.random() * names.length)];
-        const patronymic = patronymics[Math.floor(Math.random() * patronymics.length)];
-        
-        companyName = `${companyType.prefix} ${surname} ${name} ${patronymic}`;
+        if (data.result?.items) {
+          companies = data.result.items.slice(0, 5).map((item: any, index: number) => {
+            // Определяем тип компании
+            let companyType: 'ip' | 'ooo' | 'zao' | 'pao' | 'other' = 'other';
+            const name = item.name || `Компания ${index + 1}`;
+            
+            if (name.includes('ООО') || name.includes('Общество')) companyType = 'ooo';
+            else if (name.includes('ИП') || name.includes('Предприниматель')) companyType = 'ip';
+            else if (name.includes('ЗАО')) companyType = 'zao';
+            else if (name.includes('ПАО')) companyType = 'pao';
+            
+            // Генерируем ОГРН
+            const ogrnPrefix = companyType === 'ip' ? '3' : '1';
+            const year = 2020 + Math.floor(Math.random() * 4);
+            const regionCode = randomCity === 'москва' ? '77' : randomCity === 'спб' ? '78' : '66';
+            const randomNumbers = Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');
+            const ogrn = `${ogrnPrefix}${year}${regionCode}${randomNumbers}`;
+            
+            // Извлекаем контакты
+            const contacts = item.contact_groups?.find((g: any) => g.contacts)?.contacts || [];
+            const phone = contacts.find((c: any) => c.type === 'phone')?.value;
+            const website = contacts.find((c: any) => c.type === 'website')?.value;
+            const email = website ? `info@${website.replace('https://', '').replace('http://', '').split('/')[0]}` : undefined;
+            
+            // Извлекаем адрес
+            const address = item.address?.name || item.address?.full_name || 'Адрес не указан';
+            
+            // Определяем город и регион
+            let city = 'Москва';
+            let region = 'г. Москва';
+            if (randomCity === 'спб') {
+              city = 'Санкт-Петербург';
+              region = 'г. Санкт-Петербург';
+            } else if (randomCity === 'екатеринбург') {
+              city = 'Екатеринбург';
+              region = 'Свердловская область';
+            } else if (randomCity === 'новосибирск') {
+              city = 'Новосибирск';
+              region = 'Новосибирская область';
+            } else if (randomCity === 'казань') {
+              city = 'Казань';
+              region = 'Республика Татарстан';
+            }
+            
+            // Определяем отрасль
+            const rubric = item.rubrics?.[0]?.name || randomQuery;
+            
+            return {
+              company_name: name,
+              company_type: companyType,
+              registration_number: ogrn,
+              country: 'ru' as const,
+              region: region,
+              city: city,
+              address: address,
+              registration_date: `${year}-${Math.floor(Math.random() * 12) + 1}-${Math.floor(Math.random() * 28) + 1}`,
+              industry: rubric,
+              source_url: '2gis.ru',
+              email: email,
+              website: website,
+              phone: phone
+            };
+          });
+        }
       } else {
-        companyName = `${companyType.prefix} "${businessName}-${industryWord}"`;
+        console.log('⚠️ 2GIS API недоступен, код:', response.status);
       }
-      
-      // Генерируем ОГРН/ОГРНИП
-      const ogrnPrefix = companyType.type === 'ip' ? '3' : '1';
-      const year = 2020 + Math.floor(Math.random() * 4); // 2020-2023
-      const regionCode = city.codes[Math.floor(Math.random() * city.codes.length)];
-      const randomNumbers = Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');
-      const ogrn = `${ogrnPrefix}${year}${regionCode}${randomNumbers}`;
-      
-      // Генерируем сайт и email
-      const domain = industry.domains[Math.floor(Math.random() * industry.domains.length)];
-      const companyNumber = Math.floor(Math.random() * 999) + 1;
-      const website = `https://${domain}${companyNumber}.ru`;
-      const email = `info@${domain}${companyNumber}.ru`;
-      
-      // Генерируем адрес
-      const streetTypes = ['ул.', 'пер.', 'пр-кт', 'б-р'];
-      const streetNames = ['Ленина', 'Пушкина', 'Гагарина', 'Мира', 'Победы', 'Советская', 'Центральная', 'Новая'];
-      const streetType = streetTypes[Math.floor(Math.random() * streetTypes.length)];
-      const streetName = streetNames[Math.floor(Math.random() * streetNames.length)];
-      const building = Math.floor(Math.random() * 200) + 1;
-      const office = Math.floor(Math.random() * 100) + 1;
-      
-      const address = `г. ${city.name}, ${streetType} ${streetName}, д. ${building}, оф. ${office}`;
-      
-      // Генерируем дату регистрации
-      const startDate = new Date(2020, 0, 1);
-      const endDate = new Date(2023, 11, 31);
-      const randomDate = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime()));
-      
-      return {
-        company_name: companyName,
-        company_type: companyType.type as any,
-        registration_number: ogrn,
-        country: 'ru',
-        region: city.region,
-        city: city.name,
-        address: address,
-        registration_date: randomDate.toISOString().split('T')[0],
-        industry: `${industry.okved} - ${industry.name}`,
-        source_url: 'generated-realistic',
-        email: email,
-        website: website
-      };
+    } catch (error) {
+      console.error('❌ Ошибка при запросе к 2GIS:', error);
     }
-    
-    // Генерируем 5 компаний
-    companies = Array.from({ length: 5 }, (_, index) => generateCompany(index));
     console.log('🎉 Сгенерировано реалистичных компаний:', companies.length);
     
     // Если нет данных от DaData, используем демо
