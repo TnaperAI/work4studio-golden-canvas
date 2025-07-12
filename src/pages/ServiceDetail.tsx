@@ -27,6 +27,7 @@ interface ServiceData {
   price_from: number;
   price_to: number;
   features: string[];
+  faq: { question: string; answer: string; }[];
   is_active: boolean;
   meta_title: string;
   meta_description: string;
@@ -61,8 +62,14 @@ const ServiceDetail = () => {
       if (error) {
         console.error('Error fetching service:', error);
         setServiceData(null);
-      } else {
-        setServiceData(data);
+      } else if (data) {
+        setServiceData({
+          ...data,
+          faq: Array.isArray(data.faq) ? data.faq.map((item: any) => ({
+            question: item.question || '',
+            answer: item.answer || ''
+          })) : []
+        });
       }
       setLoading(false);
     };
@@ -298,59 +305,30 @@ const ServiceDetail = () => {
       )}
 
       {/* FAQ Section */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
-            Частые вопросы
-          </h2>
-          
-          <div className="grid gap-6 md:grid-cols-2">
-            <Card className="bg-card border-border hover:shadow-lg transition-shadow duration-300">
-              <CardContent className="p-6">
-                <h3 className="font-bold text-lg mb-3 text-foreground">
-                  Сколько времени займёт разработка?
-                </h3>
-                <p className="text-muted-foreground">
-                  В зависимости от сложности проекта, от 3 до 14 рабочих дней.
-                </p>
-              </CardContent>
-            </Card>
+      {serviceData.faq && serviceData.faq.length > 0 && (
+        <section className="py-16 bg-background">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
+              Частые вопросы
+            </h2>
             
-            <Card className="bg-card border-border hover:shadow-lg transition-shadow duration-300">
-              <CardContent className="p-6">
-                <h3 className="font-bold text-lg mb-3 text-foreground">
-                  Входит ли поддержка в стоимость?
-                </h3>
-                <p className="text-muted-foreground">
-                  Да, базовая техническая поддержка входит в стоимость на 3 месяца.
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-card border-border hover:shadow-lg transition-shadow duration-300">
-              <CardContent className="p-6">
-                <h3 className="font-bold text-lg mb-3 text-foreground">
-                  Можно ли вносить изменения?
-                </h3>
-                <p className="text-muted-foreground">
-                  Конечно! Мы предусматриваем 2 раунда правок в рамках проекта.
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-card border-border hover:shadow-lg transition-shadow duration-300">
-              <CardContent className="p-6">
-                <h3 className="font-bold text-lg mb-3 text-foreground">
-                  Предоставляете ли гарантию?
-                </h3>
-                <p className="text-muted-foreground">
-                  Да, предоставляем гарантию на все выполненные работы сроком 6 месяцев.
-                </p>
-              </CardContent>
-            </Card>
+            <div className="grid gap-6 md:grid-cols-2">
+              {serviceData.faq.map((faqItem, index) => (
+                <Card key={index} className="bg-card border-border hover:shadow-lg transition-shadow duration-300">
+                  <CardContent className="p-6">
+                    <h3 className="font-bold text-lg mb-3 text-foreground">
+                      {faqItem.question}
+                    </h3>
+                    <p className="text-muted-foreground">
+                      {faqItem.answer}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* CTA Section */}
       <section className="py-16 bg-secondary/50">

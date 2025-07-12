@@ -20,6 +20,7 @@ interface Service {
   price_from: number | '';
   price_to: number | '';
   features: string[];
+  faq: { question: string; answer: string; }[];
   is_active: boolean;
   sort_order: number;
   meta_title: string;
@@ -42,6 +43,8 @@ const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
   const [loading, setLoading] = useState(!!serviceId);
   const [saving, setSaving] = useState(false);
   const [newFeature, setNewFeature] = useState('');
+  const [newFaqQuestion, setNewFaqQuestion] = useState('');
+  const [newFaqAnswer, setNewFaqAnswer] = useState('');
   
   const [formData, setFormData] = useState<Service>({
     title: '',
@@ -51,6 +54,7 @@ const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
     price_from: '',
     price_to: '',
     features: [],
+    faq: [],
     is_active: true,
     sort_order: 0,
     meta_title: '',
@@ -90,7 +94,11 @@ const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
       setFormData({
         ...data,
         price_from: data.price_from || '',
-        price_to: data.price_to || ''
+        price_to: data.price_to || '',
+        faq: Array.isArray(data.faq) ? data.faq.map((item: any) => ({
+          question: item.question || '',
+          answer: item.answer || ''
+        })) : []
       });
     }
     setLoading(false);
@@ -177,6 +185,24 @@ const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
     setFormData(prev => ({
       ...prev,
       features: prev.features.filter((_, i) => i !== index)
+    }));
+  };
+
+  const addFaq = () => {
+    if (newFaqQuestion.trim() && newFaqAnswer.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        faq: [...prev.faq, { question: newFaqQuestion.trim(), answer: newFaqAnswer.trim() }]
+      }));
+      setNewFaqQuestion('');
+      setNewFaqAnswer('');
+    }
+  };
+
+  const removeFaq = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      faq: prev.faq.filter((_, i) => i !== index)
     }));
   };
 
@@ -308,6 +334,50 @@ const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
                       </button>
                     </Badge>
                   ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>FAQ для детальной страницы</Label>
+                <div className="space-y-4">
+                  <div className="grid gap-2">
+                    <Input
+                      value={newFaqQuestion}
+                      onChange={(e) => setNewFaqQuestion(e.target.value)}
+                      placeholder="Вопрос..."
+                    />
+                    <Textarea
+                      value={newFaqAnswer}
+                      onChange={(e) => setNewFaqAnswer(e.target.value)}
+                      placeholder="Ответ..."
+                      rows={2}
+                    />
+                    <Button type="button" onClick={addFaq} className="self-start">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Добавить FAQ
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {formData.faq.map((faqItem, index) => (
+                      <Card key={index} className="p-4">
+                        <div className="flex justify-between items-start gap-4">
+                          <div className="flex-1">
+                            <h4 className="font-medium text-sm mb-2">{faqItem.question}</h4>
+                            <p className="text-muted-foreground text-sm">{faqItem.answer}</p>
+                          </div>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => removeFaq(index)}
+                            className="text-destructive hover:text-destructive"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
                 </div>
               </div>
             </CardContent>

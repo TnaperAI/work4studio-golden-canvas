@@ -454,6 +454,7 @@ export type Database = {
           canonical_url: string | null
           created_at: string
           description: string | null
+          faq: Json | null
           features: string[] | null
           h1_tag: string | null
           id: string
@@ -476,6 +477,7 @@ export type Database = {
           canonical_url?: string | null
           created_at?: string
           description?: string | null
+          faq?: Json | null
           features?: string[] | null
           h1_tag?: string | null
           id?: string
@@ -498,6 +500,7 @@ export type Database = {
           canonical_url?: string | null
           created_at?: string
           description?: string | null
+          faq?: Json | null
           features?: string[] | null
           h1_tag?: string | null
           id?: string
