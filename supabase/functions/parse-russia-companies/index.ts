@@ -34,6 +34,12 @@ serve(async (req) => {
 
   try {
     console.log('Starting Russian companies parsing...');
+    console.log('Environment check:');
+    console.log('- SUPABASE_URL:', supabaseUrl ? 'Available' : 'Missing');
+    console.log('- SUPABASE_SERVICE_ROLE_KEY:', supabaseServiceKey ? 'Available' : 'Missing'); 
+    console.log('- OPENROUTER_API_KEY:', openRouterApiKey ? 'Available' : 'Missing');
+    console.log('- DADATA_API_KEY:', dadataApiKey ? 'Available' : 'Missing');
+    console.log('- DADATA_API_KEY length:', dadataApiKey?.length || 0);
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
