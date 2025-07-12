@@ -240,7 +240,7 @@ const ServiceDetail = () => {
                 <CardContent className="p-6">
                   <div className="text-center mb-6">
                     <div className="text-3xl font-bold text-foreground mb-2">
-                      от {serviceData.price_from?.toLocaleString() || 'Цена не указана'}
+                      от {serviceData.price_from?.toLocaleString() || 'Цена не указана'}$
                     </div>
                     <div className="text-muted-foreground">Стоимость работ</div>
                   </div>
