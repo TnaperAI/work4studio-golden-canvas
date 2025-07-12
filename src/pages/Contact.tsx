@@ -282,7 +282,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h4 className="font-semibold text-lg mb-2">Email</h4>
-                      <p className="text-muted-foreground">hello@example.com</p>
+                      <p className="text-muted-foreground">info@work4studio.com</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -290,17 +290,8 @@ const Contact = () => {
                       <Phone className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-lg mb-2">Телефон</h4>
-                      <p className="text-muted-foreground">+7 (000) 000-00-00</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center flex-shrink-0">
-                      <MapPin className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-lg mb-2">Адрес</h4>
-                      <p className="text-muted-foreground">г. Москва, ул. Примерная, д. 1</p>
+                      <h4 className="font-semibold text-lg mb-2">Telegram</h4>
+                      <p className="text-muted-foreground">@work4studio</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -309,7 +300,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h4 className="font-semibold text-lg mb-2">Время работы</h4>
-                      <p className="text-muted-foreground">Пн-Пт: 9:00 - 18:00</p>
+                      <p className="text-muted-foreground">Пн-Пт: 10:00 - 19:00</p>
                     </div>
                   </div>
                 </div>

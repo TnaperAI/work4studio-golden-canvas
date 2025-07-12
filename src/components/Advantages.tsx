@@ -36,8 +36,8 @@ const Advantages = () => {
         <div className="text-center mb-20 animate-on-scroll">
           <h2 className="text-4xl md:text-6xl font-bold mb-6">
             <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-              {(getContent('advantages', 'title') || 'Почему выбирают Work4Studio').split('Work4Studio')[0]}
-            </span>
+              {getContent('advantages', 'title') || 'Почему выбирают'}
+            </span>{' '}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Work4Studio</span>
           </h2>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">

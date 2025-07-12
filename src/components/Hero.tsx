@@ -21,11 +21,7 @@ const Hero = () => {
           <div className="space-y-8">
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight">
               <span className="text-foreground">
-                {getContent('hero', 'title').split('работают за вас')[0]}
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                работают за вас
+                {getContent('hero', 'title') || 'Создаём сайты, которые приносят клиентов'}
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto px-4 leading-relaxed">

@@ -68,11 +68,11 @@ const Footer = () => {
             </span>
           </div>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-lg leading-relaxed">
-              Создаём сайты, которые работают за вас. Разработка и поддержка на новой скорости с использованием современных технологий.
+              Разработка сайтов нового поколения — от идеи до запуска за 3 дня. Никакой бюрократии, только результат.
             </p>
             <div className="flex space-x-4">
               <a
-                href="mailto:hello@work4studio.com"
+                href="mailto:info@work4studio.com"
                 className="inline-flex items-center px-6 py-3 bg-card border border-border rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
                 <Mail className="w-5 h-5 mr-3 text-primary" />

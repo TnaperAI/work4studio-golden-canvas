@@ -6,6 +6,7 @@ import CaseEditor from './CaseEditor';
 import AboutManagement from './AboutManagement';
 import ServicesManagement from './ServicesManagement';
 import ServiceEditor from './ServiceEditor';
+import HomeContentManagement from './HomeContentManagement';
 import ErrorBoundary from './ErrorBoundary';
 import { useToast } from '@/hooks/use-toast';
 import { 
@@ -45,6 +46,7 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
   const [showServiceEditor, setShowServiceEditor] = useState(false);
   const [showCaseEditor, setShowCaseEditor] = useState(false);
   const [showAboutManagement, setShowAboutManagement] = useState(false);
+  const [showHomeManagement, setShowHomeManagement] = useState(false);
   const { toast } = useToast();
 
   console.log('ContentCategories rendered:', { 
@@ -60,7 +62,7 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
       description: 'Главная, контакты и общая информация',
       icon: Home,
       pages: [
-        { slug: 'home', title: 'Главная страница', h1: 'Добро пожаловать в Work4Studio' },
+        { slug: 'home', title: 'Главная страница', h1: 'Управление контентом главной страницы' },
         { slug: 'contact', title: 'Контакты', h1: 'Связаться с нами' },
         { slug: 'about', title: 'О нас', h1: 'О компании' }
       ]
@@ -211,6 +213,28 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
     );
   }
 
+  // Show home management 
+  if (showHomeManagement) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center space-x-4">
+          <Button 
+            variant="ghost" 
+            onClick={() => {
+              setShowHomeManagement(false);
+              setSelectedCategory(null);
+            }}
+            className="p-2"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Назад к категориям
+          </Button>
+        </div>
+        <HomeContentManagement />
+      </div>
+    );
+  }
+
   if (selectedCategory && selectedCategoryData) {
     return (
       <div className="space-y-6">
@@ -243,6 +267,8 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
               onClick={() => {
                 if (page.slug === 'about') {
                   setShowAboutManagement(true);
+                } else if (page.slug === 'home') {
+                  setShowHomeManagement(true);
                 } else {
                   onPageSelect(page.slug);
                 }

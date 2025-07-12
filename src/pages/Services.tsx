@@ -179,24 +179,20 @@ const Services = () => {
           <div className="max-w-6xl mx-auto text-center animate-on-scroll">
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-10 leading-tight">
               <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                {getContent('services', 'title')?.split('Быстро')[0] || 'Разрабатываем сайты.'}
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
-                Быстро, по делу, под задачи бизнеса.
+                {getContent('services', 'title') || 'Разрабатываем сайты под ключ'}
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-16 max-w-4xl mx-auto leading-relaxed">
-              {getContent('services', 'subtitle') || 'Выберите подходящий формат — от простого лендинга до интернет-магазина с полной автоматизацией процессов.'}
+              {getContent('services', 'subtitle') || 'Выбираем подходящий формат — от посадочной страницы до интернет-магазина. Настраиваем под ваши цели и задачи.'}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-8 mb-8">
               <div className="flex items-center text-lg text-muted-foreground bg-card border border-border/50 px-6 py-3 rounded-2xl">
                 <Target className="h-6 w-6 mr-3 text-primary" />
-                Под ключ за 3-14 дней
+                От 3 дней до запуска
               </div>
               <div className="flex items-center text-lg text-muted-foreground bg-card border border-border/50 px-6 py-3 rounded-2xl">
                 <Zap className="h-6 w-6 mr-3 text-primary" />
-                С гарантией качества
+                Открытый код и доступ
               </div>
             </div>
           </div>
@@ -215,7 +211,7 @@ const Services = () => {
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">для своего бизнеса</span>
             </h2>
             <p className="text-muted-foreground text-xl md:text-2xl max-w-4xl mx-auto leading-relaxed">
-              От быстрого лендинга до полноценного интернет-магазина — найдём решение под ваши задачи и бюджет
+              Дизайн, код и запуск — всё, что нужно для старта онлайн. Выбираем формат под ваши цели.
             </p>
           </div>
           
