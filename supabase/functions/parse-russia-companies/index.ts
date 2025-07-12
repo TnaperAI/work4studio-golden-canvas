@@ -8,6 +8,7 @@ const corsHeaders = {
 };
 
 const openRouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
+const dadataApiKey = Deno.env.get('DADATA_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
@@ -215,18 +216,71 @@ async function parseEgrulData(date: string): Promise<ParsedCompany[]> {
 
 async function searchEgrulApi(date: string): Promise<ParsedCompany[]> {
   try {
-    console.log(`Searching EGRUL API for date: ${date}`);
+    console.log(`Searching DaData API for companies registered on: ${date}`);
     
-    // Примечание: Официального публичного API ЕГРЮЛ нет, 
-    // поэтому эта функция возвращает пустой массив
-    // В реальном проекте можно использовать платные API сервисы
-    // такие как: dadata.ru, kontur.ru, rusprofile.ru
+    if (!dadataApiKey) {
+      console.log('DaData API key not found, skipping DaData search');
+      return [];
+    }
     
-    console.log('Official EGRUL API not available, using fallback');
-    return [];
+    // DaData API поиск организаций
+    const response = await fetch('https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Token ${dadataApiKey}`
+      },
+      body: JSON.stringify({
+        query: "",
+        count: 20,
+        // Поиск по дате регистрации
+        filters: [{
+          type: "state.registration_date",
+          value: date
+        }]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`DaData API error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log(`DaData API returned ${data.suggestions?.length || 0} suggestions`);
+    
+    if (!data.suggestions || data.suggestions.length === 0) {
+      console.log('No companies found for the specified date in DaData');
+      return [];
+    }
+
+    // Преобразуем данные DaData в наш формат
+    const companies: ParsedCompany[] = data.suggestions.map((suggestion: any) => {
+      const company = suggestion.data;
+      
+      return {
+        company_name: company.name?.full_with_opf || company.name?.short_with_opf || 'Неизвестно',
+        company_type: mapDadataOrgType(company.opf?.code),
+        registration_number: company.ogrn,
+        country: 'ru' as const,
+        region: company.address?.data?.region_with_type,
+        city: company.address?.data?.city_with_type,
+        address: company.address?.value,
+        registration_date: company.state?.registration_date ? 
+          new Date(company.state.registration_date).toISOString().split('T')[0] : 
+          date,
+        industry: company.okved,
+        source_url: 'dadata.ru',
+        email: undefined, // DaData не предоставляет email напрямую
+        website: undefined // DaData не предоставляет website напрямую
+      };
+    });
+
+    console.log(`Successfully parsed ${companies.length} companies from DaData`);
+    return companies;
     
   } catch (error) {
-    console.error('Error in EGRUL API search:', error);
+    console.error('Error in DaData API search:', error);
     return [];
   }
 }
@@ -508,4 +562,24 @@ function mapCompanyType(type: string): 'ip' | 'ooo' | 'zao' | 'pao' | 'other' {
   if (lowerType.includes('пао') || lowerType === 'pao') return 'pao';
   
   return 'other';
+}
+
+function mapDadataOrgType(opfCode: string): 'ip' | 'ooo' | 'zao' | 'pao' | 'other' {
+  if (!opfCode) return 'other';
+  
+  // Коды ОПФ из DaData
+  switch (opfCode) {
+    case '50102': // Индивидуальные предприниматели
+      return 'ip';
+    case '12300': // Общества с ограниченной ответственностью
+    case '12200': // ООО (старый код)
+      return 'ooo';
+    case '12267': // Закрытые акционерные общества
+      return 'zao';
+    case '12247': // Публичные акционерные общества
+    case '12200': // Открытые акционерные общества (старый код)
+      return 'pao';
+    default:
+      return 'other';
+  }
 }
