@@ -7,6 +7,7 @@ import AboutManagement from './AboutManagement';
 import ServicesManagement from './ServicesManagement';
 import ServiceEditor from './ServiceEditor';
 import HomeContentManagement from './HomeContentManagement';
+import ServicesContentManagement from './ServicesContentManagement';
 import ErrorBoundary from './ErrorBoundary';
 import { useToast } from '@/hooks/use-toast';
 import { 
@@ -47,6 +48,7 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
   const [showCaseEditor, setShowCaseEditor] = useState(false);
   const [showAboutManagement, setShowAboutManagement] = useState(false);
   const [showHomeManagement, setShowHomeManagement] = useState(false);
+  const [showServicesContentManagement, setShowServicesContentManagement] = useState(false);
   const { toast } = useToast();
 
   console.log('ContentCategories rendered:', { 
@@ -235,6 +237,28 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
     );
   }
 
+  // Show services content management 
+  if (showServicesContentManagement) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center space-x-4">
+          <Button 
+            variant="ghost" 
+            onClick={() => {
+              setShowServicesContentManagement(false);
+              setSelectedCategory(null);
+            }}
+            className="p-2"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Назад к категориям
+          </Button>
+        </div>
+        <ServicesContentManagement />
+      </div>
+    );
+  }
+
   if (selectedCategory && selectedCategoryData) {
     return (
       <div className="space-y-6">
@@ -269,6 +293,8 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
                   setShowAboutManagement(true);
                 } else if (page.slug === 'home') {
                   setShowHomeManagement(true);
+                } else if (page.slug === 'services') {
+                  setShowServicesContentManagement(true);
                 } else {
                   onPageSelect(page.slug);
                 }

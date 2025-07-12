@@ -188,11 +188,11 @@ const Services = () => {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-8 mb-8">
               <div className="flex items-center text-lg text-muted-foreground bg-card border border-border/50 px-6 py-3 rounded-2xl">
                 <Target className="h-6 w-6 mr-3 text-primary" />
-                От 3 дней до запуска
+                {getContent('services', 'badge_1_text') || 'От 3 дней до запуска'}
               </div>
               <div className="flex items-center text-lg text-muted-foreground bg-card border border-border/50 px-6 py-3 rounded-2xl">
                 <Zap className="h-6 w-6 mr-3 text-primary" />
-                Открытый код и доступ
+                {getContent('services', 'badge_2_text') || 'Открытый код и доступ'}
               </div>
             </div>
           </div>
@@ -207,11 +207,13 @@ const Services = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-20 animate-on-scroll">
             <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6">
-              <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">Выберите формат</span>{' '}
+              <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+                {getContent('services', 'grid_title') || 'Выберите формат'}
+              </span>{' '}
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">для своего бизнеса</span>
             </h2>
             <p className="text-muted-foreground text-xl md:text-2xl max-w-4xl mx-auto leading-relaxed">
-              Дизайн, код и запуск — всё, что нужно для старта онлайн. Выбираем формат под ваши цели.
+              {getContent('services', 'grid_subtitle') || 'Дизайн, код и запуск — всё, что нужно для старта онлайн. Выбираем формат под ваши цели.'}
             </p>
           </div>
           
