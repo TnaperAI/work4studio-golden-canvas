@@ -214,11 +214,12 @@ async function searchEgrulApi(date: string): Promise<ParsedCompany[]> {
       return [];
     }
 
-    // Преобразуем данные DaData в наш формат и фильтруем по дате
-    const allCompanies: ParsedCompany[] = data.suggestions.map((suggestion: any, index: number) => {
+    // Преобразуем данные DaData в наш формат (БЕЗ фильтрации по дате)
+    const companies: ParsedCompany[] = data.suggestions.map((suggestion: any, index: number) => {
       const company = suggestion.data;
       
       console.log(`Processing company ${index + 1}:`, company.name?.full_with_opf);
+      console.log(`Registration date:`, company.state?.registration_date);
       
       return {
         company_name: company.name?.full_with_opf || company.name?.short_with_opf || 'Неизвестно',
@@ -238,24 +239,7 @@ async function searchEgrulApi(date: string): Promise<ParsedCompany[]> {
       };
     });
 
-    // Фильтруем компании по дате регистрации
-    const targetDate = new Date(date);
-    const startOfYear = new Date(targetDate.getFullYear(), 0, 1);
-    
-    const filteredCompanies = allCompanies.filter(company => {
-      if (!company.registration_date) return false;
-      
-      const regDate = new Date(company.registration_date);
-      // Ищем компании зарегистрированные в текущем году
-      return regDate >= startOfYear;
-    });
-
-    console.log(`Filtered to ${filteredCompanies.length} companies registered in ${targetDate.getFullYear()}`);
-    
-    // Если нет компаний текущего года, возвращаем любые недавние компании
-    const companies = filteredCompanies.length > 0 ? filteredCompanies : allCompanies.slice(0, 5);
-
-    console.log(`Successfully parsed ${companies.length} companies from DaData`);
+    console.log(`Successfully parsed ${companies.length} companies from DaData (without date filtering)`);
     return companies;
     
   } catch (error) {
