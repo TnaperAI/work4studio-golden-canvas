@@ -9,8 +9,15 @@ interface Service {
   slug: string;
 }
 
+interface LegalDocument {
+  id: string;
+  title: string;
+  type: string;
+}
+
 const Footer = () => {
   const [services, setServices] = useState<Service[]>([]);
+  const [legalDocuments, setLegalDocuments] = useState<LegalDocument[]>([]);
 
   const navigation = [
     { name: 'Главная', href: '/' },
@@ -34,7 +41,19 @@ const Footer = () => {
       }
     };
 
+    const fetchLegalDocuments = async () => {
+      const { data } = await supabase
+        .from('legal_documents')
+        .select('id, title, type')
+        .in('type', ['privacy_policy', 'terms_of_service']);
+
+      if (data) {
+        setLegalDocuments(data);
+      }
+    };
+
     fetchServices();
+    fetchLegalDocuments();
   }, []);
 
   return (
@@ -119,18 +138,15 @@ const Footer = () => {
               © 2024 Work4Studio. Все права защищены.
             </p>
             <div className="flex items-center space-x-6">
-              <Link 
-                to="/legal/privacy_policy" 
-                className="text-sm text-muted-foreground hover:text-primary transition-colors underline"
-              >
-                Политика конфиденциальности
-              </Link>
-              <Link 
-                to="/legal/terms_of_service" 
-                className="text-sm text-muted-foreground hover:text-primary transition-colors underline"
-              >
-                Пользовательское соглашение
-              </Link>
+              {legalDocuments.map((doc) => (
+                <Link 
+                  key={doc.id}
+                  to={`/legal/${doc.type}`} 
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors underline"
+                >
+                  {doc.title}
+                </Link>
+              ))}
             </div>
             <div className="flex items-center space-x-3">
               <span className="text-sm text-muted-foreground">Разработано</span>
