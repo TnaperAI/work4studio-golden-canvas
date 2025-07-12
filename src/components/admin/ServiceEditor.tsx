@@ -267,21 +267,21 @@ const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label>Цена от (₽)</Label>
+                  <Label>Цена от ($)</Label>
                   <Input
                     type="number"
                     value={formData.price_from}
                     onChange={(e) => updateField('price_from', e.target.value)}
-                    placeholder="150000"
+                    placeholder="2000"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Цена до (₽)</Label>
+                  <Label>Цена до ($)</Label>
                   <Input
                     type="number"
                     value={formData.price_to}
                     onChange={(e) => updateField('price_to', e.target.value)}
-                    placeholder="500000"
+                    placeholder="5000"
                   />
                 </div>
               </div>
