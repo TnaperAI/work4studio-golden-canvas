@@ -28,7 +28,7 @@ interface ParsedCompany {
 }
 
 serve(async (req) => {
-  console.log('=== EDGE FUNCTION STARTED ===');
+  console.log('=== EDGE FUNCTION STARTED v2.0 ===');
   console.log('Request method:', req.method);
   console.log('Request URL:', req.url);
   
