@@ -45,26 +45,26 @@ const Advantages = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 md:gap-8">
           {advantages.map((advantage, index) => (
             <div
               key={index}
-              className="p-8 text-center group animate-on-scroll bg-card border border-border rounded-2xl hover:shadow-2xl transition-all duration-500 hover:scale-105 relative overflow-hidden"
+              className="p-6 md:p-8 text-center group animate-on-scroll bg-card border border-border rounded-2xl hover:shadow-2xl transition-all duration-500 hover:scale-105 relative overflow-hidden"
               style={{ animationDelay: `${index * 150}ms` }}
             >
               {/* Hover gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"></div>
               
               <div className="relative z-10">
-                <div className="w-20 h-20 mx-auto mb-8 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg">
-                  <advantage.icon className="w-10 h-10 text-primary" />
+                <div className="w-16 h-16 md:w-20 md:h-20 mx-auto mb-6 md:mb-8 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg">
+                  <advantage.icon className="w-8 h-8 md:w-10 md:h-10 text-primary" />
                 </div>
                 
-                <h3 className="text-xl md:text-2xl font-heading font-bold mb-6 leading-tight">
+                <h3 className="text-lg md:text-xl xl:text-2xl font-heading font-bold mb-4 md:mb-6 leading-tight">
                   {advantage.title}
                 </h3>
                 
-                <p className="text-muted-foreground leading-relaxed text-lg">
+                <p className="text-muted-foreground leading-relaxed text-sm md:text-base lg:text-lg">
                   {advantage.description}
                 </p>
               </div>
