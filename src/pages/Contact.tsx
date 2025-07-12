@@ -263,20 +263,18 @@ const Contact = () => {
                   </span>
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid gap-6 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="name" className="text-lg font-medium">Имя *</Label>
-                      <Input
-                        id="name"
-                        name="name"
-                        type="text"
-                        placeholder="Ваше имя"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        required
-                        className="h-14 text-lg bg-background border border-border rounded-2xl"
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="name" className="text-lg font-medium">Имя *</Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      type="text"
+                      placeholder="Ваше имя"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                      className="h-14 text-lg bg-background border border-border rounded-2xl"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-lg font-medium">Email *</Label>
