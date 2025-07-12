@@ -26,6 +26,27 @@ interface ParsedCompany {
   source_url: string;
 }
 
+function getRandomSearchQuery(): string {
+  const queries = [
+    "ООО",
+    "ЗАО", 
+    "ПАО",
+    "ИП",
+    "строительство",
+    "торговля", 
+    "услуги",
+    "производство",
+    "IT",
+    "консалтинг",
+    "логистика",
+    "медицина",
+    "образование",
+    "ресторан"
+  ];
+  
+  return queries[Math.floor(Math.random() * queries.length)];
+}
+
 function mapCompanyType(opfCode: string): 'ip' | 'ooo' | 'zao' | 'pao' | 'other' {
   if (!opfCode) return 'other';
   
@@ -75,7 +96,7 @@ serve(async (req) => {
             'Authorization': `Token ${dadataApiKey}`
           },
           body: JSON.stringify({
-            query: "ООО",
+            query: getRandomSearchQuery(),
             count: 5
           })
         });
