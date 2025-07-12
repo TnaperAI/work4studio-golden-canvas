@@ -277,18 +277,6 @@ const Contact = () => {
                         className="h-14 text-lg bg-background border border-border rounded-2xl"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="phone" className="text-lg font-medium">Телефон</Label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        placeholder="+7 (000) 000-00-00"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className="h-14 text-lg bg-background border border-border rounded-2xl"
-                      />
-                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-lg font-medium">Email *</Label>
