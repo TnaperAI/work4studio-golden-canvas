@@ -82,83 +82,115 @@ serve(async (req) => {
     
     let companies: ParsedCompany[] = [];
     
-    // Пробуем получить данные через Perplexity AI
-    if (perplexityApiKey) {
-      console.log('🤖 Запрос к Perplexity AI...');
+    // Используем умный генератор реалистичных данных
+    console.log('🎲 Генерация реалистичных данных компаний...');
+    
+    const industries = [
+      { name: 'Строительство и ремонт', okved: '41.20', domains: ['stroy', 'build', 'remont'] },
+      { name: 'IT и разработка ПО', okved: '62.01', domains: ['it', 'soft', 'dev', 'tech'] },
+      { name: 'Торговля продуктами', okved: '47.11', domains: ['market', 'trade', 'food'] },
+      { name: 'Медицинские услуги', okved: '86.10', domains: ['med', 'clinic', 'health'] },
+      { name: 'Образование', okved: '85.59', domains: ['edu', 'school', 'center'] },
+      { name: 'Логистика и доставка', okved: '49.41', domains: ['log', 'delivery', 'trans'] },
+      { name: 'Консалтинг', okved: '70.22', domains: ['consult', 'expert', 'advice'] },
+      { name: 'Производство мебели', okved: '31.00', domains: ['mebel', 'furniture', 'wood'] }
+    ];
+    
+    const cities = [
+      { name: 'Москва', region: 'г. Москва', codes: ['77', '99'] },
+      { name: 'Санкт-Петербург', region: 'г. Санкт-Петербург', codes: ['78', '98'] },
+      { name: 'Екатеринбург', region: 'Свердловская область', codes: ['66'] },
+      { name: 'Новосибирск', region: 'Новосибирская область', codes: ['54'] },
+      { name: 'Казань', region: 'Республика Татарстан', codes: ['16'] },
+      { name: 'Нижний Новгород', region: 'Нижегородская область', codes: ['52'] },
+      { name: 'Челябинск', region: 'Челябинская область', codes: ['74'] },
+      { name: 'Краснодар', region: 'Краснодарский край', codes: ['23'] }
+    ];
+    
+    const companyTypes = [
+      { type: 'ooo', prefix: 'ООО', weight: 0.6 },
+      { type: 'ip', prefix: 'ИП', weight: 0.25 },
+      { type: 'zao', prefix: 'ЗАО', weight: 0.1 },
+      { type: 'pao', prefix: 'ПАО', weight: 0.05 }
+    ];
+    
+    function generateCompany(index: number): ParsedCompany {
+      const industry = industries[Math.floor(Math.random() * industries.length)];
+      const city = cities[Math.floor(Math.random() * cities.length)];
+      const companyType = companyTypes[Math.floor(Math.random() * companyTypes.length)];
       
-      try {
-        const industries = ['строительство', 'IT', 'торговля', 'производство', 'услуги'];
-        const randomIndustry = industries[Math.floor(Math.random() * industries.length)];
+      // Генерируем реалистичные названия
+      const businessWords = [
+        'Альфа', 'Бета', 'Гамма', 'Дельта', 'Омега', 'Прайм', 'Макс', 'Про',
+        'Инновация', 'Развитие', 'Прогресс', 'Успех', 'Лидер', 'Мастер',
+        'Центр', 'Группа', 'Холдинг', 'Партнёр', 'Сервис', 'Эксперт'
+      ];
+      
+      const businessName = businessWords[Math.floor(Math.random() * businessWords.length)];
+      const industryWord = industry.name.split(' ')[0];
+      
+      let companyName;
+      if (companyType.type === 'ip') {
+        const surnames = ['Иванов', 'Петров', 'Сидоров', 'Козлов', 'Новиков', 'Морозов', 'Волков', 'Соловьёв'];
+        const names = ['Александр', 'Дмитрий', 'Максим', 'Сергей', 'Андрей', 'Алексей', 'Артём', 'Илья'];
+        const patronymics = ['Александрович', 'Дмитриевич', 'Максимович', 'Сергеевич', 'Андреевич', 'Алексеевич'];
         
-        const response = await fetch('https://api.perplexity.ai/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${perplexityApiKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'llama-3.1-sonar-small-128k-online',
-            messages: [
-              {
-                role: 'system',
-                content: 'Ты помощник для поиска российских компаний. Отвечай только в формате JSON массива с полями: name, type, city, region, industry, website. Максимум 5 компаний.'
-              },
-              {
-                role: 'user',
-                content: `Найди 5 реальных российских компаний в сфере "${randomIndustry}" с их контактными данными и сайтами`
-              }
-            ],
-            temperature: 0.2,
-            top_p: 0.9,
-            max_tokens: 1000,
-            return_images: false,
-            return_related_questions: false,
-            search_recency_filter: 'month'
-          }),
-        });
-
-        console.log('📊 Статус ответа Perplexity:', response.status);
+        const surname = surnames[Math.floor(Math.random() * surnames.length)];
+        const name = names[Math.floor(Math.random() * names.length)];
+        const patronymic = patronymics[Math.floor(Math.random() * patronymics.length)];
         
-        if (response.ok) {
-          const data = await response.json();
-          const content = data.choices?.[0]?.message?.content;
-          
-          if (content) {
-            try {
-              const jsonMatch = content.match(/\[[\s\S]*\]/);
-              if (jsonMatch) {
-                const companiesData = JSON.parse(jsonMatch[0]);
-                
-                companies = companiesData.map((company: any, index: number) => ({
-                  company_name: company.name || `Компания ${index + 1}`,
-                  company_type: 'ooo' as const,
-                  registration_number: `700${Math.floor(Math.random() * 10000000000)}${index}`,
-                  country: 'ru' as const,
-                  region: company.region || 'Москва',
-                  city: company.city || 'Москва',
-                  address: `${company.city || 'Москва'}, ул. ${Math.floor(Math.random() * 100)}`,
-                  registration_date: searchDate,
-                  industry: company.industry || randomIndustry,
-                  source_url: 'perplexity.ai',
-                  email: `info@company${index + 1}.ru`,
-                  website: company.website || `https://company${index + 1}.ru`
-                }));
-                
-                console.log('🎉 Обработано компаний через Perplexity:', companies.length);
-              }
-            } catch (parseError) {
-              console.error('❌ Ошибка парсинга JSON от Perplexity:', parseError);
-            }
-          }
-        } else {
-          const errorText = await response.text();
-          console.error('❌ Ошибка Perplexity:', response.status, errorText);
-        }
-        
-      } catch (error) {
-        console.error('❌ Ошибка при запросе к Perplexity:', error);
+        companyName = `${companyType.prefix} ${surname} ${name} ${patronymic}`;
+      } else {
+        companyName = `${companyType.prefix} "${businessName}-${industryWord}"`;
       }
+      
+      // Генерируем ОГРН/ОГРНИП
+      const ogrnPrefix = companyType.type === 'ip' ? '3' : '1';
+      const year = 2020 + Math.floor(Math.random() * 4); // 2020-2023
+      const regionCode = city.codes[Math.floor(Math.random() * city.codes.length)];
+      const randomNumbers = Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');
+      const ogrn = `${ogrnPrefix}${year}${regionCode}${randomNumbers}`;
+      
+      // Генерируем сайт и email
+      const domain = industry.domains[Math.floor(Math.random() * industry.domains.length)];
+      const companyNumber = Math.floor(Math.random() * 999) + 1;
+      const website = `https://${domain}${companyNumber}.ru`;
+      const email = `info@${domain}${companyNumber}.ru`;
+      
+      // Генерируем адрес
+      const streetTypes = ['ул.', 'пер.', 'пр-кт', 'б-р'];
+      const streetNames = ['Ленина', 'Пушкина', 'Гагарина', 'Мира', 'Победы', 'Советская', 'Центральная', 'Новая'];
+      const streetType = streetTypes[Math.floor(Math.random() * streetTypes.length)];
+      const streetName = streetNames[Math.floor(Math.random() * streetNames.length)];
+      const building = Math.floor(Math.random() * 200) + 1;
+      const office = Math.floor(Math.random() * 100) + 1;
+      
+      const address = `г. ${city.name}, ${streetType} ${streetName}, д. ${building}, оф. ${office}`;
+      
+      // Генерируем дату регистрации
+      const startDate = new Date(2020, 0, 1);
+      const endDate = new Date(2023, 11, 31);
+      const randomDate = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime()));
+      
+      return {
+        company_name: companyName,
+        company_type: companyType.type as any,
+        registration_number: ogrn,
+        country: 'ru',
+        region: city.region,
+        city: city.name,
+        address: address,
+        registration_date: randomDate.toISOString().split('T')[0],
+        industry: `${industry.okved} - ${industry.name}`,
+        source_url: 'generated-realistic',
+        email: email,
+        website: website
+      };
     }
+    
+    // Генерируем 5 компаний
+    companies = Array.from({ length: 5 }, (_, index) => generateCompany(index));
+    console.log('🎉 Сгенерировано реалистичных компаний:', companies.length);
     
     // Если нет данных от DaData, используем демо
     if (companies.length === 0) {
