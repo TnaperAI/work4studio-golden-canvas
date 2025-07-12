@@ -6,31 +6,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { 
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator
-} from '@/components/ui/breadcrumb';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Clock, 
-  Send,
-  MessageCircle,
-  Star,
-  CheckCircle
-} from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, Send, MessageCircle, Star, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ConsentCheckbox from '@/components/ConsentCheckbox';
-
 interface PageSEO {
   page_title: string;
   meta_title: string;
@@ -42,7 +25,6 @@ interface PageSEO {
   og_description: string;
   og_image: string;
 }
-
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -53,19 +35,17 @@ const Contact = () => {
   const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
-  const { toast } = useToast();
-  
+  const {
+    toast
+  } = useToast();
   useScrollAnimation();
-
   useEffect(() => {
     const fetchSEO = async () => {
       try {
-        const { data: seoData, error } = await supabase
-          .from('page_seo')
-          .select('*')
-          .eq('page_slug', 'contact')
-          .maybeSingle();
-
+        const {
+          data: seoData,
+          error
+        } = await supabase.from('page_seo').select('*').eq('page_slug', 'contact').maybeSingle();
         if (error) {
           console.error('SEO error:', error);
         } else {
@@ -75,7 +55,6 @@ const Contact = () => {
         console.error('Error fetching SEO data:', error);
       }
     };
-
     fetchSEO();
   }, []);
 
@@ -98,7 +77,6 @@ const Contact = () => {
         }
         meta.content = content;
       };
-
       const updatePropertyTag = (property: string, content: string) => {
         if (!content) return;
         let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
@@ -130,66 +108,64 @@ const Contact = () => {
       updatePropertyTag('og:type', 'website');
     }
   }, [pageSEO]);
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+    const {
+      name,
+      value
+    } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!isAgreed) {
       toast({
         title: "Согласие обязательно",
         description: "Необходимо согласиться с условиями для отправки заявки.",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-    
     setIsSubmitting(true);
-
     try {
-      const { error } = await supabase
-        .from('contact_submissions')
-        .insert([{
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone || null,
-          message: formData.message,
-          source: 'contact_page'
-        }]);
-
+      const {
+        error
+      } = await supabase.from('contact_submissions').insert([{
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || null,
+        message: formData.message,
+        source: 'contact_page'
+      }]);
       if (error) {
         console.error('Contact form error:', error);
         throw error;
       }
-
       toast({
         title: 'Заявка отправлена!',
-        description: 'Мы свяжемся с вами в ближайшее время.',
+        description: 'Мы свяжемся с вами в ближайшее время.'
       });
-
-      setFormData({ name: '', email: '', phone: '', message: '' });
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        message: ''
+      });
       setIsAgreed(false);
     } catch (error) {
       console.error('Contact form error:', error);
       toast({
         title: 'Ошибка',
         description: 'Не удалось отправить заявку. Попробуйте еще раз.',
-        variant: 'destructive',
+        variant: 'destructive'
       });
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  return (
-    <div className="min-h-screen">{/* Убираем bg-background чтобы видеть фоновую анимацию */}
+  return <div className="min-h-screen">{/* Убираем bg-background чтобы видеть фоновую анимацию */}
       <Header />
       
       {/* Breadcrumb */}
@@ -264,66 +240,28 @@ const Contact = () => {
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-lg font-medium">Имя *</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      type="text"
-                      placeholder="Ваше имя"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      className="h-14 text-lg bg-background border border-border rounded-2xl"
-                    />
+                    <Label htmlFor="name" className="text-lg font-medium">Имя</Label>
+                    <Input id="name" name="name" type="text" placeholder="Ваше имя" value={formData.name} onChange={handleInputChange} required className="h-14 text-lg bg-background border border-border rounded-2xl" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-lg font-medium">Email *</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="your@email.com"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className="h-14 text-lg bg-background border border-border rounded-2xl"
-                    />
+                    <Label htmlFor="email" className="text-lg font-medium">Email</Label>
+                    <Input id="email" name="email" type="email" placeholder="your@email.com" value={formData.email} onChange={handleInputChange} required className="h-14 text-lg bg-background border border-border rounded-2xl" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="message" className="text-lg font-medium">Сообщение *</Label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      placeholder="Расскажите о своем проекте..."
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      required
-                      rows={6}
-                      className="text-lg bg-background border border-border rounded-2xl"
-                    />
+                    <Label htmlFor="message" className="text-lg font-medium">Сообщение</Label>
+                    <Textarea id="message" name="message" placeholder="Расскажите о своем проекте..." value={formData.message} onChange={handleInputChange} required rows={6} className="text-lg bg-background border border-border rounded-2xl" />
                   </div>
                   
-                  <ConsentCheckbox 
-                    isAgreed={isAgreed} 
-                    onChange={setIsAgreed}
-                  />
+                  <ConsentCheckbox isAgreed={isAgreed} onChange={setIsAgreed} />
                   
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full h-16 bg-gradient-to-r from-primary to-accent text-primary-foreground text-xl font-medium hover:shadow-2xl hover:scale-105 transition-all duration-300"
-                  >
-                    {isSubmitting ? (
-                      <div className="flex items-center gap-3">
+                  <Button type="submit" disabled={isSubmitting} className="w-full h-16 bg-gradient-to-r from-primary to-accent text-primary-foreground text-xl font-medium hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    {isSubmitting ? <div className="flex items-center gap-3">
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                         Отправляем...
-                      </div>
-                    ) : (
-                      <>
+                      </div> : <>
                         <Send className="h-6 w-6 mr-3" />
                         Отправить заявку
-                      </>
-                    )}
+                      </>}
                   </Button>
                 </form>
               </div>
@@ -410,8 +348,6 @@ const Contact = () => {
       
       <Footer />
       <BackToTop />
-    </div>
-  );
+    </div>;
 };
-
 export default Contact;
