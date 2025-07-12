@@ -65,23 +65,17 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
       icon: Home,
       pages: [
         { slug: 'home', title: 'Главная страница', h1: 'Управление контентом главной страницы' },
+        { slug: 'services', title: 'Страница услуг (/services)', h1: 'Управление контентом страницы услуг' },
         { slug: 'contact', title: 'Контакты', h1: 'Связаться с нами' },
         { slug: 'about', title: 'О нас', h1: 'О компании' }
       ]
     },
     {
-      id: 'services',
-      name: 'Услуги',
-      description: 'Все виды услуг и их описания',
+      id: 'services_items',
+      name: 'Управление услугами',
+      description: 'Создание и редактирование отдельных услуг',
       icon: Briefcase,
-      pages: [
-        { slug: 'services', title: 'Общая страница услуг', h1: 'Наши услуги' },
-        { slug: 'services/corporate', title: 'Корпоративный сайт', h1: 'Корпоративный сайт - Профессиональная разработка' },
-        { slug: 'services/ecommerce', title: 'Интернет-магазин', h1: 'Интернет-магазин - Каталог с корзиной' },
-        { slug: 'services/franchise', title: 'Сайт под франшизу', h1: 'Сайт под франшизу' },
-        { slug: 'services/lending', title: 'Лендинг', h1: 'Лендинг' },
-        { slug: 'services/mvp', title: 'MVP / Startup-сайт', h1: 'MVP / Startup-сайт' }
-      ]
+      pages: []
     },
     {
       id: 'cases',
@@ -160,7 +154,7 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
   }
 
   // Show services management
-  if (selectedCategory === 'services') {
+  if (selectedCategory === 'services_items') {
     if (showServiceEditor) {
       return (
         <ServiceEditor 
@@ -355,12 +349,14 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
                   {category.description}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="text-sm text-muted-foreground">
-                  {category.id === 'cases' 
-                    ? 'Управление кейсами' 
-                    : `${category.pages.length} страниц${category.pages.length === 1 ? 'а' : ''}`
-                  }
+        <CardContent>
+          <div className="text-sm text-muted-foreground">
+            {category.id === 'cases' 
+              ? 'Управление кейсами' 
+              : category.id === 'services_items'
+              ? 'Создание и редактирование услуг'
+              : `${category.pages.length} страниц${category.pages.length === 1 ? 'а' : ''}`
+            }
                 </div>
               </CardContent>
             </Card>
