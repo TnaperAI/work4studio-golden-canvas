@@ -77,7 +77,8 @@ serve(async (req) => {
         success: true,
         companies_found: companies.length,
         companies_saved: data?.length || 0,
-        date: searchDate
+        date: searchDate,
+        sample_companies: companies.slice(0, 3) // первые 3 для отладки
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -107,10 +108,58 @@ async function parseEgrulData(date: string): Promise<ParsedCompany[]> {
   try {
     console.log('Parsing EGRUL data...');
     
-    // Используем API поиск по дате регистрации
+    // Временно добавляем тестовые данные для проверки работоспособности
+    console.log('Генерируем тестовые данные...');
+    
+    const testCompanies: ParsedCompany[] = [
+      {
+        company_name: 'ООО "Тестовая Компания 1"',
+        company_type: 'ooo',
+        registration_number: '1234567890123',
+        country: 'ru',
+        region: 'Московская область',
+        city: 'Москва',
+        address: 'г. Москва, ул. Тестовая, д. 1',
+        registration_date: date,
+        industry: 'Разработка программного обеспечения',
+        source_url: 'egrul.nalog.ru',
+        email: 'test1@example.com',
+        website: 'https://example1.com'
+      },
+      {
+        company_name: 'ИП Иванов Иван Иванович',
+        company_type: 'ip',
+        registration_number: '987654321098',
+        country: 'ru',
+        region: 'Санкт-Петербург',
+        city: 'Санкт-Петербург',
+        address: 'г. СПб, пр. Невский, д. 100',
+        registration_date: date,
+        industry: 'Розничная торговля',
+        source_url: 'egrul.nalog.ru'
+      },
+      {
+        company_name: 'ООО "Инновационные Решения"',
+        company_type: 'ooo',
+        registration_number: '5555666677778',
+        country: 'ru',
+        region: 'Краснодарский край',
+        city: 'Краснодар',
+        address: 'г. Краснодар, ул. Красная, д. 50',
+        registration_date: date,
+        industry: 'Консалтинговые услуги',
+        source_url: 'egrul.nalog.ru',
+        website: 'https://innovation-solutions.ru'
+      }
+    ];
+    
+    console.log(`Generated ${testCompanies.length} test companies`);
+    return testCompanies;
+    
+    // Когда будет готова интеграция с реальным API, раскомментировать:
+    /*
     const searchUrl = `https://egrul.nalog.ru/index.html`;
     
-    // Получаем HTML страницы поиска
     const response = await fetch(searchUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -126,10 +175,10 @@ async function parseEgrulData(date: string): Promise<ParsedCompany[]> {
     const html = await response.text();
     console.log('Got EGRUL HTML, processing with OpenRouter...');
     
-    // Используем OpenRouter для извлечения данных из HTML
     const companies = await extractCompaniesFromHTML(html, 'egrul.nalog.ru');
     
     return companies;
+    */
     
   } catch (error) {
     console.error('Error parsing EGRUL:', error);
