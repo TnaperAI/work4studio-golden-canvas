@@ -1,4 +1,1 @@
 project_id = "xzovdewgajuhmxokeccj"
-
-[functions.parse-russia-companies]
-verify_jwt = false
