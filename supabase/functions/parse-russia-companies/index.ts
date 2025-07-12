@@ -107,22 +107,28 @@ serve(async (req) => {
 
 async function parseEgrulData(date: string): Promise<ParsedCompany[]> {
   try {
-    console.log('Parsing EGRUL data...');
+    console.log('=== STARTING parseEgrulData ===');
+    console.log('Date:', date);
+    console.log('DaData API Key available:', dadataApiKey ? 'YES' : 'NO');
+    console.log('API Key length:', dadataApiKey?.length || 0);
     
     // Попробуем несколько источников для поиска компаний
     let companies: ParsedCompany[] = [];
     
     // 1. Основной источник - DaData API
     try {
+      console.log('Calling searchEgrulApi...');
       companies = await searchEgrulApi(date);
+      console.log('searchEgrulApi returned:', companies.length, 'companies');
+      
       if (companies.length > 0) {
         console.log(`Found ${companies.length} companies via DaData API`);
         return companies;
       } else {
-        console.log('No companies found via DaData API');
+        console.log('No companies found via DaData API - using demo data');
       }
     } catch (error) {
-      console.log('DaData API failed:', error);
+      console.error('DaData API failed with error:', error);
     }
     
     // 2. Если DaData не вернул данные, используем демонстрационные ТОЛЬКО для тестирования
