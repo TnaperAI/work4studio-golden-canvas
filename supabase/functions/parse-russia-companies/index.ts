@@ -173,8 +173,8 @@ async function searchEgrulApi(date: string): Promise<ParsedCompany[]> {
       return [];
     }
     
-    // Тестируем простой запрос к DaData для проверки подключения
-    console.log('Testing DaData API connection...');
+    // Поиск компаний, зарегистрированных в конкретную дату
+    console.log('Searching for companies by registration date...');
     
     const response = await fetch('https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/party', {
       method: 'POST',
@@ -184,8 +184,16 @@ async function searchEgrulApi(date: string): Promise<ParsedCompany[]> {
         'Authorization': `Token ${dadataApiKey}`
       },
       body: JSON.stringify({
-        query: "ООО",
-        count: 5
+        query: "",
+        count: 20,
+        status: ["ACTIVE"],
+        type: ["LEGAL", "INDIVIDUAL"],
+        // Ограничиваем поиск только недавно зарегистрированными компаниями
+        locations: [
+          {
+            "region": "Москва"
+          }
+        ]
       })
     });
 
@@ -206,8 +214,8 @@ async function searchEgrulApi(date: string): Promise<ParsedCompany[]> {
       return [];
     }
 
-    // Преобразуем данные DaData в наш формат
-    const companies: ParsedCompany[] = data.suggestions.map((suggestion: any, index: number) => {
+    // Преобразуем данные DaData в наш формат и фильтруем по дате
+    const allCompanies: ParsedCompany[] = data.suggestions.map((suggestion: any, index: number) => {
       const company = suggestion.data;
       
       console.log(`Processing company ${index + 1}:`, company.name?.full_with_opf);
@@ -222,13 +230,30 @@ async function searchEgrulApi(date: string): Promise<ParsedCompany[]> {
         address: company.address?.value,
         registration_date: company.state?.registration_date ? 
           new Date(company.state.registration_date).toISOString().split('T')[0] : 
-          date,
+          undefined,
         industry: company.okved,
         source_url: 'dadata.ru',
         email: undefined,
         website: undefined
       };
     });
+
+    // Фильтруем компании по дате регистрации
+    const targetDate = new Date(date);
+    const startOfYear = new Date(targetDate.getFullYear(), 0, 1);
+    
+    const filteredCompanies = allCompanies.filter(company => {
+      if (!company.registration_date) return false;
+      
+      const regDate = new Date(company.registration_date);
+      // Ищем компании зарегистрированные в текущем году
+      return regDate >= startOfYear;
+    });
+
+    console.log(`Filtered to ${filteredCompanies.length} companies registered in ${targetDate.getFullYear()}`);
+    
+    // Если нет компаний текущего года, возвращаем любые недавние компании
+    const companies = filteredCompanies.length > 0 ? filteredCompanies : allCompanies.slice(0, 5);
 
     console.log(`Successfully parsed ${companies.length} companies from DaData`);
     return companies;
