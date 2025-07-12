@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import ConsentCheckbox from '@/components/ConsentCheckbox';
 
 interface ContactFormModalProps {
   isOpen: boolean;
@@ -21,10 +22,21 @@ const ContactFormModal = ({ isOpen, onClose, source = 'modal' }: ContactFormModa
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAgreed, setIsAgreed] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!isAgreed) {
+      toast({
+        title: "Согласие обязательно",
+        description: "Необходимо согласиться с условиями для отправки заявки.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
 
     try {
@@ -51,6 +63,7 @@ const ContactFormModal = ({ isOpen, onClose, source = 'modal' }: ContactFormModa
 
       onClose();
       setFormData({ name: '', email: '', phone: '', message: '' });
+      setIsAgreed(false);
     } catch (error) {
       console.error('Error submitting form:', error);
       toast({
@@ -135,24 +148,11 @@ const ContactFormModal = ({ isOpen, onClose, source = 'modal' }: ContactFormModa
             </div>
           </div>
 
-          <div className="text-sm text-muted-foreground text-center mb-6">
-            Отправляя заявку, вы соглашаетесь с{' '}
-            <a 
-              href="/legal/privacy_policy" 
-              target="_blank"
-              className="text-primary hover:underline"
-            >
-              политикой конфиденциальности
-            </a>{' '}
-            и{' '}
-            <a 
-              href="/legal/terms_of_service" 
-              target="_blank"
-              className="text-primary hover:underline"
-            >
-              пользовательским соглашением
-            </a>
-          </div>
+          <ConsentCheckbox 
+            isAgreed={isAgreed} 
+            onChange={setIsAgreed}
+            className="mb-6"
+          />
           
           <div className="flex gap-3">
             <button

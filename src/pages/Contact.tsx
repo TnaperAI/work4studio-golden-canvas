@@ -29,6 +29,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import ConsentCheckbox from '@/components/ConsentCheckbox';
 
 interface PageSEO {
   page_title: string;
@@ -51,6 +52,7 @@ const Contact = () => {
   });
   const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAgreed, setIsAgreed] = useState(false);
   const { toast } = useToast();
   
   useScrollAnimation();
@@ -139,6 +141,16 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!isAgreed) {
+      toast({
+        title: "Согласие обязательно",
+        description: "Необходимо согласиться с условиями для отправки заявки.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
 
     try {
@@ -163,6 +175,7 @@ const Contact = () => {
       });
 
       setFormData({ name: '', email: '', phone: '', message: '' });
+      setIsAgreed(false);
     } catch (error) {
       console.error('Contact form error:', error);
       toast({
@@ -304,24 +317,10 @@ const Contact = () => {
                     />
                   </div>
                   
-                  <div className="text-sm text-muted-foreground text-center">
-                    Отправляя заявку, вы соглашаетесь с{' '}
-                    <Link 
-                      to="/legal/privacy_policy" 
-                      target="_blank"
-                      className="text-primary hover:underline"
-                    >
-                      политикой конфиденциальности
-                    </Link>{' '}
-                    и{' '}
-                    <Link 
-                      to="/legal/terms_of_service" 
-                      target="_blank"
-                      className="text-primary hover:underline"
-                    >
-                      пользовательским соглашением
-                    </Link>
-                  </div>
+                  <ConsentCheckbox 
+                    isAgreed={isAgreed} 
+                    onChange={setIsAgreed}
+                  />
                   
                   <Button
                     type="submit"

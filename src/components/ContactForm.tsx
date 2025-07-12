@@ -2,12 +2,7 @@ import { useState, useEffect } from 'react';
 import { Send, Mail, MessageCircle, Phone } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-
-interface LegalDocument {
-  id: string;
-  title: string;
-  type: string;
-}
+import ConsentCheckbox from '@/components/ConsentCheckbox';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -18,23 +13,7 @@ const ContactForm = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
-  const [legalDocuments, setLegalDocuments] = useState<LegalDocument[]>([]);
   const { toast } = useToast();
-
-  useEffect(() => {
-    const fetchLegalDocuments = async () => {
-      const { data } = await supabase
-        .from('legal_documents')
-        .select('id, title, type')
-        .in('type', ['privacy_policy', 'terms_of_service']);
-
-      if (data) {
-        setLegalDocuments(data);
-      }
-    };
-
-    fetchLegalDocuments();
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -179,55 +158,10 @@ const ContactForm = () => {
                     />
                   </div>
 
-                  <div className="flex items-start space-x-3 p-4 bg-secondary/30 rounded-xl border border-border">
-                    <input
-                      type="checkbox"
-                      id="agreement"
-                      checked={isAgreed}
-                      onChange={(e) => setIsAgreed(e.target.checked)}
-                      className="mt-1 h-4 w-4 text-primary border-border rounded focus:ring-primary focus:ring-2"
-                      required
-                    />
-                    <label htmlFor="agreement" className="text-sm text-muted-foreground leading-relaxed">
-                      Я соглашаюсь с условиями{' '}
-                      {legalDocuments.find(doc => doc.type === 'terms_of_service') ? (
-                        <a 
-                          href={`/legal/terms_of_service`} 
-                          target="_blank"
-                          className="text-primary hover:underline"
-                        >
-                          {legalDocuments.find(doc => doc.type === 'terms_of_service')?.title}
-                        </a>
-                      ) : (
-                        <a 
-                          href="/legal/terms_of_service" 
-                          target="_blank"
-                          className="text-primary hover:underline"
-                        >
-                          Публичной оферты
-                        </a>
-                      )}{' '}
-                      и{' '}
-                      {legalDocuments.find(doc => doc.type === 'privacy_policy') ? (
-                        <a 
-                          href={`/legal/privacy_policy`} 
-                          target="_blank"
-                          className="text-primary hover:underline"
-                        >
-                          {legalDocuments.find(doc => doc.type === 'privacy_policy')?.title}
-                        </a>
-                      ) : (
-                        <a 
-                          href="/legal/privacy_policy" 
-                          target="_blank"
-                          className="text-primary hover:underline"
-                        >
-                          Политики конфиденциальности
-                        </a>
-                      )}{' '}
-                      и даю согласие на обработку моих персональных данных.
-                    </label>
-                  </div>
+                  <ConsentCheckbox 
+                    isAgreed={isAgreed} 
+                    onChange={setIsAgreed}
+                  />
 
                   <button
                     type="submit"
