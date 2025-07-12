@@ -6,11 +6,8 @@ import PageEditor from './PageEditor';
 import Settings from './Settings';
 import LegalDocumentsManagement from './LegalDocumentsManagement';
 import PageSEOManagement from './PageSEOManagement';
-import CRMLeadsManagement from './CRMLeadsManagement';
-import EmailTemplatesManagement from './EmailTemplatesManagement';
-import CampaignsManagement from './CampaignsManagement';
 
-type AdminView = 'dashboard' | 'content' | 'page-editor' | 'submissions' | 'legal' | 'seo' | 'settings' | 'crm-leads' | 'email-templates' | 'campaigns';
+type AdminView = 'dashboard' | 'content' | 'page-editor' | 'submissions' | 'legal' | 'seo' | 'settings';
 
 const AdminDashboard = () => {
   const [currentView, setCurrentView] = useState<AdminView>('dashboard');
@@ -29,12 +26,6 @@ const AdminDashboard = () => {
         setCurrentView('seo');
       } else if (hash === 'settings') {
         setCurrentView('settings');
-      } else if (hash === 'crm-leads') {
-        setCurrentView('crm-leads');
-      } else if (hash === 'email-templates') {
-        setCurrentView('email-templates');
-      } else if (hash === 'campaigns') {
-        setCurrentView('campaigns');
       } else if (hash === 'dashboard' || hash === '') {
         setCurrentView('dashboard');
       }
@@ -94,18 +85,6 @@ const AdminDashboard = () => {
 
   if (currentView === 'settings') {
     return <Settings />;
-  }
-
-  if (currentView === 'crm-leads') {
-    return <CRMLeadsManagement />;
-  }
-
-  if (currentView === 'email-templates') {
-    return <EmailTemplatesManagement />;
-  }
-
-  if (currentView === 'campaigns') {
-    return <CampaignsManagement />;
   }
 
   return <Dashboard />;

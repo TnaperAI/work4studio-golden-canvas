@@ -12,10 +12,7 @@ import {
   Menu,
   X,
   Scale,
-  Globe,
-  Building2,
-  Mail,
-  Target
+  Globe
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -30,9 +27,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   const navigation = [
     { name: 'Дашборд', href: '#dashboard', icon: Home },
-    { name: 'CRM - Лиды', href: '#crm-leads', icon: Building2 },
-    { name: 'Шаблоны писем', href: '#email-templates', icon: Mail },
-    { name: 'Рассылки', href: '#campaigns', icon: Target },
     { name: 'Контент сайта', href: '#content', icon: FileText },
     { name: 'Заявки', href: '#submissions', icon: Users },
     { name: 'SEO настройки', href: '#seo', icon: Globe },
@@ -47,9 +41,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const isActive = (path: string) => {
     const hash = window.location.hash.replace('#', '');
     if (path === '#dashboard') return hash === 'dashboard' || hash === '';
-    if (path === '#crm-leads') return hash === 'crm-leads';
-    if (path === '#email-templates') return hash === 'email-templates';
-    if (path === '#campaigns') return hash === 'campaigns';
     if (path === '#content') return hash === 'content';
     if (path === '#submissions') return hash === 'submissions';
     if (path === '#seo') return hash === 'seo';

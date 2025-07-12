@@ -182,93 +182,6 @@ export type Database = {
         }
         Relationships: []
       }
-      email_campaigns: {
-        Row: {
-          clicked_at: string | null
-          company_id: string
-          created_at: string
-          error_message: string | null
-          id: string
-          opened_at: string | null
-          replied_at: string | null
-          sent_at: string | null
-          status: string
-          template_id: string
-        }
-        Insert: {
-          clicked_at?: string | null
-          company_id: string
-          created_at?: string
-          error_message?: string | null
-          id?: string
-          opened_at?: string | null
-          replied_at?: string | null
-          sent_at?: string | null
-          status?: string
-          template_id: string
-        }
-        Update: {
-          clicked_at?: string | null
-          company_id?: string
-          created_at?: string
-          error_message?: string | null
-          id?: string
-          opened_at?: string | null
-          replied_at?: string | null
-          sent_at?: string | null
-          status?: string
-          template_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "email_campaigns_company_id_fkey"
-            columns: ["company_id"]
-            isOneToOne: false
-            referencedRelation: "parsed_companies"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "email_campaigns_template_id_fkey"
-            columns: ["template_id"]
-            isOneToOne: false
-            referencedRelation: "email_templates"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      email_templates: {
-        Row: {
-          content: string
-          created_at: string
-          id: string
-          is_active: boolean
-          name: string
-          subject: string
-          updated_at: string
-          variables: Json | null
-        }
-        Insert: {
-          content: string
-          created_at?: string
-          id?: string
-          is_active?: boolean
-          name: string
-          subject: string
-          updated_at?: string
-          variables?: Json | null
-        }
-        Update: {
-          content?: string
-          created_at?: string
-          id?: string
-          is_active?: boolean
-          name?: string
-          subject?: string
-          updated_at?: string
-          variables?: Json | null
-        }
-        Relationships: []
-      }
       legal_documents: {
         Row: {
           content: string
@@ -343,108 +256,6 @@ export type Database = {
           og_title?: string | null
           page_slug?: string
           page_title?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      parsed_companies: {
-        Row: {
-          address: string | null
-          city: string | null
-          company_name: string
-          company_type: Database["public"]["Enums"]["company_type"]
-          country: Database["public"]["Enums"]["country_code"]
-          created_at: string
-          email: string | null
-          id: string
-          industry: string | null
-          notes: string | null
-          parsed_at: string
-          phone: string | null
-          region: string | null
-          registration_date: string | null
-          registration_number: string | null
-          source_url: string | null
-          status: Database["public"]["Enums"]["lead_status"]
-          updated_at: string
-          website: string | null
-        }
-        Insert: {
-          address?: string | null
-          city?: string | null
-          company_name: string
-          company_type?: Database["public"]["Enums"]["company_type"]
-          country: Database["public"]["Enums"]["country_code"]
-          created_at?: string
-          email?: string | null
-          id?: string
-          industry?: string | null
-          notes?: string | null
-          parsed_at?: string
-          phone?: string | null
-          region?: string | null
-          registration_date?: string | null
-          registration_number?: string | null
-          source_url?: string | null
-          status?: Database["public"]["Enums"]["lead_status"]
-          updated_at?: string
-          website?: string | null
-        }
-        Update: {
-          address?: string | null
-          city?: string | null
-          company_name?: string
-          company_type?: Database["public"]["Enums"]["company_type"]
-          country?: Database["public"]["Enums"]["country_code"]
-          created_at?: string
-          email?: string | null
-          id?: string
-          industry?: string | null
-          notes?: string | null
-          parsed_at?: string
-          phone?: string | null
-          region?: string | null
-          registration_date?: string | null
-          registration_number?: string | null
-          source_url?: string | null
-          status?: Database["public"]["Enums"]["lead_status"]
-          updated_at?: string
-          website?: string | null
-        }
-        Relationships: []
-      }
-      parser_configs: {
-        Row: {
-          country: Database["public"]["Enums"]["country_code"]
-          created_at: string
-          id: string
-          is_active: boolean
-          last_parsed_date: string | null
-          parsing_frequency: number | null
-          source_name: string
-          source_url: string
-          updated_at: string
-        }
-        Insert: {
-          country: Database["public"]["Enums"]["country_code"]
-          created_at?: string
-          id?: string
-          is_active?: boolean
-          last_parsed_date?: string | null
-          parsing_frequency?: number | null
-          source_name: string
-          source_url: string
-          updated_at?: string
-        }
-        Update: {
-          country?: Database["public"]["Enums"]["country_code"]
-          created_at?: string
-          id?: string
-          is_active?: boolean
-          last_parsed_date?: string | null
-          parsing_frequency?: number | null
-          source_name?: string
-          source_url?: string
           updated_at?: string
         }
         Relationships: []
@@ -631,16 +442,6 @@ export type Database = {
         | "corporate"
         | "startup"
         | "redesign"
-      company_type: "ip" | "ooo" | "zao" | "pao" | "other"
-      country_code: "by" | "ru" | "kz"
-      lead_status:
-        | "new"
-        | "contacted"
-        | "proposal_sent"
-        | "in_negotiation"
-        | "closed_won"
-        | "closed_lost"
-        | "not_interested"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -777,17 +578,6 @@ export const Constants = {
         "corporate",
         "startup",
         "redesign",
-      ],
-      company_type: ["ip", "ooo", "zao", "pao", "other"],
-      country_code: ["by", "ru", "kz"],
-      lead_status: [
-        "new",
-        "contacted",
-        "proposal_sent",
-        "in_negotiation",
-        "closed_won",
-        "closed_lost",
-        "not_interested",
       ],
     },
   },
