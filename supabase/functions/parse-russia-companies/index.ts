@@ -28,9 +28,16 @@ interface ParsedCompany {
 }
 
 serve(async (req) => {
+  console.log('=== EDGE FUNCTION STARTED ===');
+  console.log('Request method:', req.method);
+  console.log('Request URL:', req.url);
+  
   if (req.method === 'OPTIONS') {
+    console.log('Handling OPTIONS request');
     return new Response(null, { headers: corsHeaders });
   }
+
+  console.log('=== PROCESSING POST REQUEST ===');
 
   try {
     console.log('Starting Russian companies parsing...');
