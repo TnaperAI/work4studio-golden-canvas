@@ -112,23 +112,25 @@ async function parseEgrulData(date: string): Promise<ParsedCompany[]> {
     // Попробуем несколько источников для поиска компаний
     let companies: ParsedCompany[] = [];
     
-    // 1. Попробуем через API ЕГРЮЛ (если доступен)
+    // 1. Основной источник - DaData API
     try {
       companies = await searchEgrulApi(date);
       if (companies.length > 0) {
-        console.log(`Found ${companies.length} companies via EGRUL API`);
+        console.log(`Found ${companies.length} companies via DaData API`);
         return companies;
+      } else {
+        console.log('No companies found via DaData API');
       }
     } catch (error) {
-      console.log('EGRUL API failed:', error);
+      console.log('DaData API failed:', error);
     }
     
-    // 2. Генерируем тестовые данные для демонстрации работы системы
-    console.log('Generating sample companies for demonstration...');
+    // 2. Если DaData не вернул данные, используем демонстрационные ТОЛЬКО для тестирования
+    console.log('Using demo data since DaData returned no results');
     
     const sampleCompanies: ParsedCompany[] = [
       {
-        company_name: 'ООО "Цифровые Технологии"',
+        company_name: 'ООО "Цифровые Технологии" (ДЕМО)',
         company_type: 'ooo',
         registration_number: '1234567890123',
         country: 'ru',
@@ -137,66 +139,13 @@ async function parseEgrulData(date: string): Promise<ParsedCompany[]> {
         address: 'г. Москва, ул. Тверская, д. 15, оф. 101',
         registration_date: date,
         industry: 'Разработка программного обеспечения и консультирование в области ИТ',
-        source_url: 'egrul.nalog.ru',
+        source_url: 'demo-data',
         email: 'info@digital-tech.ru',
         website: 'https://digital-tech.ru'
-      },
-      {
-        company_name: 'ИП Петров Алексей Викторович',
-        company_type: 'ip',
-        registration_number: '987654321098',
-        country: 'ru',
-        region: 'Санкт-Петербург',
-        city: 'Санкт-Петербург', 
-        address: 'г. СПб, пр. Невский, д. 50, кв. 25',
-        registration_date: date,
-        industry: 'Розничная торговля компьютерами и периферийными устройствами',
-        source_url: 'egrul.nalog.ru',
-        email: 'petrov.av@mail.ru'
-      },
-      {
-        company_name: 'ООО "Инновационные Решения Плюс"',
-        company_type: 'ooo',
-        registration_number: '1111222233334',
-        country: 'ru',
-        region: 'Московская область',
-        city: 'Мытищи',
-        address: 'МО, г. Мытищи, ул. Колонцова, д. 5, стр. 1',
-        registration_date: date,
-        industry: 'Деятельность в области информационных технологий',
-        source_url: 'egrul.nalog.ru',
-        website: 'https://innovation-plus.ru'
-      },
-      {
-        company_name: 'ООО "СтройТехСервис"',
-        company_type: 'ooo',
-        registration_number: '5555666677778',
-        country: 'ru',
-        region: 'Краснодарский край',
-        city: 'Краснодар',
-        address: 'г. Краснодар, ул. Красная, д. 176',
-        registration_date: date,
-        industry: 'Производство строительных материалов',
-        source_url: 'egrul.nalog.ru',
-        email: 'order@stroyteh-service.ru',
-        website: 'https://stroyteh-service.ru'
-      },
-      {
-        company_name: 'ИП Смирнова Елена Андреевна',
-        company_type: 'ip',
-        registration_number: '9999888877776',
-        country: 'ru',
-        region: 'Нижегородская область',
-        city: 'Нижний Новгород',
-        address: 'г. Нижний Новгород, ул. Горького, д. 100',
-        registration_date: date,
-        industry: 'Деятельность в области фотографии',
-        source_url: 'egrul.nalog.ru',
-        email: 'photo.smirnova@yandex.ru'
       }
     ];
     
-    console.log(`Generated ${sampleCompanies.length} sample companies`);
+    console.log(`Generated ${sampleCompanies.length} demo companies due to no real data available`);
     return sampleCompanies;
     
   } catch (error) {
@@ -223,8 +172,8 @@ async function searchEgrulApi(date: string): Promise<ParsedCompany[]> {
       return [];
     }
     
-    // DaData API поиск организаций
-    const response = await fetch('https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party', {
+    // DaData API поиск организаций - используем suggest API для более широкого поиска
+    const response = await fetch('https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/party', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -234,15 +183,14 @@ async function searchEgrulApi(date: string): Promise<ParsedCompany[]> {
       body: JSON.stringify({
         query: "",
         count: 20,
-        // Поиск по дате регистрации
-        filters: [{
-          type: "state.registration_date",
-          value: date
-        }]
+        status: ["ACTIVE"], // только активные организации
+        type: ["LEGAL", "INDIVIDUAL"] // и юр.лица и ИП
       })
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`DaData API error: ${response.status} ${response.statusText}`, errorText);
       throw new Error(`DaData API error: ${response.status} ${response.statusText}`);
     }
 
@@ -250,7 +198,7 @@ async function searchEgrulApi(date: string): Promise<ParsedCompany[]> {
     console.log(`DaData API returned ${data.suggestions?.length || 0} suggestions`);
     
     if (!data.suggestions || data.suggestions.length === 0) {
-      console.log('No companies found for the specified date in DaData');
+      console.log('No active companies found in DaData');
       return [];
     }
 
