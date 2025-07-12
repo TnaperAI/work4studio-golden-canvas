@@ -166,13 +166,16 @@ async function parseEgrulData(date: string): Promise<ParsedCompany[]> {
 async function searchEgrulApi(date: string): Promise<ParsedCompany[]> {
   try {
     console.log(`Searching DaData API for companies registered on: ${date}`);
+    console.log(`DaData API key available: ${dadataApiKey ? 'YES' : 'NO'}`);
     
     if (!dadataApiKey) {
       console.log('DaData API key not found, skipping DaData search');
       return [];
     }
     
-    // DaData API поиск организаций - используем suggest API для более широкого поиска
+    // Тестируем простой запрос к DaData для проверки подключения
+    console.log('Testing DaData API connection...');
+    
     const response = await fetch('https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/party', {
       method: 'POST',
       headers: {
@@ -181,30 +184,33 @@ async function searchEgrulApi(date: string): Promise<ParsedCompany[]> {
         'Authorization': `Token ${dadataApiKey}`
       },
       body: JSON.stringify({
-        query: "",
-        count: 20,
-        status: ["ACTIVE"], // только активные организации
-        type: ["LEGAL", "INDIVIDUAL"] // и юр.лица и ИП
+        query: "ООО",
+        count: 5
       })
     });
 
+    console.log(`DaData API response status: ${response.status}`);
+    
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`DaData API error: ${response.status} ${response.statusText}`, errorText);
-      throw new Error(`DaData API error: ${response.status} ${response.statusText}`);
+      return [];
     }
 
     const data = await response.json();
     console.log(`DaData API returned ${data.suggestions?.length || 0} suggestions`);
+    console.log('First suggestion:', JSON.stringify(data.suggestions?.[0], null, 2));
     
     if (!data.suggestions || data.suggestions.length === 0) {
-      console.log('No active companies found in DaData');
+      console.log('No companies found in DaData');
       return [];
     }
 
     // Преобразуем данные DaData в наш формат
-    const companies: ParsedCompany[] = data.suggestions.map((suggestion: any) => {
+    const companies: ParsedCompany[] = data.suggestions.map((suggestion: any, index: number) => {
       const company = suggestion.data;
+      
+      console.log(`Processing company ${index + 1}:`, company.name?.full_with_opf);
       
       return {
         company_name: company.name?.full_with_opf || company.name?.short_with_opf || 'Неизвестно',
@@ -219,8 +225,8 @@ async function searchEgrulApi(date: string): Promise<ParsedCompany[]> {
           date,
         industry: company.okved,
         source_url: 'dadata.ru',
-        email: undefined, // DaData не предоставляет email напрямую
-        website: undefined // DaData не предоставляет website напрямую
+        email: undefined,
+        website: undefined
       };
     });
 
