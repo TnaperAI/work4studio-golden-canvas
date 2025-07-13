@@ -333,7 +333,7 @@ const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
               </div>
 
               <div className="space-y-2">
-                <Label>Особенности услуги</Label>
+                <Label>Что входит в работу</Label>
                 <div className="flex gap-2">
                   <Input
                     value={newFeature}
