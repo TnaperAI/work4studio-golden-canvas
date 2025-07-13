@@ -451,6 +451,7 @@ export type Database = {
       }
       services: {
         Row: {
+          advantages: string[] | null
           canonical_url: string | null
           created_at: string
           description: string | null
@@ -474,6 +475,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          advantages?: string[] | null
           canonical_url?: string | null
           created_at?: string
           description?: string | null
@@ -497,6 +499,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          advantages?: string[] | null
           canonical_url?: string | null
           created_at?: string
           description?: string | null

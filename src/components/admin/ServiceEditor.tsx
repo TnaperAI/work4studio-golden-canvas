@@ -20,6 +20,7 @@ interface Service {
   price_from: number | '';
   price_to: number | '';
   features: string[];
+  advantages: string[];
   faq: { question: string; answer: string; }[];
   is_active: boolean;
   sort_order: number;
@@ -43,6 +44,7 @@ const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
   const [loading, setLoading] = useState(!!serviceId);
   const [saving, setSaving] = useState(false);
   const [newFeature, setNewFeature] = useState('');
+  const [newAdvantage, setNewAdvantage] = useState('');
   const [newFaqQuestion, setNewFaqQuestion] = useState('');
   const [newFaqAnswer, setNewFaqAnswer] = useState('');
   
@@ -54,6 +56,7 @@ const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
     price_from: '',
     price_to: '',
     features: [],
+    advantages: [],
     faq: [],
     is_active: true,
     sort_order: 0,
@@ -185,6 +188,23 @@ const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
     setFormData(prev => ({
       ...prev,
       features: prev.features.filter((_, i) => i !== index)
+    }));
+  };
+
+  const addAdvantage = () => {
+    if (newAdvantage.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        advantages: [...prev.advantages, newAdvantage.trim()]
+      }));
+      setNewAdvantage('');
+    }
+  };
+
+  const removeAdvantage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      advantages: prev.advantages.filter((_, i) => i !== index)
     }));
   };
 
@@ -330,6 +350,31 @@ const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
                     <Badge key={index} variant="secondary" className="flex items-center gap-1">
                       {feature}
                       <button onClick={() => removeFeature(index)}>
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Преимущества (для боковой панели)</Label>
+                <div className="flex gap-2">
+                  <Input
+                    value={newAdvantage}
+                    onChange={(e) => setNewAdvantage(e.target.value)}
+                    placeholder="Добавить преимущество..."
+                    onKeyPress={(e) => e.key === 'Enter' && addAdvantage()}
+                  />
+                  <Button type="button" onClick={addAdvantage}>
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {formData.advantages.map((advantage, index) => (
+                    <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                      {advantage}
+                      <button onClick={() => removeAdvantage(index)}>
                         <X className="h-3 w-3" />
                       </button>
                     </Badge>

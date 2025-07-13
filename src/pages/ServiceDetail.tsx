@@ -27,6 +27,7 @@ interface ServiceData {
   price_from: number;
   price_to: number;
   features: string[];
+  advantages: string[];
   faq: { question: string; answer: string; }[];
   is_active: boolean;
   meta_title: string;
@@ -253,18 +254,12 @@ const ServiceDetail = () => {
                   </Button>
                   
                   <div className="space-y-3 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-primary" />
-                      <span>Бесплатная консультация</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-primary" />
-                      <span>Ответим в течение часа</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-primary" />
-                      <span>Поддержка 3 месяца</span>
-                    </div>
+                    {serviceData.advantages && serviceData.advantages.map((advantage, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-primary" />
+                        <span>{advantage}</span>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
