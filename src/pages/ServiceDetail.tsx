@@ -231,13 +231,6 @@ const ServiceDetail = () => {
                 >
                   Заказать {serviceData.title?.toLowerCase()}
                 </Button>
-                <Button 
-                  variant="outline"
-                  size="lg" 
-                  onClick={() => setShowContactForm(true)}
-                >
-                  Получить консультацию
-                </Button>
               </div>
             </div>
             
