@@ -217,7 +217,7 @@ const ServiceDetail = () => {
               </Badge>
               
               <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground">
-                {serviceData.h1_tag || serviceData.short_description}
+                {serviceData.h1_tag || serviceData.title}
               </h1>
               
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
