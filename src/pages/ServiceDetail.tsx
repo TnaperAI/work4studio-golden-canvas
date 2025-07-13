@@ -337,13 +337,6 @@ const ServiceDetail = () => {
                 >
                   Получить консультацию
                 </Button>
-                <Button 
-                  variant="outline"
-                  size="lg" 
-                  onClick={() => setShowContactForm(true)}
-                >
-                  Обсудить бюджет
-                </Button>
               </div>
             </CardContent>
           </Card>
