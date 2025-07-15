@@ -2,7 +2,7 @@
 FROM node:20-alpine as builder
 WORKDIR /app
 COPY package*.json bun.lockb ./
-RUN npm install
+RUN npm install --force
 COPY . .
 RUN npm run build
 
