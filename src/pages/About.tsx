@@ -466,10 +466,10 @@ const About = () => {
               <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
                 Свяжитесь с нами для обсуждения вашего проекта. Мы поможем воплотить ваши идеи в жизнь и создать что-то удивительное вместе.
               </p>
-              <Button asChild className="btn-gold text-xl px-8 py-4 hover:shadow-2xl hover:scale-105 transition-all duration-300">
+              <Button asChild className="btn-gold text-base md:text-xl px-6 py-3 md:px-8 md:py-4 hover:shadow-2xl hover:scale-105 transition-all duration-300">
                 <Link to="/contact">
                   Связаться с нами
-                  <ArrowRight className="ml-3 h-6 w-6" />
+                  <ArrowRight className="ml-3 h-5 w-5 md:h-6 md:w-6" />
                 </Link>
               </Button>
             </div>
