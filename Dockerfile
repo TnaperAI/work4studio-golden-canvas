@@ -14,17 +14,23 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Stage 2: Serve the app with a lightweight web server
 FROM nginx:alpine
 
-# Remove default Nginx static assets
-RUN rm -rf /usr/share/nginx/html/*
+# Удаляем default конфиг
+RUN rm /etc/nginx/conf.d/default.conf
 
-# Copy built assets from the builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Создаём директории, как в Ubuntu
+RUN mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled
 
-# Copy custom nginx config (optional)
-COPY nginx.conf /etc/nginx/nginx.conf
+# Копируем наш виртуальный хост конфиг
+COPY myapp.conf /etc/nginx/sites-available/myapp
+
+# Символическая ссылка в sites-enabled
+RUN ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/myapp
+
+# Копируем собранный frontend
+COPY --from=builder /app/dist /var/www/myapp
+
 
 # Expose port
 EXPOSE 80
