@@ -275,7 +275,7 @@ const Services = () => {
               </p>
               <Button 
                 size="lg" 
-                className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-xl px-10 py-6 hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-base md:text-xl px-6 py-4 md:px-10 md:py-6 hover:shadow-2xl hover:scale-105 transition-all duration-300"
                 onClick={() => setIsContactModalOpen(true)}
               >
                 {getContent('services', 'cta_button') || 'Получить консультацию'}
