@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Install dependencies
 COPY package*.json bun.lockb ./
-RUN npm run install --force
+RUN npm install --force
 
 # Copy the rest of the application
 COPY . .
