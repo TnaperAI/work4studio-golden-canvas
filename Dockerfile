@@ -1,19 +1,17 @@
-FROM node:20-alpine
-
-# Установка рабочей директории
+# Сборка
+FROM node:20-alpine as builder
 WORKDIR /app
-
-# Копируем package.json и lock-файлы
 COPY package*.json bun.lockb ./
-
-# Установка зависимостей
-RUN npm install --force
-
-# Копируем остальной код
+RUN npm install
 COPY . .
+RUN npm run build
 
-# Открываем порт Vite (по умолчанию 5173)
-EXPOSE 8080
+# Продакшен сервер
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Запускаем dev-сервер Vite
-CMD ["npm", "run", "dev"]
+# Копируем кастомный nginx конфиг
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
