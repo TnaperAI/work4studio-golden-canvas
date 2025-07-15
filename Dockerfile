@@ -19,7 +19,7 @@ FROM nginx:alpine
 # Удаляем default конфиг
 RUN rm /etc/nginx/conf.d/default.conf
 
-COPY nginx/myapp.conf /etc/nginx/conf.d/myapp.conf
+COPY myapp.conf /etc/nginx/conf.d/myapp.conf
 
 
 # Копируем собранный frontend
