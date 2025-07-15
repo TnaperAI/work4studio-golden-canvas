@@ -1,33 +1,19 @@
-# Stage 1: Build the app
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
-# Set working directory
+# Установка рабочей директории
 WORKDIR /app
 
-# Install dependencies
+# Копируем package.json и lock-файлы
 COPY package*.json bun.lockb ./
+
+# Установка зависимостей
 RUN npm install --force
 
-# Copy the rest of the application
+# Копируем остальной код
 COPY . .
 
-# Build the application
-RUN npm run build
+# Открываем порт Vite (по умолчанию 5173)
+EXPOSE 8080
 
-# Stage 2: Serve the app with a lightweight web server
-FROM nginx:alpine
-
-# Remove default Nginx static assets
-RUN rm -rf /usr/share/nginx/html/*
-
-# Copy built assets from the builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Copy custom nginx config (optional)
-# COPY nginx.conf /etc/nginx/nginx.conf
-
-# Expose port
-EXPOSE 80
-
-# Start Nginx server
-CMD ["nginx", "-g", "daemon off;"]
+# Запускаем dev-сервер Vite
+CMD ["npm", "run", "dev"]
