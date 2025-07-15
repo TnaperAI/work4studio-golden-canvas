@@ -19,14 +19,8 @@ FROM nginx:alpine
 # Удаляем default конфиг
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Создаём директории, как в Ubuntu
-RUN mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled
+COPY nginx/myapp.conf /etc/nginx/conf.d/myapp.conf
 
-# Копируем наш виртуальный хост конфиг
-COPY myapp.conf /etc/nginx/sites-available/myapp
-
-# Символическая ссылка в sites-enabled
-RUN ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/myapp
 
 # Копируем собранный frontend
 COPY --from=builder /app/dist /var/www/myapp
