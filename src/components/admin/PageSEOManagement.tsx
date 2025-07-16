@@ -185,6 +185,11 @@ const PageSEOManagement = () => {
           page_slug: selectedPage
         };
 
+        // Убираем id если он пустой для корректного создания записи
+        if (!seoData.id) {
+          delete seoData.id;
+        }
+
         const { error } = await supabase
           .from('page_seo')
           .upsert(seoData, { onConflict: 'page_slug' });

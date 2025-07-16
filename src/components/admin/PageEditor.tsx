@@ -478,6 +478,99 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
                       rows={4}
                     />
                   </div>
+                  
+                  <div className="mt-8">
+                    <h3 className="text-lg font-semibold mb-4">Наши ценности</h3>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Заголовок секции "Наши ценности"</Label>
+                        <Input
+                          value={contentFields.values_title || ''}
+                          onChange={(e) => updateContentField('values_title', e.target.value)}
+                          placeholder="Наши ценности"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Подзаголовок секции "Наши ценности"</Label>
+                        <Textarea
+                          value={contentFields.values_subtitle || ''}
+                          onChange={(e) => updateContentField('values_subtitle', e.target.value)}
+                          placeholder="Принципы, которыми мы руководствуемся в работе"
+                          rows={2}
+                        />
+                      </div>
+                      
+                      <div className="grid gap-4">
+                        <div className="border p-4 rounded-lg">
+                          <h4 className="font-medium mb-2">Ценность 1</h4>
+                          <div className="grid gap-2">
+                            <Input
+                              value={contentFields.value_1_title || ''}
+                              onChange={(e) => updateContentField('value_1_title', e.target.value)}
+                              placeholder="Качество"
+                            />
+                            <Textarea
+                              value={contentFields.value_1_description || ''}
+                              onChange={(e) => updateContentField('value_1_description', e.target.value)}
+                              placeholder="Мы стремимся к совершенству в каждом проекте"
+                              rows={2}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="border p-4 rounded-lg">
+                          <h4 className="font-medium mb-2">Ценность 2</h4>
+                          <div className="grid gap-2">
+                            <Input
+                              value={contentFields.value_2_title || ''}
+                              onChange={(e) => updateContentField('value_2_title', e.target.value)}
+                              placeholder="Инновации"
+                            />
+                            <Textarea
+                              value={contentFields.value_2_description || ''}
+                              onChange={(e) => updateContentField('value_2_description', e.target.value)}
+                              placeholder="Используем современные технологии и подходы"
+                              rows={2}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="border p-4 rounded-lg">
+                          <h4 className="font-medium mb-2">Ценность 3</h4>
+                          <div className="grid gap-2">
+                            <Input
+                              value={contentFields.value_3_title || ''}
+                              onChange={(e) => updateContentField('value_3_title', e.target.value)}
+                              placeholder="Честность"
+                            />
+                            <Textarea
+                              value={contentFields.value_3_description || ''}
+                              onChange={(e) => updateContentField('value_3_description', e.target.value)}
+                              placeholder="Прозрачность в работе и открытое общение"
+                              rows={2}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="border p-4 rounded-lg">
+                          <h4 className="font-medium mb-2">Ценность 4</h4>
+                          <div className="grid gap-2">
+                            <Input
+                              value={contentFields.value_4_title || ''}
+                              onChange={(e) => updateContentField('value_4_title', e.target.value)}
+                              placeholder="Результат"
+                            />
+                            <Textarea
+                              value={contentFields.value_4_description || ''}
+                              onChange={(e) => updateContentField('value_4_description', e.target.value)}
+                              placeholder="Фокусируемся на достижении целей клиента"
+                              rows={2}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </>
               )}
 
