@@ -9,7 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, X, Edit, Trash2, Users, Building, Globe } from 'lucide-react';
+import { useSiteContent } from '@/hooks/useSiteContent';
+import { Plus, X, Edit, Trash2, Users, Building, Globe, Heart } from 'lucide-react';
 
 interface TeamMember {
   id: string;
@@ -50,6 +51,7 @@ interface PageSEO {
 
 const AboutManagement = () => {
   const { toast } = useToast();
+  const { getContent, updateContent } = useSiteContent();
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
   const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
@@ -58,6 +60,9 @@ const AboutManagement = () => {
   const [showTeamForm, setShowTeamForm] = useState(false);
   const [newSkill, setNewSkill] = useState('');
   const [uploading, setUploading] = useState(false);
+  
+  // Values state
+  const [valuesData, setValuesData] = useState<Record<string, string>>({});
 
   const emptyTeamMember: Omit<TeamMember, 'id'> = {
     name: '',
@@ -73,6 +78,10 @@ const AboutManagement = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    loadValuesData();
+  }, [getContent]);
 
   const fetchData = async () => {
     try {
@@ -113,6 +122,47 @@ const AboutManagement = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadValuesData = () => {
+    const values = {
+      values_title: getContent('about', 'values_title'),
+      values_subtitle: getContent('about', 'values_subtitle'),
+      value_1_title: getContent('about', 'value_1_title'),
+      value_1_description: getContent('about', 'value_1_description'),
+      value_2_title: getContent('about', 'value_2_title'),
+      value_2_description: getContent('about', 'value_2_description'),
+      value_3_title: getContent('about', 'value_3_title'),
+      value_3_description: getContent('about', 'value_3_description'),
+      value_4_title: getContent('about', 'value_4_title'),
+      value_4_description: getContent('about', 'value_4_description'),
+    };
+    setValuesData(values);
+  };
+
+  const saveValuesData = async () => {
+    try {
+      await Promise.all(
+        Object.entries(valuesData).map(([key, value]) =>
+          updateContent('about', key, value)
+        )
+      );
+
+      toast({
+        title: 'Успешно',
+        description: 'Данные ценностей обновлены',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось сохранить данные ценностей',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const updateValuesField = (key: string, value: string) => {
+    setValuesData(prev => ({ ...prev, [key]: value }));
   };
 
   const saveCompanyInfo = async () => {
@@ -338,6 +388,7 @@ const AboutManagement = () => {
         <TabsList>
           <TabsTrigger value="company">Информация о компании</TabsTrigger>
           <TabsTrigger value="team">Команда</TabsTrigger>
+          <TabsTrigger value="values">Наши ценности</TabsTrigger>
           <TabsTrigger value="seo">SEO настройки</TabsTrigger>
         </TabsList>
 
@@ -685,6 +736,112 @@ const AboutManagement = () => {
               </CardContent>
             </Card>
           )}
+        </TabsContent>
+
+        <TabsContent value="values" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Heart className="h-5 w-5" />
+                Наши ценности
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Заголовок секции "Наши ценности"</Label>
+                  <Input
+                    value={valuesData.values_title || ''}
+                    onChange={(e) => updateValuesField('values_title', e.target.value)}
+                    placeholder="Наши ценности"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Подзаголовок секции "Наши ценности"</Label>
+                  <Textarea
+                    value={valuesData.values_subtitle || ''}
+                    onChange={(e) => updateValuesField('values_subtitle', e.target.value)}
+                    placeholder="Принципы, которыми мы руководствуемся в работе"
+                    rows={2}
+                  />
+                </div>
+                
+                <div className="grid gap-4">
+                  <div className="border p-4 rounded-lg">
+                    <h4 className="font-medium mb-2">Ценность 1</h4>
+                    <div className="grid gap-2">
+                      <Input
+                        value={valuesData.value_1_title || ''}
+                        onChange={(e) => updateValuesField('value_1_title', e.target.value)}
+                        placeholder="Качество"
+                      />
+                      <Textarea
+                        value={valuesData.value_1_description || ''}
+                        onChange={(e) => updateValuesField('value_1_description', e.target.value)}
+                        placeholder="Мы стремимся к совершенству в каждом проекте"
+                        rows={2}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="border p-4 rounded-lg">
+                    <h4 className="font-medium mb-2">Ценность 2</h4>
+                    <div className="grid gap-2">
+                      <Input
+                        value={valuesData.value_2_title || ''}
+                        onChange={(e) => updateValuesField('value_2_title', e.target.value)}
+                        placeholder="Инновации"
+                      />
+                      <Textarea
+                        value={valuesData.value_2_description || ''}
+                        onChange={(e) => updateValuesField('value_2_description', e.target.value)}
+                        placeholder="Используем современные технологии и подходы"
+                        rows={2}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="border p-4 rounded-lg">
+                    <h4 className="font-medium mb-2">Ценность 3</h4>
+                    <div className="grid gap-2">
+                      <Input
+                        value={valuesData.value_3_title || ''}
+                        onChange={(e) => updateValuesField('value_3_title', e.target.value)}
+                        placeholder="Честность"
+                      />
+                      <Textarea
+                        value={valuesData.value_3_description || ''}
+                        onChange={(e) => updateValuesField('value_3_description', e.target.value)}
+                        placeholder="Прозрачность в работе и открытое общение"
+                        rows={2}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="border p-4 rounded-lg">
+                    <h4 className="font-medium mb-2">Ценность 4</h4>
+                    <div className="grid gap-2">
+                      <Input
+                        value={valuesData.value_4_title || ''}
+                        onChange={(e) => updateValuesField('value_4_title', e.target.value)}
+                        placeholder="Результат"
+                      />
+                      <Textarea
+                        value={valuesData.value_4_description || ''}
+                        onChange={(e) => updateValuesField('value_4_description', e.target.value)}
+                        placeholder="Фокусируемся на достижении целей клиента"
+                        rows={2}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <Button onClick={saveValuesData}>
+                  Сохранить ценности
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="seo" className="space-y-4">
