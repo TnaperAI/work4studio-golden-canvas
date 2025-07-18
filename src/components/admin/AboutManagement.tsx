@@ -80,8 +80,10 @@ const AboutManagement = () => {
   }, []);
 
   useEffect(() => {
-    loadValuesData();
-  }, [getContent]);
+    if (!loading) {
+      loadValuesData();
+    }
+  }, [loading]);
 
   const fetchData = async () => {
     try {
