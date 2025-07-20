@@ -16,6 +16,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import { useSiteContent } from '@/hooks/useSiteContent';
 import { 
   Users, 
   Target, 
@@ -69,6 +70,7 @@ const About = () => {
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
   const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
   const [loading, setLoading] = useState(true);
+  const { getContent } = useSiteContent();
   useScrollAnimation();
 
   useEffect(() => {
@@ -240,26 +242,27 @@ const About = () => {
     { icon: Star, label: 'Довольных клиентов', value: company.clients_served }
   ];
 
+  // Получаем данные ценностей из базы данных или используем дефолтные
   const values = [
     {
       icon: Target,
-      title: 'Качество',
-      description: 'Мы не идем на компромиссы в вопросах качества. Каждый проект проходит строгий контроль.'
+      title: getContent('about', 'value_1_title') || 'Качество',
+      description: getContent('about', 'value_1_description') || 'Мы не идем на компромиссы в вопросах качества. Каждый проект проходит строгий контроль.'
     },
     {
       icon: Zap,
-      title: 'Инновации',
-      description: 'Используем самые современные технологии и подходы в разработке.'
+      title: getContent('about', 'value_2_title') || 'Инновации',
+      description: getContent('about', 'value_2_description') || 'Используем самые современные технологии и подходы в разработке.'
     },
     {
       icon: Heart,
-      title: 'Сервис',
-      description: 'Ваш успех — наш приоритет. Строим долгосрочные отношения.'
+      title: getContent('about', 'value_3_title') || 'Сервис',
+      description: getContent('about', 'value_3_description') || 'Ваш успех — наш приоритет. Строим долгосрочные отношения.'
     },
     {
       icon: CheckCircle,
-      title: 'Надежность',
-      description: 'Соблюдаем сроки, держим слово и всегда доступны для поддержки.'
+      title: getContent('about', 'value_4_title') || 'Надежность',
+      description: getContent('about', 'value_4_description') || 'Соблюдаем сроки, держим слово и всегда доступны для поддержки.'
     }
   ];
 
@@ -378,7 +381,7 @@ const About = () => {
           <div className="text-center mb-16 animate-on-scroll">
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
               <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                Наши
+                {getContent('about', 'values_title') || 'Наши'}
               </span>
               <br />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
@@ -386,7 +389,7 @@ const About = () => {
               </span>
             </h2>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Принципы, которые направляют нашу работу и отношения с клиентами
+              {getContent('about', 'values_subtitle') || 'Принципы, которые направляют нашу работу и отношения с клиентами'}
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
