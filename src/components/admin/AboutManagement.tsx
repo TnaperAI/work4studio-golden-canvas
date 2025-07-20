@@ -194,7 +194,7 @@ const AboutManagement = () => {
     if (!editingTeamMember) return;
 
     try {
-      if (editingTeamMember.id) {
+      if (editingTeamMember.id && editingTeamMember.id !== '') {
         // Update existing
         const { error } = await supabase
           .from('team_members')
@@ -202,16 +202,17 @@ const AboutManagement = () => {
           .eq('id', editingTeamMember.id);
         if (error) throw error;
       } else {
-        // Create new
+        // Create new - exclude the id field when inserting
+        const { id, ...memberDataWithoutId } = editingTeamMember;
         const { error } = await supabase
           .from('team_members')
-          .insert(editingTeamMember);
+          .insert(memberDataWithoutId);
         if (error) throw error;
       }
 
       toast({
         title: 'Успешно',
-        description: editingTeamMember.id ? 'Участник команды обновлен' : 'Участник команды добавлен',
+        description: editingTeamMember.id && editingTeamMember.id !== '' ? 'Участник команды обновлен' : 'Участник команды добавлен',
       });
 
       fetchData();
