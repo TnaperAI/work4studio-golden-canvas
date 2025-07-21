@@ -173,11 +173,18 @@ const AboutManagement = () => {
     if (!companyInfo) return;
 
     try {
-      const { error } = await supabase
+      // Save company info
+      const { error: companyError } = await supabase
         .from('company_info')
         .upsert(companyInfo, { onConflict: 'id' });
 
-      if (error) throw error;
+      if (companyError) throw companyError;
+
+      // Save hero title fields
+      await Promise.all([
+        updateContent('about', 'hero_title_1', valuesData.hero_title_1 || ''),
+        updateContent('about', 'hero_title_2', valuesData.hero_title_2 || '')
+      ]);
 
       toast({
         title: 'Успешно',
@@ -503,14 +510,9 @@ const AboutManagement = () => {
                     </div>
                   </div>
 
-                  <div className="flex gap-4">
-                    <Button onClick={saveValuesData} variant="outline">
-                      Сохранить заголовки страницы
-                    </Button>
-                    <Button onClick={saveCompanyInfo}>
-                      Сохранить информацию о компании
-                    </Button>
-                  </div>
+                  <Button onClick={saveCompanyInfo}>
+                    Сохранить информацию о компании
+                  </Button>
                 </>
               )}
             </CardContent>
