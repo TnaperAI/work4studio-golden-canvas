@@ -503,9 +503,14 @@ const AboutManagement = () => {
                     </div>
                   </div>
 
-                  <Button onClick={saveCompanyInfo}>
-                    Сохранить информацию о компании
-                  </Button>
+                  <div className="flex gap-4">
+                    <Button onClick={saveValuesData} variant="outline">
+                      Сохранить заголовки страницы
+                    </Button>
+                    <Button onClick={saveCompanyInfo}>
+                      Сохранить информацию о компании
+                    </Button>
+                  </div>
                 </>
               )}
             </CardContent>
