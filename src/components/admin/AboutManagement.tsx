@@ -128,6 +128,8 @@ const AboutManagement = () => {
 
   const loadValuesData = () => {
     const values = {
+      hero_title_1: getContent('about', 'hero_title_1'),
+      hero_title_2: getContent('about', 'hero_title_2'),
       values_title: getContent('about', 'values_title'),
       values_subtitle: getContent('about', 'values_subtitle'),
       value_1_title: getContent('about', 'value_1_title'),
@@ -401,6 +403,25 @@ const AboutManagement = () => {
               <CardTitle>Основная информация</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Hero Title Fields */}
+              <div className="grid gap-4 md:grid-cols-2 mb-6 p-4 bg-muted/30 rounded-lg">
+                <div className="space-y-2">
+                  <Label>Заголовок страницы (часть 1)</Label>
+                  <Input
+                    value={valuesData.hero_title_1 || ''}
+                    onChange={(e) => updateValuesField('hero_title_1', e.target.value)}
+                    placeholder="Наша"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Заголовок страницы (часть 2)</Label>
+                  <Input
+                    value={valuesData.hero_title_2 || ''}
+                    onChange={(e) => updateValuesField('hero_title_2', e.target.value)}
+                    placeholder="студия"
+                  />
+                </div>
+              </div>
               {companyInfo && (
                 <>
                   <div className="grid gap-4 md:grid-cols-2">
