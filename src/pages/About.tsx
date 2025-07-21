@@ -309,11 +309,11 @@ const About = () => {
               ) : (
                 <>
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    Наша
+                    {getContent('about', 'hero_title_1') || 'Наша'}
                   </span>
                   <br />
                   <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
-                    студия
+                    {getContent('about', 'hero_title_2') || 'студия'}
                   </span>
                 </>
               )}
