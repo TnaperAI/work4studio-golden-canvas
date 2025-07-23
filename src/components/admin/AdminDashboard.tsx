@@ -6,8 +6,9 @@ import PageEditor from './PageEditor';
 import Settings from './Settings';
 import LegalDocumentsManagement from './LegalDocumentsManagement';
 import PageSEOManagement from './PageSEOManagement';
+import CompanyParser from './CompanyParser';
 
-type AdminView = 'dashboard' | 'content' | 'page-editor' | 'submissions' | 'legal' | 'seo' | 'settings';
+type AdminView = 'dashboard' | 'content' | 'page-editor' | 'submissions' | 'legal' | 'seo' | 'company-parser' | 'settings';
 
 const AdminDashboard = () => {
   const [currentView, setCurrentView] = useState<AdminView>('dashboard');
@@ -24,6 +25,8 @@ const AdminDashboard = () => {
         setCurrentView('legal');
       } else if (hash === 'seo') {
         setCurrentView('seo');
+      } else if (hash === 'company-parser') {
+        setCurrentView('company-parser');
       } else if (hash === 'settings') {
         setCurrentView('settings');
       } else if (hash === 'dashboard' || hash === '') {
@@ -81,6 +84,10 @@ const AdminDashboard = () => {
 
   if (currentView === 'seo') {
     return <PageSEOManagement />;
+  }
+
+  if (currentView === 'company-parser') {
+    return <CompanyParser />;
   }
 
   if (currentView === 'settings') {
