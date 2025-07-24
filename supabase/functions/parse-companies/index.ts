@@ -63,130 +63,74 @@ function getRandomUserAgent(): string {
   return userAgents[Math.floor(Math.random() * userAgents.length)];
 }
 
-// Парсинг справочника организаций
-async function parseOrgPage(city: string, industry: string, limit: number): Promise<Company[]> {
+// Парсинг Яндекс.Справочника через публичные данные
+async function parseYandexDirectory(city: string, industry: string, limit: number): Promise<Company[]> {
   const companies: Company[] = [];
   
   try {
     console.log(`Поиск компаний в городе ${city}, сфера: ${industry}`);
     
-    // Формируем поисковый запрос для поиска по открытым справочникам
-    const searchQueries = [
-      `${industry} ${city} сайт email`,
-      `${industry} ${city} контакты`,
-      `организации ${industry} ${city}`,
-    ];
-
-    for (const query of searchQueries) {
+    // Создаем более эффективные поисковые запросы
+    const searchTerms = getIndustryTerms(industry);
+    
+    for (const term of searchTerms) {
       if (companies.length >= limit) break;
       
+      const query = `${term} ${city} контакты`;
       console.log(`Поиск по запросу: ${query}`);
       
-      // Используем поиск через DuckDuckGo (не блокирует так активно как Google)
-      const searchUrl = `https://duckduckgo.com/html/?q=${encodeURIComponent(query + ' site:list-org.com OR site:orgpage.ru OR site:orginfo.ru')}`;
+      // Используем более надежные источники
+      const sources = [
+        `https://www.google.com/search?q=${encodeURIComponent(query + ' site:zoon.ru')}`,
+        `https://www.google.com/search?q=${encodeURIComponent(query + ' site:yell.ru')}`,
+        `https://www.google.com/search?q=${encodeURIComponent(query + ' site:flamp.ru')}`,
+      ];
       
-      try {
-        const response = await fetch(searchUrl, {
-          headers: {
-            'User-Agent': getRandomUserAgent(),
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
-            'Accept-Encoding': 'gzip, deflate',
-            'Connection': 'keep-alive',
-            'Cache-Control': 'no-cache',
-          },
-        });
+      for (const searchUrl of sources) {
+        if (companies.length >= limit) break;
+        
+        try {
+          await delay(Math.random() * 3000 + 2000); // 2-5 сек задержка
+          
+          const response = await fetch(searchUrl, {
+            headers: {
+              'User-Agent': getRandomUserAgent(),
+              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+              'Accept-Language': 'ru-RU,ru;q=0.9,en;q=0.1',
+              'Referer': 'https://www.google.com/',
+              'Connection': 'keep-alive',
+            },
+          });
 
-        if (response.ok) {
-          const html = await response.text();
-          const text = stripHtml(html);
-          
-          // Извлекаем ссылки на страницы организаций
-          const orgLinks = html.match(/https?:\/\/(list-org\.com|orgpage\.ru|orginfo\.ru)[^\s"'>]+/g) || [];
-          
-          // Парсим каждую найденную страницу организации
-          for (const link of orgLinks.slice(0, 5)) {
-            if (companies.length >= limit) break;
+          if (response.ok) {
+            const html = await response.text();
             
-            try {
-              await delay(Math.random() * 2000 + 1000); // Задержка 1-3 сек
+            // Извлекаем ссылки на страницы организаций
+            const pageLinks = extractPageLinks(html, searchUrl);
+            
+            // Парсим каждую найденную страницу
+            for (const link of pageLinks.slice(0, 3)) {
+              if (companies.length >= limit) break;
               
-              const orgResponse = await fetch(link, {
-                headers: { 'User-Agent': getRandomUserAgent() }
-              });
-              
-              if (orgResponse.ok) {
-                const orgHtml = await orgResponse.text();
-                const orgText = stripHtml(orgHtml);
+              try {
+                await delay(Math.random() * 2000 + 1000);
                 
-                // Извлекаем данные компании
-                const emails = extractEmails(orgText);
-                const phones = extractPhones(orgText);
-                
-                // Попытка извлечь название компании из title или h1
-                const titleMatch = orgHtml.match(/<title[^>]*>([^<]+)</i);
-                const h1Match = orgHtml.match(/<h1[^>]*>([^<]+)</i);
-                
-                let companyName = '';
-                if (titleMatch) {
-                  companyName = stripHtml(titleMatch[1]).split('-')[0].trim();
-                } else if (h1Match) {
-                  companyName = stripHtml(h1Match[1]).trim();
+                const pageData = await parseSinglePage(link, city, industry);
+                if (pageData) {
+                  companies.push(pageData);
+                  console.log(`Найдена компания: ${pageData.company_name}`);
                 }
-                
-                if (companyName && companyName.length > 3) {
-                  // Поиск сайта компании
-                  const websiteMatch = orgText.match(/https?:\/\/[^\s,)]+\.(?:ru|com|org|net)/g);
-                  const website = websiteMatch ? websiteMatch[0] : undefined;
-                  
-                  companies.push({
-                    company_name: companyName,
-                    website: website,
-                    email: emails[0],
-                    phone: phones[0],
-                    city: city,
-                    industry: industry,
-                    source_url: link
-                  });
-                  
-                  console.log(`Найдена компания: ${companyName}`);
-                }
+              } catch (error) {
+                console.error(`Ошибка парсинга страницы ${link}:`, error);
               }
-            } catch (error) {
-              console.error(`Ошибка парсинга страницы ${link}:`, error);
             }
           }
+        } catch (error) {
+          console.error(`Ошибка поиска:`, error);
         }
-      } catch (error) {
-        console.error(`Ошибка поиска по запросу ${query}:`, error);
       }
       
-      // Задержка между разными запросами
-      await delay(Math.random() * 3000 + 2000); // 2-5 сек
-    }
-    
-    // Если мало результатов, попробуем альтернативные источники
-    if (companies.length < limit / 2) {
-      console.log('Пробуем альтернативные источники...');
-      
-      // Поиск через справочники малого бизнеса
-      const mspQuery = `${industry} ${city} site:sbis.ru OR site:kartoteka.ru`;
-      const mspUrl = `https://duckduckgo.com/html/?q=${encodeURIComponent(mspQuery)}`;
-      
-      try {
-        await delay(2000);
-        const response = await fetch(mspUrl, {
-          headers: { 'User-Agent': getRandomUserAgent() }
-        });
-        
-        if (response.ok) {
-          const html = await response.text();
-          // Дополнительная обработка для других источников
-          console.log('Найдены дополнительные источники');
-        }
-      } catch (error) {
-        console.error('Ошибка поиска в альтернативных источниках:', error);
-      }
+      await delay(Math.random() * 2000 + 1000);
     }
     
   } catch (error) {
@@ -194,6 +138,95 @@ async function parseOrgPage(city: string, industry: string, limit: number): Prom
   }
   
   return companies;
+}
+
+// Получаем синонимы для отрасли
+function getIndustryTerms(industry: string): string[] {
+  const terms: { [key: string]: string[] } = {
+    'медицина': ['медицинский центр', 'клиника', 'поликлиника', 'больница'],
+    'стоматология': ['стоматология', 'стоматологическая клиника', 'зубная клиника'],
+    'автосервис': ['автосервис', 'автомастерская', 'ремонт автомобилей', 'СТО'],
+    'ресторан': ['ресторан', 'кафе', 'столовая', 'пиццерия'],
+    'красота': ['салон красоты', 'парикмахерская', 'косметология', 'маникюр'],
+    'образование': ['школа', 'образовательный центр', 'курсы', 'обучение'],
+    'недвижимость': ['агентство недвижимости', 'риэлтор', 'недвижимость'],
+    'спорт': ['фитнес-клуб', 'спортзал', 'тренажерный зал'],
+    'юридические': ['юридические услуги', 'адвокат', 'юрист', 'правовые услуги'],
+    'строительство': ['строительная компания', 'ремонт', 'строительство']
+  };
+  
+  return terms[industry] || [industry];
+}
+
+// Извлекаем ссылки на страницы компаний
+function extractPageLinks(html: string, sourceUrl: string): string[] {
+  const links: string[] = [];
+  
+  if (sourceUrl.includes('zoon.ru')) {
+    const zoonLinks = html.match(/https?:\/\/[^\/]*zoon\.ru[^\s"'>]+/g) || [];
+    links.push(...zoonLinks);
+  }
+  
+  if (sourceUrl.includes('yell.ru')) {
+    const yellLinks = html.match(/https?:\/\/[^\/]*yell\.ru[^\s"'>]+/g) || [];
+    links.push(...yellLinks);
+  }
+  
+  if (sourceUrl.includes('flamp.ru')) {
+    const flampLinks = html.match(/https?:\/\/[^\/]*flamp\.ru[^\s"'>]+/g) || [];
+    links.push(...flampLinks);
+  }
+  
+  return [...new Set(links)].slice(0, 5);
+}
+
+// Парсим отдельную страницу компании
+async function parseSinglePage(url: string, city: string, industry: string): Promise<Company | null> {
+  try {
+    const response = await fetch(url, {
+      headers: { 'User-Agent': getRandomUserAgent() }
+    });
+    
+    if (!response.ok) return null;
+    
+    const html = await response.text();
+    const text = stripHtml(html);
+    
+    // Извлекаем название компании
+    let companyName = '';
+    const titleMatch = html.match(/<title[^>]*>([^<]+)</i);
+    const h1Match = html.match(/<h1[^>]*>([^<]+)</i);
+    
+    if (titleMatch) {
+      companyName = stripHtml(titleMatch[1]).split('—')[0].split('|')[0].trim();
+    } else if (h1Match) {
+      companyName = stripHtml(h1Match[1]).trim();
+    }
+    
+    if (!companyName || companyName.length < 3) return null;
+    
+    // Извлекаем контакты
+    const emails = extractEmails(text);
+    const phones = extractPhones(text);
+    
+    // Ищем сайт компании
+    const websiteMatch = text.match(/(?:сайт:|website:|www\.|http)[^\s]*([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.(?:ru|com|org|net|бел))/gi);
+    const website = websiteMatch ? websiteMatch[0].replace(/^(сайт:|website:)/i, '').trim() : undefined;
+    
+    return {
+      company_name: companyName,
+      website: website,
+      email: emails[0],
+      phone: phones[0],
+      city: city,
+      industry: industry,
+      source_url: url
+    };
+    
+  } catch (error) {
+    console.error(`Ошибка парсинга страницы ${url}:`, error);
+    return null;
+  }
 }
 
 serve(async (req) => {
@@ -208,7 +241,7 @@ serve(async (req) => {
     console.log(`Начинаем поиск компаний: город=${city}, сфера=${industry}, лимит=${limit}`);
     
     // Парсим компании
-    const companies = await parseOrgPage(city, industry, limit);
+    const companies = await parseYandexDirectory(city, industry, limit);
     
     console.log(`Найдено ${companies.length} компаний`);
     
