@@ -63,81 +63,207 @@ function getRandomUserAgent(): string {
   return userAgents[Math.floor(Math.random() * userAgents.length)];
 }
 
-// Парсинг Яндекс.Справочника через публичные данные
-async function parseYandexDirectory(city: string, industry: string, limit: number): Promise<Company[]> {
+// Парсинг открытых справочников напрямую
+async function parseDirectorySites(city: string, industry: string, limit: number): Promise<Company[]> {
   const companies: Company[] = [];
   
   try {
     console.log(`Поиск компаний в городе ${city}, сфера: ${industry}`);
     
-    // Создаем более эффективные поисковые запросы
-    const searchTerms = getIndustryTerms(industry);
+    // Парсим 2ГИС напрямую через их открытый поиск
+    const dgisResults = await parse2GIS(city, industry, Math.min(limit, 10));
+    companies.push(...dgisResults);
     
-    for (const term of searchTerms) {
-      if (companies.length >= limit) break;
-      
-      const query = `${term} ${city} контакты`;
-      console.log(`Поиск по запросу: ${query}`);
-      
-      // Используем более надежные источники
-      const sources = [
-        `https://www.google.com/search?q=${encodeURIComponent(query + ' site:zoon.ru')}`,
-        `https://www.google.com/search?q=${encodeURIComponent(query + ' site:yell.ru')}`,
-        `https://www.google.com/search?q=${encodeURIComponent(query + ' site:flamp.ru')}`,
-      ];
-      
-      for (const searchUrl of sources) {
-        if (companies.length >= limit) break;
-        
-        try {
-          await delay(Math.random() * 3000 + 2000); // 2-5 сек задержка
-          
-          const response = await fetch(searchUrl, {
-            headers: {
-              'User-Agent': getRandomUserAgent(),
-              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-              'Accept-Language': 'ru-RU,ru;q=0.9,en;q=0.1',
-              'Referer': 'https://www.google.com/',
-              'Connection': 'keep-alive',
-            },
-          });
-
-          if (response.ok) {
-            const html = await response.text();
-            
-            // Извлекаем ссылки на страницы организаций
-            const pageLinks = extractPageLinks(html, searchUrl);
-            
-            // Парсим каждую найденную страницу
-            for (const link of pageLinks.slice(0, 3)) {
-              if (companies.length >= limit) break;
-              
-              try {
-                await delay(Math.random() * 2000 + 1000);
-                
-                const pageData = await parseSinglePage(link, city, industry);
-                if (pageData) {
-                  companies.push(pageData);
-                  console.log(`Найдена компания: ${pageData.company_name}`);
-                }
-              } catch (error) {
-                console.error(`Ошибка парсинга страницы ${link}:`, error);
-              }
-            }
-          }
-        } catch (error) {
-          console.error(`Ошибка поиска:`, error);
-        }
-      }
-      
-      await delay(Math.random() * 2000 + 1000);
+    if (companies.length < limit) {
+      // Парсим ZOON.RU 
+      const zoonResults = await parseZoon(city, industry, Math.min(limit - companies.length, 10));
+      companies.push(...zoonResults);
+    }
+    
+    if (companies.length < limit) {
+      // Парсим Yell.ru
+      const yellResults = await parseYell(city, industry, Math.min(limit - companies.length, 10));
+      companies.push(...yellResults);
     }
     
   } catch (error) {
     console.error('Общая ошибка парсинга:', error);
   }
   
+  return companies.slice(0, limit);
+}
+
+// Парсинг 2ГИС
+async function parse2GIS(city: string, industry: string, limit: number): Promise<Company[]> {
+  const companies: Company[] = [];
+  
+  try {
+    const searchTerm = getIndustryTerms(industry)[0];
+    const url = `https://2gis.ru/search/${encodeURIComponent(searchTerm)}?m=${getCityCoords(city)}`;
+    
+    console.log(`Парсинг 2GIS для ${city}`);
+    
+    await delay(2000);
+    
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': getRandomUserAgent(),
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      },
+    });
+
+    if (response.ok) {
+      const html = await response.text();
+      
+      // Ищем данные компаний в 2ГИС
+      const nameMatches = html.match(/data-testid="POI_name"[^>]*>([^<]+)</g) || [];
+      const phoneMatches = html.match(/tel:([+\d\s()-]+)/g) || [];
+      
+      for (let i = 0; i < Math.min(nameMatches.length, limit); i++) {
+        const nameMatch = nameMatches[i].match(/>([^<]+)</);
+        if (nameMatch) {
+          const name = nameMatch[1].trim();
+          const phone = phoneMatches[i] ? phoneMatches[i].replace('tel:', '') : undefined;
+          
+          companies.push({
+            company_name: name,
+            phone: phone,
+            city: city,
+            industry: industry,
+            source_url: url
+          });
+          
+          console.log(`2ГИС: найдена ${name}`);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Ошибка парсинга 2ГИС:', error);
+  }
+  
   return companies;
+}
+
+// Парсинг ZOON.RU
+async function parseZoon(city: string, industry: string, limit: number): Promise<Company[]> {
+  const companies: Company[] = [];
+  
+  try {
+    const searchTerm = getIndustryTerms(industry)[0];
+    const citySlug = city.toLowerCase().replace(/\s+/g, '-');
+    const url = `https://zoon.ru/${citySlug}/search/?text=${encodeURIComponent(searchTerm)}`;
+    
+    console.log(`Парсинг ZOON для ${city}`);
+    
+    await delay(2000);
+    
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': getRandomUserAgent(),
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      },
+    });
+
+    if (response.ok) {
+      const html = await response.text();
+      
+      // Ищем компании в ZOON
+      const companyBlocks = html.match(/<div[^>]*class="[^"]*minicard-item[^"]*"[^>]*>[\s\S]*?<\/div>/g) || [];
+      
+      for (let i = 0; i < Math.min(companyBlocks.length, limit); i++) {
+        const block = companyBlocks[i];
+        
+        const nameMatch = block.match(/class="[^"]*minicard-item__title[^"]*"[^>]*>([^<]+)/);
+        const phoneMatch = block.match(/href="tel:([^"]+)"/);
+        
+        if (nameMatch) {
+          const name = stripHtml(nameMatch[1]).trim();
+          const phone = phoneMatch ? phoneMatch[1] : undefined;
+          
+          companies.push({
+            company_name: name,
+            phone: phone,
+            city: city,
+            industry: industry,
+            source_url: url
+          });
+          
+          console.log(`ZOON: найдена ${name}`);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Ошибка парсинга ZOON:', error);
+  }
+  
+  return companies;
+}
+
+// Парсинг Yell.ru  
+async function parseYell(city: string, industry: string, limit: number): Promise<Company[]> {
+  const companies: Company[] = [];
+  
+  try {
+    const searchTerm = getIndustryTerms(industry)[0];
+    const url = `https://www.yell.ru/search?text=${encodeURIComponent(searchTerm)}&where=${encodeURIComponent(city)}`;
+    
+    console.log(`Парсинг Yell для ${city}`);
+    
+    await delay(2000);
+    
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': getRandomUserAgent(),
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      },
+    });
+
+    if (response.ok) {
+      const html = await response.text();
+      
+      // Ищем компании в Yell
+      const nameMatches = html.match(/<h2[^>]*class="[^"]*company-name[^"]*"[^>]*>[\s\S]*?<\/h2>/g) || [];
+      const phoneMatches = html.match(/class="[^"]*phone[^"]*"[^>]*>([^<]+)/g) || [];
+      
+      for (let i = 0; i < Math.min(nameMatches.length, limit); i++) {
+        const nameMatch = nameMatches[i].match(/>([^<]+)</);
+        const phoneMatch = phoneMatches[i] ? phoneMatches[i].match(/>([^<]+)</) : null;
+        
+        if (nameMatch) {
+          const name = stripHtml(nameMatch[1]).trim();
+          const phone = phoneMatch ? phoneMatch[1].trim() : undefined;
+          
+          companies.push({
+            company_name: name,
+            phone: phone,
+            city: city,
+            industry: industry,
+            source_url: url
+          });
+          
+          console.log(`Yell: найдена ${name}`);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Ошибка парсинга Yell:', error);
+  }
+  
+  return companies;
+}
+
+// Получаем координаты города для 2ГИС
+function getCityCoords(city: string): string {
+  const coords: { [key: string]: string } = {
+    'москва': '55.755826,37.617300',
+    'санкт-петербург': '59.939095,30.315868',
+    'новосибирск': '55.030204,82.920430',
+    'екатеринбург': '56.838011,60.597465',
+    'казань': '55.796127,49.106414',
+    'нижний новгород': '56.326797,44.006516'
+  };
+  
+  return coords[city.toLowerCase()] || '55.755826,37.617300';
 }
 
 // Получаем синонимы для отрасли
@@ -158,77 +284,6 @@ function getIndustryTerms(industry: string): string[] {
   return terms[industry] || [industry];
 }
 
-// Извлекаем ссылки на страницы компаний
-function extractPageLinks(html: string, sourceUrl: string): string[] {
-  const links: string[] = [];
-  
-  if (sourceUrl.includes('zoon.ru')) {
-    const zoonLinks = html.match(/https?:\/\/[^\/]*zoon\.ru[^\s"'>]+/g) || [];
-    links.push(...zoonLinks);
-  }
-  
-  if (sourceUrl.includes('yell.ru')) {
-    const yellLinks = html.match(/https?:\/\/[^\/]*yell\.ru[^\s"'>]+/g) || [];
-    links.push(...yellLinks);
-  }
-  
-  if (sourceUrl.includes('flamp.ru')) {
-    const flampLinks = html.match(/https?:\/\/[^\/]*flamp\.ru[^\s"'>]+/g) || [];
-    links.push(...flampLinks);
-  }
-  
-  return [...new Set(links)].slice(0, 5);
-}
-
-// Парсим отдельную страницу компании
-async function parseSinglePage(url: string, city: string, industry: string): Promise<Company | null> {
-  try {
-    const response = await fetch(url, {
-      headers: { 'User-Agent': getRandomUserAgent() }
-    });
-    
-    if (!response.ok) return null;
-    
-    const html = await response.text();
-    const text = stripHtml(html);
-    
-    // Извлекаем название компании
-    let companyName = '';
-    const titleMatch = html.match(/<title[^>]*>([^<]+)</i);
-    const h1Match = html.match(/<h1[^>]*>([^<]+)</i);
-    
-    if (titleMatch) {
-      companyName = stripHtml(titleMatch[1]).split('—')[0].split('|')[0].trim();
-    } else if (h1Match) {
-      companyName = stripHtml(h1Match[1]).trim();
-    }
-    
-    if (!companyName || companyName.length < 3) return null;
-    
-    // Извлекаем контакты
-    const emails = extractEmails(text);
-    const phones = extractPhones(text);
-    
-    // Ищем сайт компании
-    const websiteMatch = text.match(/(?:сайт:|website:|www\.|http)[^\s]*([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.(?:ru|com|org|net|бел))/gi);
-    const website = websiteMatch ? websiteMatch[0].replace(/^(сайт:|website:)/i, '').trim() : undefined;
-    
-    return {
-      company_name: companyName,
-      website: website,
-      email: emails[0],
-      phone: phones[0],
-      city: city,
-      industry: industry,
-      source_url: url
-    };
-    
-  } catch (error) {
-    console.error(`Ошибка парсинга страницы ${url}:`, error);
-    return null;
-  }
-}
-
 serve(async (req) => {
   // Обработка CORS preflight запросов
   if (req.method === 'OPTIONS') {
@@ -241,7 +296,7 @@ serve(async (req) => {
     console.log(`Начинаем поиск компаний: город=${city}, сфера=${industry}, лимит=${limit}`);
     
     // Парсим компании
-    const companies = await parseYandexDirectory(city, industry, limit);
+    const companies = await parseDirectorySites(city, industry, limit);
     
     console.log(`Найдено ${companies.length} компаний`);
     
