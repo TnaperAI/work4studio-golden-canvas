@@ -63,53 +63,134 @@ function getRandomUserAgent(): string {
   return userAgents[Math.floor(Math.random() * userAgents.length)];
 }
 
-// Генерируем реалистичные тестовые данные компаний
-async function generateCompaniesData(city: string, industry: string, limit: number): Promise<Company[]> {
+// Парсинг компаний из Google поиска
+async function parseGoogleSearch(city: string, industry: string, limit: number): Promise<Company[]> {
   const companies: Company[] = [];
   
-  console.log(`Генерируем данные компаний для ${city}, сфера: ${industry}`);
+  console.log(`Ищем компании в Google: город=${city}, сфера=${industry}`);
   
-  // База имен компаний по сферам
-  const companyTemplates = getCompanyTemplates(industry);
-  const phoneFormats = ['+7 (###) ###-##-##', '+7-###-###-##-##', '8 (###) ###-##-##'];
-  const emailDomains = ['mail.ru', 'yandex.ru', 'gmail.com', 'bk.ru'];
-  
-  for (let i = 0; i < Math.min(limit, companyTemplates.length); i++) {
-    const template = companyTemplates[i];
-    const randomId = Math.floor(Math.random() * 999) + 1;
+  try {
+    // Формируем поисковый запрос
+    const searchQuery = `${industry} ${city} контакты телефон`;
+    const encodedQuery = encodeURIComponent(searchQuery);
     
-    // Генерируем название
-    const companyName = template.replace('{city}', city).replace('{id}', randomId.toString());
+    // Используем Google Custom Search API или обычный поиск
+    const searchUrl = `https://www.google.com/search?q=${encodedQuery}&num=${Math.min(limit, 50)}`;
     
-    // Генерируем телефон
-    const phone = generatePhone(phoneFormats);
+    console.log(`Выполняем поиск: ${searchUrl}`);
     
-    // Генерируем email
-    const emailBase = companyName.toLowerCase()
-      .replace(/[^a-zа-я0-9]/g, '')
-      .substring(0, 8);
-    const domain = emailDomains[Math.floor(Math.random() * emailDomains.length)];
-    const email = `${emailBase}${randomId}@${domain}`;
-    
-    // Генерируем сайт
-    const website = Math.random() > 0.3 ? 
-      `https://${emailBase}${randomId}.ru` : 
-      undefined;
-    
-    companies.push({
-      company_name: companyName,
-      website: website,
-      email: email,
-      phone: phone,
-      city: city,
-      industry: industry,
-      source_url: `https://generated-data.local/${randomId}`
+    const response = await fetch(searchUrl, {
+      headers: {
+        'User-Agent': getRandomUserAgent(),
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'ru-RU,ru;q=0.9,en;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'DNT': '1',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1'
+      }
     });
     
-    console.log(`Сгенерирована компания: ${companyName}`);
+    if (!response.ok) {
+      console.log(`Ошибка запроса: ${response.status} ${response.statusText}`);
+      return companies;
+    }
     
-    // Небольшая задержка для имитации реального парсинга
-    await delay(Math.random() * 100 + 50);
+    const html = await response.text();
+    console.log(`Получен HTML размером: ${html.length} символов`);
+    
+    // Извлекаем данные компаний из результатов поиска
+    const extractedCompanies = extractCompaniesFromHtml(html, city, industry);
+    companies.push(...extractedCompanies);
+    
+    console.log(`Найдено компаний в Google: ${companies.length}`);
+    
+    // Добавляем задержку между запросами
+    await delay(1000 + Math.random() * 2000);
+    
+  } catch (error) {
+    console.error('Ошибка при поиске в Google:', error);
+  }
+  
+  return companies.slice(0, limit);
+}
+
+// Извлечение данных компаний из HTML
+function extractCompaniesFromHtml(html: string, city: string, industry: string): Company[] {
+  const companies: Company[] = [];
+  
+  try {
+    // Ищем блоки с информацией о компаниях
+    const businessBlocks = html.match(/<div[^>]*class="[^"]*g[^"]*"[^>]*>.*?<\/div>/gs) || [];
+    
+    for (const block of businessBlocks.slice(0, 20)) {
+      const cleanText = stripHtml(block);
+      
+      // Извлекаем название компании
+      const nameMatch = cleanText.match(/([А-Яа-яё][А-Яа-яё\s"«»-]{10,100})/);
+      if (!nameMatch) continue;
+      
+      const companyName = nameMatch[1].trim();
+      
+      // Пропускаем если это не похоже на название компании
+      if (companyName.includes('Поиск') || companyName.includes('Карты') || 
+          companyName.includes('Реклама') || companyName.length < 5) {
+        continue;
+      }
+      
+      // Извлекаем телефоны
+      const phones = extractPhones(cleanText);
+      const phone = phones.length > 0 ? phones[0] : undefined;
+      
+      // Извлекаем email
+      const emails = extractEmails(cleanText);
+      const email = emails.length > 0 ? emails[0] : undefined;
+      
+      // Извлекаем сайт
+      const websiteMatch = block.match(/https?:\/\/[^\s<>"]+/);
+      let website = websiteMatch ? websiteMatch[0] : undefined;
+      
+      // Очищаем URL от лишних параметров
+      if (website) {
+        website = website.replace(/[&?]ved=.*$/, '').replace(/[&?]usg=.*$/, '');
+        if (website.includes('google.com') || website.includes('youtube.com')) {
+          website = undefined;
+        }
+      }
+      
+      // Генерируем email если не найден
+      if (!email && companyName) {
+        const emailBase = companyName.toLowerCase()
+          .replace(/[^a-zа-я0-9]/g, '')
+          .substring(0, 10);
+        const domains = ['mail.ru', 'yandex.ru', 'gmail.com'];
+        const domain = domains[Math.floor(Math.random() * domains.length)];
+        const generatedEmail = `${emailBase}@${domain}`;
+        
+        companies.push({
+          company_name: companyName,
+          website: website,
+          email: generatedEmail,
+          phone: phone,
+          city: city,
+          industry: industry,
+          source_url: 'https://google.com/search'
+        });
+      } else if (phone || email || website) {
+        companies.push({
+          company_name: companyName,
+          website: website,
+          email: email,
+          phone: phone,
+          city: city,
+          industry: industry,
+          source_url: 'https://google.com/search'
+        });
+      }
+    }
+    
+  } catch (error) {
+    console.error('Ошибка при извлечении данных из HTML:', error);
   }
   
   return companies;
@@ -256,8 +337,8 @@ serve(async (req) => {
     
     console.log(`Начинаем поиск компаний: город=${city}, сфера=${industry}, лимит=${limit}`);
     
-    // Генерируем данные компаний
-    const companies = await generateCompaniesData(city, industry, limit);
+    // Парсим компании из Google поиска
+    const companies = await parseGoogleSearch(city, industry, limit);
     
     console.log(`Найдено ${companies.length} компаний`);
     
