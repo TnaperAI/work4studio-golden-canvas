@@ -63,49 +63,137 @@ function getRandomUserAgent(): string {
   return userAgents[Math.floor(Math.random() * userAgents.length)];
 }
 
-// Простая генерация реалистичных компаний
-async function generateRealisticCompanies(city: string, industry: string, limit: number): Promise<Company[]> {
+// Реальный веб-скрапинг компаний
+async function scrapeRealCompanies(city: string, industry: string, limit: number): Promise<Company[]> {
   const companies: Company[] = [];
   
-  console.log(`Генерируем компании для: ${city}, сфера: ${industry}, лимит: ${limit}`);
+  console.log(`Начинаем скрапинг компаний: ${city}, ${industry}, лимит: ${limit}`);
   
-  const businessNames = getRealisticBusinessNames(industry, city);
-  const phoneFormats = ['+7 (###) ###-##-##', '8 (###) ###-##-##', '+7-###-###-##-##'];
-  const emailDomains = ['mail.ru', 'yandex.ru', 'bk.ru', 'gmail.com'];
+  try {
+    // Поиск через Yandex Maps API
+    const yandexCompanies = await scrapeYandexMaps(city, industry, limit);
+    companies.push(...yandexCompanies);
+    
+    if (companies.length < limit) {
+      // Дополнительный поиск через DaData если мало результатов
+      const dadataCompanies = await scrapeDaData(city, industry, limit - companies.length);
+      companies.push(...dadataCompanies);
+    }
+    
+    console.log(`Найдено ${companies.length} реальных компаний`);
+    return companies.slice(0, limit);
+    
+  } catch (error) {
+    console.error('Ошибка скрапинга:', error);
+    return [];
+  }
+}
+
+// Скрапинг через Yandex Maps
+async function scrapeYandexMaps(city: string, industry: string, limit: number): Promise<Company[]> {
+  const companies: Company[] = [];
   
-  for (let i = 0; i < Math.min(limit, businessNames.length); i++) {
-    const name = businessNames[i];
-    const phone = generatePhone(phoneFormats);
+  try {
+    // Ищем компании по отрасли в городе
+    const query = encodeURIComponent(`${industry} ${city}`);
+    const url = `https://search-maps.yandex.ru/v1/?text=${query}&type=biz&lang=ru_RU&results=${limit}`;
     
-    // Генерируем email на основе названия
-    const emailBase = name.toLowerCase()
-      .replace(/[^a-zа-я0-9]/g, '')
-      .replace(/оо+/g, 'o')
-      .replace(/[ао]+/g, 'a')
-      .substring(0, 8);
-    const domain = emailDomains[Math.floor(Math.random() * emailDomains.length)];
-    const email = `${emailBase}${Math.floor(Math.random() * 99)}@${domain}`;
+    console.log(`Поиск в Yandex Maps: ${url}`);
     
-    // Генерируем адрес
-    const address = generateRealisticAddress(city);
-    
-    companies.push({
-      company_name: name,
-      phone: phone,
-      email: email,
-      city: city,
-      industry: industry,
-      address: address,
-      source_url: 'https://yandex.ru/maps/'
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': getRandomUserAgent()
+      }
     });
     
-    console.log(`Создана компания: ${name}`);
+    if (!response.ok) {
+      throw new Error(`Yandex Maps API error: ${response.status}`);
+    }
     
-    // Небольшая задержка для имитации
-    await delay(50);
+    const data = await response.json();
+    
+    if (data.features) {
+      for (const feature of data.features.slice(0, limit)) {
+        const props = feature.properties;
+        const company: Company = {
+          company_name: props.name || 'Неизвестная компания',
+          phone: props.Phones?.[0]?.number || null,
+          email: null,
+          website: props.Links?.[0]?.href || null,
+          city: city,
+          industry: industry,
+          address: props.description || null,
+          source_url: `https://yandex.ru/maps/org/${props.id || ''}`
+        };
+        
+        companies.push(company);
+        console.log(`Найдена компания: ${company.company_name}`);
+      }
+    }
+    
+  } catch (error) {
+    console.error('Ошибка Yandex Maps:', error);
   }
   
-  console.log(`Всего создано компаний: ${companies.length}`);
+  return companies;
+}
+
+// Скрапинг через DaData API
+async function scrapeDaData(city: string, industry: string, limit: number): Promise<Company[]> {
+  const companies: Company[] = [];
+  
+  try {
+    const dadataToken = Deno.env.get('DADATA_API_KEY');
+    if (!dadataToken) {
+      console.log('DaData API key не найден');
+      return companies;
+    }
+    
+    const searchQuery = {
+      query: `${industry} ${city}`,
+      count: limit
+    };
+    
+    console.log(`Поиск в DaData: ${JSON.stringify(searchQuery)}`);
+    
+    const response = await fetch('https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/party', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${dadataToken}`,
+        'X-Secret': dadataToken
+      },
+      body: JSON.stringify(searchQuery)
+    });
+    
+    if (!response.ok) {
+      throw new Error(`DaData API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    if (data.suggestions) {
+      for (const suggestion of data.suggestions.slice(0, limit)) {
+        const company: Company = {
+          company_name: suggestion.value || 'Неизвестная компания',
+          phone: suggestion.data.phones?.[0] || null,
+          email: suggestion.data.emails?.[0] || null,
+          website: suggestion.data.website || null,
+          city: city,
+          industry: industry,
+          address: suggestion.data.address?.value || null,
+          source_url: 'https://dadata.ru/'
+        };
+        
+        companies.push(company);
+        console.log(`Найдена компания через DaData: ${company.company_name}`);
+      }
+    }
+    
+  } catch (error) {
+    console.error('Ошибка DaData:', error);
+  }
+  
   return companies;
 }
 
@@ -331,8 +419,8 @@ serve(async (req) => {
     
     console.log(`Начинаем поиск компаний: город=${city}, сфера=${industry}, лимит=${limit}`);
     
-    // Генерируем реалистичные компании
-    const companies = await generateRealisticCompanies(city, industry, limit);
+    // Скрапим реальные компании
+    const companies = await scrapeRealCompanies(city, industry, limit);
     
     console.log(`Найдено ${companies.length} компаний`);
     
@@ -351,7 +439,7 @@ serve(async (req) => {
             industry: company.industry,
             address: company.address,
             source_url: company.source_url,
-            country: 'russia',
+            country: 'ru',
             company_type: 'ooo',
             status: 'new'
           })
