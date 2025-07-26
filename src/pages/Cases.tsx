@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import ContactFormModal from '@/components/ContactFormModal';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { 
   Calendar,
@@ -88,6 +89,7 @@ const Cases = () => {
   const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [showContactForm, setShowContactForm] = useState(false);
   
   useScrollAnimation();
 
@@ -401,7 +403,58 @@ const Cases = () => {
             </div>
           </div>
         </main>
+        
+        {/* Contact Section */}
+        <section className="section-padding relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-primary/10"></div>
+          <div className="absolute top-10 left-10 w-20 h-20 bg-primary/10 rounded-full blur-xl"></div>
+          <div className="absolute bottom-10 right-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
+          
+          <div className="container mx-auto px-4 max-w-5xl relative z-10">
+            <div className="text-center max-w-4xl mx-auto space-y-8 animate-on-scroll">
+              <h2 className="text-4xl md:text-6xl font-bold mb-6">
+                <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+                  Хотите
+                </span>{' '}
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">такой же проект</span>?
+              </h2>
+              <p className="text-xl text-muted-foreground leading-relaxed">
+                Обсудим ваши задачи, подберём оптимальное решение и запустим проект в кратчайшие сроки. 
+                Оставьте заявку, и мы свяжемся с вами в течение 30 минут.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                <button 
+                  className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-lg px-10 py-4 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  onClick={() => setShowContactForm(true)}
+                >
+                  Получить консультацию
+                </button>
+                
+                <a
+                  href="mailto:hello@work4studio.com"
+                  className="px-8 py-4 border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 rounded-lg font-medium"
+                >
+                  Написать на Email
+                </a>
+              </div>
+              
+              <div className="mt-8 text-center">
+                <p className="text-sm text-muted-foreground">
+                  ⚡ Ответим в течение 30 минут в рабочее время
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        
         <Footer />
+        
+        <ContactFormModal 
+          isOpen={showContactForm} 
+          onClose={() => setShowContactForm(false)} 
+          source="case_detail_page"
+        />
       </div>
     );
   }
@@ -550,7 +603,58 @@ const Cases = () => {
           </div>
         )}
       </main>
+      
+      {/* Contact Section */}
+      <section className="section-padding relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-primary/10"></div>
+        <div className="absolute top-10 left-10 w-20 h-20 bg-primary/10 rounded-full blur-xl"></div>
+        <div className="absolute bottom-10 right-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
+        
+        <div className="container mx-auto px-4 max-w-5xl relative z-10">
+          <div className="text-center max-w-4xl mx-auto space-y-8 animate-on-scroll">
+            <h2 className="text-4xl md:text-6xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+                Хотите
+              </span>{' '}
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">такой же проект</span>?
+            </h2>
+            <p className="text-xl text-muted-foreground leading-relaxed">
+              Обсудим ваши задачи, подберём оптимальное решение и запустим проект в кратчайшие сроки. 
+              Оставьте заявку, и мы свяжемся с вами в течение 30 минут.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <button 
+                className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-lg px-10 py-4 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                onClick={() => setShowContactForm(true)}
+              >
+                Получить консультацию
+              </button>
+              
+              <a
+                href="mailto:hello@work4studio.com"
+                className="px-8 py-4 border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 rounded-lg font-medium"
+              >
+                Написать на Email
+              </a>
+            </div>
+            
+            <div className="mt-8 text-center">
+              <p className="text-sm text-muted-foreground">
+                ⚡ Ответим в течение 30 минут в рабочее время
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       <Footer />
+      
+      <ContactFormModal 
+        isOpen={showContactForm} 
+        onClose={() => setShowContactForm(false)} 
+        source="cases_page"
+      />
     </div>
   );
 };
