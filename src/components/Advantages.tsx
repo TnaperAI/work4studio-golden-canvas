@@ -36,9 +36,8 @@ const Advantages = () => {
         <div className="text-center mb-20 animate-on-scroll">
           <h2 className="text-4xl md:text-6xl font-bold mb-6">
             <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-              {getContent('advantages', 'title') || 'Почему выбирают'}
-            </span>{' '}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Work4Studio</span>
+              {getContent('advantages', 'title') || 'Почему выбирают нас'}
+            </span>
           </h2>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
             {getContent('advantages', 'subtitle') || 'Мы объединили современные технологии, AI и человеческую экспертизу для создания идеального процесса разработки'}
