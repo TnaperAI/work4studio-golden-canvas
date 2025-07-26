@@ -45,11 +45,11 @@ const ServicesSection = () => {
                   </p>
                 </div>
                 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-2xl mx-auto">
                   {(getContent('services', 'features') || 'Адаптивная вёрстка,SEO-ready,CMS на выбор,Интеграции').split(',').map((feature, idx) => (
-                    <div key={idx} className="flex items-center text-sm bg-gradient-to-r from-secondary/80 to-muted/50 rounded-xl px-4 py-3 border border-border/50 hover:border-primary/30 transition-colors group/feature">
-                      <div className="w-2 h-2 bg-gradient-to-r from-primary to-accent rounded-full mr-3 flex-shrink-0 group-hover/feature:scale-125 transition-transform"></div>
-                      <span className="font-medium">{feature.trim()}</span>
+                    <div key={idx} className="flex items-center text-xs sm:text-sm bg-gradient-to-r from-secondary/80 to-muted/50 rounded-xl px-3 py-2 md:px-4 md:py-3 border border-border/50 hover:border-primary/30 transition-colors group/feature">
+                      <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-gradient-to-r from-primary to-accent rounded-full mr-2 md:mr-3 flex-shrink-0 group-hover/feature:scale-125 transition-transform"></div>
+                      <span className="font-medium text-center flex-1">{feature.trim()}</span>
                     </div>
                   ))}
                 </div>
