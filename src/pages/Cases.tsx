@@ -412,28 +412,28 @@ const Cases = () => {
           
           <div className="container mx-auto px-4 max-w-5xl relative z-10">
             <div className="max-w-5xl mx-auto text-center animate-on-scroll">
-              <div className="p-12 md:p-16 bg-background border-2 border-primary/20 rounded-3xl shadow-2xl backdrop-blur-sm">
-                <h2 className="text-4xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                  Хотите такой же проект?
-                </h2>
-                <p className="text-muted-foreground mb-10 text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto">
-                  Обсудим ваши задачи, подберём оптимальное решение и запустим проект в кратчайшие сроки. 
-                  Оставьте заявку, и мы свяжемся с вами в течение 30 минут.
-                </p>
-                
-                <button 
-                  className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-base md:text-xl px-6 py-4 md:px-10 md:py-6 hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl font-semibold"
-                  onClick={() => setShowContactForm(true)}
-                >
-                  Получить консультацию
-                </button>
-                
-                <div className="mt-8 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    ⚡ Ответим в течение 30 минут в рабочее время
-                  </p>
-                </div>
-              </div>
+               <div className="p-12 md:p-16 bg-white border-4 border-blue-500 rounded-3xl shadow-2xl backdrop-blur-sm">
+                 <h2 className="text-4xl md:text-6xl font-bold mb-8 text-gray-900">
+                   Хотите такой же проект?
+                 </h2>
+                 <p className="text-gray-600 mb-10 text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto">
+                   Обсудим ваши задачи, подберём оптимальное решение и запустим проект в кратчайшие сроки. 
+                   Оставьте заявку, и мы свяжемся с вами в течение 30 минут.
+                 </p>
+                 
+                 <button 
+                   className="bg-blue-600 text-white text-base md:text-xl px-6 py-4 md:px-10 md:py-6 hover:bg-blue-700 hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl font-semibold"
+                   onClick={() => setShowContactForm(true)}
+                 >
+                   Получить консультацию
+                 </button>
+                 
+                 <div className="mt-8 text-center">
+                   <p className="text-sm text-gray-500">
+                     ⚡ Ответим в течение 30 минут в рабочее время
+                   </p>
+                 </div>
+               </div>
             </div>
           </div>
         </section>
