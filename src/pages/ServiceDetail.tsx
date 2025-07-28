@@ -325,38 +325,37 @@ const ServiceDetail = () => {
         <div className="absolute bottom-10 right-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
         
         <div className="container mx-auto px-4 max-w-5xl relative z-10">
-          <div className="text-center max-w-4xl mx-auto space-y-8 animate-on-scroll">
-            <h2 className="text-4xl md:text-6xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                Готовы заказать
-              </span>{' '}
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">{serviceData.title?.toLowerCase()}</span>?
-            </h2>
-            <p className="text-xl text-muted-foreground leading-relaxed">
-              Обсудим ваши задачи, подберём оптимальное решение и запустим проект в кратчайшие сроки. 
-              Оставьте заявку, и мы свяжемся с вами в течение 30 минут.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <button 
-                className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-lg px-10 py-4 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
-                onClick={() => setShowContactForm(true)}
-              >
-                Получить консультацию
-              </button>
-              
-              <a
-                href="mailto:hello@work4studio.com"
-                className="px-8 py-4 border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 rounded-lg font-medium"
-              >
-                Написать на Email
-              </a>
-            </div>
-            
-            <div className="mt-8 text-center">
-              <p className="text-sm text-muted-foreground">
-                ⚡ Ответим в течение 30 минут в рабочее время
+          <div className="max-w-5xl mx-auto text-center animate-on-scroll">
+            <div className="p-12 md:p-16 bg-card border border-border rounded-3xl shadow-lg">
+              <h2 className="text-4xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+                Готовы заказать {serviceData.title?.toLowerCase()}?
+              </h2>
+              <p className="text-muted-foreground mb-10 text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto">
+                Обсудим ваши задачи, подберём оптимальное решение и запустим проект в кратчайшие сроки. 
+                Оставьте заявку, и мы свяжемся с вами в течение 30 минут.
               </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                <button 
+                  className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-base md:text-xl px-6 py-4 md:px-10 md:py-6 hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl font-semibold"
+                  onClick={() => setShowContactForm(true)}
+                >
+                  Получить консультацию
+                </button>
+                
+                <a
+                  href="mailto:hello@work4studio.com"
+                  className="px-8 py-4 border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 rounded-lg font-medium"
+                >
+                  Написать на Email
+                </a>
+              </div>
+              
+              <div className="mt-8 text-center">
+                <p className="text-sm text-muted-foreground">
+                  ⚡ Ответим в течение 30 минут в рабочее время
+                </p>
+              </div>
             </div>
           </div>
         </div>
