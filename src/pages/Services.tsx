@@ -266,7 +266,7 @@ const Services = () => {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-5xl mx-auto text-center animate-on-scroll">
-            <div className="p-12 md:p-16 bg-card border border-border rounded-3xl">
+            <div className="p-12 md:p-16 bg-card border border-border rounded-3xl shadow-lg">
               <h2 className="text-4xl md:text-6xl font-heading font-bold mb-8 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                 {getContent('services', 'cta_title') || 'Не знаете, какой формат подойдёт?'}
               </h2>
