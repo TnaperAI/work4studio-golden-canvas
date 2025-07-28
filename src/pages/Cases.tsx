@@ -412,7 +412,7 @@ const Cases = () => {
           
           <div className="container mx-auto px-4 max-w-5xl relative z-10">
             <div className="max-w-5xl mx-auto text-center animate-on-scroll">
-              <div className="p-12 md:p-16 bg-card border border-border rounded-3xl shadow-lg">
+              <div className="p-12 md:p-16 bg-background border-2 border-primary/20 rounded-3xl shadow-2xl backdrop-blur-sm">
                 <h2 className="text-4xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                   Хотите такой же проект?
                 </h2>
