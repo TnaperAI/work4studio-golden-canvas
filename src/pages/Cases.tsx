@@ -404,39 +404,6 @@ const Cases = () => {
           </div>
         </main>
         
-        {/* Contact Section */}
-        <section className="section-padding relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-primary/10"></div>
-          <div className="absolute top-10 left-10 w-20 h-20 bg-primary/10 rounded-full blur-xl"></div>
-          <div className="absolute bottom-10 right-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
-          
-          <div className="container mx-auto px-4 max-w-5xl relative z-10">
-            <div className="max-w-5xl mx-auto text-center animate-on-scroll">
-               <div className="p-12 md:p-16 bg-white border-4 border-blue-500 rounded-3xl shadow-2xl backdrop-blur-sm">
-                 <h2 className="text-4xl md:text-6xl font-bold mb-8 text-gray-900">
-                   Хотите такой же проект?
-                 </h2>
-                 <p className="text-gray-600 mb-10 text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto">
-                   Обсудим ваши задачи, подберём оптимальное решение и запустим проект в кратчайшие сроки. 
-                   Оставьте заявку, и мы свяжемся с вами в течение 30 минут.
-                 </p>
-                 
-                 <button 
-                   className="bg-blue-600 text-white text-base md:text-xl px-6 py-4 md:px-10 md:py-6 hover:bg-blue-700 hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl font-semibold"
-                   onClick={() => setShowContactForm(true)}
-                 >
-                   Получить консультацию
-                 </button>
-                 
-                 <div className="mt-8 text-center">
-                   <p className="text-sm text-gray-500">
-                     ⚡ Ответим в течение 30 минут в рабочее время
-                   </p>
-                 </div>
-               </div>
-            </div>
-          </div>
-        </section>
         
         <Footer />
         
