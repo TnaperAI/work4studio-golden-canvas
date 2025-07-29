@@ -127,20 +127,6 @@ const ContactForm = () => {
                     />
                   </div>
 
-                  <div>
-                    <label htmlFor="phone" className="block text-lg font-semibold mb-3">
-                      Телефон (необязательно)
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full px-6 py-4 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all text-lg"
-                      placeholder="+7 (999) 123-45-67"
-                    />
-                  </div>
 
                   <div>
                     <label htmlFor="message" className="block text-lg font-semibold mb-3">
