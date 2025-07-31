@@ -30,7 +30,7 @@ const CTA = () => {
             </button>
             
             <a
-              href="mailto:hello@work4studio.com"
+              href="mailto:work44studio@gmail.com"
               className="px-8 py-4 border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 rounded-lg font-medium uppercase tracking-wide"
             >
               Написать на Email
