@@ -209,7 +209,7 @@ const ContactForm = () => {
                   </a>
 
                   <a 
-                    href="tel:+79991234567" 
+                    href="tel:+201096453054" 
                     className="flex items-center p-6 bg-card border border-border rounded-2xl group hover:shadow-xl transition-all duration-300 hover:scale-105 w-full"
                   >
                     <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
@@ -217,7 +217,7 @@ const ContactForm = () => {
                     </div>
                     <div className="ml-6 text-left">
                       <h4 className="text-xl font-bold mb-1">Позвонить</h4>
-                      <p className="text-muted-foreground text-lg">+7 (999) 123-45-67</p>
+                      <p className="text-muted-foreground text-lg">+20 109 645 3054</p>
                     </div>
                   </a>
                 </div>

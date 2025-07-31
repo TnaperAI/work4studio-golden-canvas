@@ -129,7 +129,7 @@ const ContactFormModal = ({ isOpen, onClose, source = 'modal' }: ContactFormModa
                 type="tel"
                 value={formData.phone}
                 onChange={handleChange}
-                placeholder="+7 (999) 123-45-67"
+                placeholder="+20 109 645 3054"
                 className="mt-1"
               />
             </div>
