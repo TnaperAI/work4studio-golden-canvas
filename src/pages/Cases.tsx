@@ -15,6 +15,7 @@ import {
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ContactFormModal from '@/components/ContactFormModal';
+import ImageGalleryModal from '@/components/ImageGalleryModal';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { 
   Calendar,
@@ -90,6 +91,10 @@ const Cases = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [showContactForm, setShowContactForm] = useState(false);
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [galleryStartIndex, setGalleryStartIndex] = useState(0);
+  const [galleryTitle, setGalleryTitle] = useState('');
   
   useScrollAnimation();
 
@@ -222,6 +227,13 @@ const Cases = () => {
   const featuredCases = filteredCases.filter(c => c.is_featured);
   const regularCases = filteredCases.filter(c => !c.is_featured);
 
+  const openGallery = (images: string[], startIndex: number, title: string) => {
+    setGalleryImages(images);
+    setGalleryStartIndex(startIndex);
+    setGalleryTitle(title);
+    setGalleryOpen(true);
+  };
+
   if (selectedCase) {
     return (
       <div className="min-h-screen">{/* Убираем bg-background чтобы видеть фоновую анимацию */}
@@ -309,7 +321,7 @@ const Cases = () => {
           <div className="grid gap-12 lg:grid-cols-3">
             <div className="lg:col-span-2 space-y-12">
               {/* Main Image */}
-              <div className="aspect-video rounded-3xl overflow-hidden group">
+              <div className="aspect-video rounded-3xl overflow-hidden group cursor-pointer" onClick={() => openGallery([selectedCase.main_image, ...selectedCase.gallery_images], 0, selectedCase.title)}>
                 <img 
                   src={selectedCase.main_image} 
                   alt={selectedCase.title}
@@ -337,17 +349,21 @@ const Cases = () => {
                       Галерея
                     </span>
                   </h2>
-                  <div className="grid gap-6 md:grid-cols-2">
-                    {selectedCase.gallery_images.map((image, index) => (
-                      <div key={index} className="aspect-video rounded-2xl overflow-hidden group">
-                        <img 
-                          src={image} 
-                          alt={`${selectedCase.title} - изображение ${index + 1}`}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      </div>
-                    ))}
-                  </div>
+                   <div className="grid gap-6 md:grid-cols-2">
+                     {selectedCase.gallery_images.map((image, index) => (
+                       <div 
+                         key={index} 
+                         className="aspect-video rounded-2xl overflow-hidden group cursor-pointer"
+                         onClick={() => openGallery([selectedCase.main_image, ...selectedCase.gallery_images], index + 1, selectedCase.title)}
+                       >
+                         <img 
+                           src={image} 
+                           alt={`${selectedCase.title} - изображение ${index + 1}`}
+                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                         />
+                       </div>
+                     ))}
+                   </div>
                 </div>
               )}
             </div>
@@ -411,6 +427,14 @@ const Cases = () => {
           isOpen={showContactForm} 
           onClose={() => setShowContactForm(false)} 
           source="case_detail_page"
+        />
+        
+        <ImageGalleryModal
+          images={galleryImages}
+          isOpen={galleryOpen}
+          onClose={() => setGalleryOpen(false)}
+          initialIndex={galleryStartIndex}
+          title={galleryTitle}
         />
       </div>
     );
