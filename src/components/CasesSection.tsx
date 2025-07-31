@@ -11,6 +11,16 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
+const categoryNames: Record<string, string> = {
+  website: 'Веб-сайт',
+  ecommerce: 'Интернет-магазин',
+  mobile: 'Мобильное приложение',
+  landing: 'Лендинг',
+  corporate: 'Корпоративный сайт',
+  startup: 'Стартап',
+  redesign: 'Редизайн'
+};
+
 interface Case {
   id: string;
   title: string;
@@ -123,7 +133,7 @@ const CasesSection = () => {
                   )}
                   <div className="absolute top-4 left-4">
                     <span className="px-3 py-1 bg-gradient-to-r from-primary to-accent text-primary-foreground text-xs font-bold rounded-full shadow-lg">
-                      {caseItem.category}
+                      {categoryNames[caseItem.category] || caseItem.category}
                     </span>
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
