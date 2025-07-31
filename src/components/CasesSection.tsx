@@ -25,6 +25,7 @@ interface Case {
   id: string;
   title: string;
   description: string | null;
+  short_description: string | null;
   category: string;
   main_image: string | null;
   results: string[] | null;
@@ -45,7 +46,7 @@ const CasesSection = () => {
       console.log('🔄 Starting to fetch cases...');
       const { data, error } = await supabase
         .from('cases')
-        .select('id, title, description, category, main_image, results, is_featured')
+        .select('id, title, description, short_description, category, main_image, results, is_featured')
         .eq('is_active', true)
         .eq('is_featured', true)
         .order('sort_order')
@@ -150,14 +151,8 @@ const CasesSection = () => {
                   </h3>
                   
                   <p className="text-gray-600 mb-6 leading-relaxed">
-                    {caseItem.description || 'Описание проекта'}
+                    {caseItem.short_description || caseItem.description || 'Описание проекта'}
                   </p>
-                  
-                  {caseItem.results && caseItem.results.length > 0 && (
-                    <div className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                      {caseItem.results[0]}
-                    </div>
-                  )}
                 </div>
               </Link>
             ))}
