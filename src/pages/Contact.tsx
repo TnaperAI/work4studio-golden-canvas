@@ -282,7 +282,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h4 className="font-semibold text-lg mb-2">Email</h4>
-                      <p className="text-muted-foreground">info@work4studio.com</p>
+                      <p className="text-muted-foreground">work44studio@gmail.com</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
