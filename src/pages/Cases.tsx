@@ -99,8 +99,14 @@ const Cases = () => {
   useScrollAnimation();
 
   useEffect(() => {
+    // Очищаем состояние при изменении slug
+    if (!slug) {
+      setSelectedCase(null);
+      setLoading(true);
+      setCases([]);
+    }
     fetchCasesAndSEO();
-  }, []);
+  }, [slug]);
 
   const fetchCasesAndSEO = async () => {
     try {
