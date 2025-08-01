@@ -249,7 +249,7 @@ const Cases = () => {
         
         {/* Breadcrumb */}
         <section className="pt-24 pb-4 bg-gradient-to-r from-background/95 via-background/98 to-background/95 border-b border-border/50 backdrop-blur-sm">
-          <div className="container mx-auto px-4 max-w-7xl">
+          <div className="container-custom">
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
@@ -279,7 +279,7 @@ const Cases = () => {
             <div className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-xl animate-pulse-slow"></div>
             <div className="absolute bottom-10 right-10 w-24 h-24 bg-gradient-to-br from-accent/30 to-transparent rounded-full blur-lg animate-pulse-slow"></div>
           </div>
-          <div className="container mx-auto px-4 relative z-10">
+          <div className="container-custom relative z-10">
             <div className="max-w-none">
               <Link 
                 to="/cases" 
@@ -324,7 +324,7 @@ const Cases = () => {
           </div>
         </section>
 
-        <main className="container mx-auto px-4 py-8">
+        <main className="container-custom py-8">
 
           <div className="grid gap-12 lg:grid-cols-3">
             <div className="lg:col-span-2 space-y-12">
@@ -454,7 +454,7 @@ const Cases = () => {
       
       {/* Breadcrumb */}
       <section className="pt-24 pb-4 bg-gradient-to-r from-background/95 via-background/98 to-background/95 border-b border-border/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 max-w-7xl">
+        <div className="container-custom">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -479,7 +479,7 @@ const Cases = () => {
           <div className="absolute bottom-20 right-10 w-32 h-32 bg-gradient-to-br from-accent/30 to-transparent rounded-full blur-lg animate-pulse-slow"></div>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/10 to-accent/10 rounded-full blur-3xl"></div>
         </div>
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container-custom relative z-10">
           <div className="max-w-6xl mx-auto text-center animate-on-scroll">
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-10 leading-tight">
               <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
@@ -497,7 +497,7 @@ const Cases = () => {
         </div>
       </section>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container-custom py-8">
 
         {/* Category Tabs */}
         <div className="mb-16">
