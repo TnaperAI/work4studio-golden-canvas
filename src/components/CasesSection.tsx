@@ -18,7 +18,8 @@ const categoryNames: Record<string, string> = {
   landing: 'Лендинг',
   corporate: 'Корпоративный сайт',
   startup: 'Стартап',
-  redesign: 'Редизайн'
+  redesign: 'Редизайн',
+  crm: 'CRM'
 };
 
 interface Case {

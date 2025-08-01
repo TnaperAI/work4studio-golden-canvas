@@ -23,7 +23,7 @@ interface CaseData {
   main_image: string;
   gallery_images: string[];
   technologies: string[];
-  category: 'website' | 'ecommerce' | 'mobile' | 'landing' | 'corporate' | 'startup' | 'redesign';
+  category: 'website' | 'ecommerce' | 'mobile' | 'landing' | 'corporate' | 'startup' | 'redesign' | 'crm';
   project_date: string;
   project_duration: string;
   budget_range: string;
@@ -53,7 +53,8 @@ const categoryOptions = [
   { value: 'landing', label: 'Лендинг' },
   { value: 'corporate', label: 'Корпоративный сайт' },
   { value: 'startup', label: 'Стартап' },
-  { value: 'redesign', label: 'Редизайн' }
+  { value: 'redesign', label: 'Редизайн' },
+  { value: 'crm', label: 'CRM' }
 ];
 
 const CaseEditor = ({ caseId, onBack }: CaseEditorProps) => {

@@ -637,6 +637,7 @@ export type Database = {
         | "corporate"
         | "startup"
         | "redesign"
+        | "crm"
       company_type: "ip" | "ooo" | "zao" | "pao" | "other"
       country_code: "by" | "ru" | "kz"
       lead_status:
@@ -783,6 +784,7 @@ export const Constants = {
         "corporate",
         "startup",
         "redesign",
+        "crm",
       ],
       company_type: ["ip", "ooo", "zao", "pao", "other"],
       country_code: ["by", "ru", "kz"],

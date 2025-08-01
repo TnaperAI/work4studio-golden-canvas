@@ -70,7 +70,8 @@ const categoryNames: Record<string, string> = {
   landing: 'Лендинг',
   corporate: 'Корпоративный сайт',
   startup: 'Стартап',
-  redesign: 'Редизайн'
+  redesign: 'Редизайн',
+  crm: 'CRM'
 };
 
 const categoryColors: Record<string, string> = {
@@ -80,7 +81,8 @@ const categoryColors: Record<string, string> = {
   landing: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
   corporate: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300',
   startup: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300',
-  redesign: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+  redesign: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+  crm: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-300'
 };
 
 const Cases = () => {
