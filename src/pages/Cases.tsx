@@ -546,7 +546,7 @@ const Cases = () => {
                 </h2>
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                   {filteredCases.map((caseItem, index) => (
-                    <Link key={caseItem.id} to={`/cases/${caseItem.slug}`} className="group cursor-pointer animate-on-scroll block" style={{ animationDelay: `${index * 100}ms` }}>
+                    <Link key={caseItem.id} to={`/cases/${caseItem.slug}`} className="group cursor-pointer block opacity-100 transform-none" style={{ animationDelay: `${index * 100}ms` }}>
                       <div className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-500 hover:scale-105">
                         <div className="aspect-video overflow-hidden relative">
                           <img 
