@@ -500,33 +500,35 @@ const Cases = () => {
       <main className="container-custom py-8">
 
         {/* Category Tabs */}
-        <div className="mb-16">
-          <div className="flex flex-wrap justify-center gap-3">
-            <button
-              onClick={() => setSelectedCategory('all')}
-              className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 text-sm ${
-                selectedCategory === 'all'
-                  ? 'bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg transform scale-105'
-                  : 'bg-card border border-border text-muted-foreground hover:text-foreground hover:scale-105'
-              }`}
-            >
-              Все проекты
-            </button>
-            {categories.filter(category => category).map(category => (
+        {!loading && cases.length > 0 && (
+          <div className="mb-16">
+            <div className="flex flex-wrap justify-center gap-3">
               <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => setSelectedCategory('all')}
                 className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 text-sm ${
-                  selectedCategory === category
+                  selectedCategory === 'all'
                     ? 'bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg transform scale-105'
                     : 'bg-card border border-border text-muted-foreground hover:text-foreground hover:scale-105'
                 }`}
               >
-                {categoryNames[category] || category}
+                Все проекты
               </button>
-            ))}
+              {categories.filter(category => category).map(category => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 text-sm ${
+                    selectedCategory === category
+                      ? 'bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg transform scale-105'
+                      : 'bg-card border border-border text-muted-foreground hover:text-foreground hover:scale-105'
+                  }`}
+                >
+                  {categoryNames[category] || category}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {loading ? (
           <div className="flex items-center justify-center h-64">
