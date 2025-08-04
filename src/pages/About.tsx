@@ -302,30 +302,34 @@ const About = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-6xl mx-auto text-center animate-on-scroll">
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-10 leading-tight">
-              {getContent('about', 'hero_title_1') || getContent('about', 'hero_title_2') ? (
+              {!loading && (getContent('about', 'hero_title_1') || getContent('about', 'hero_title_2')) ? (
                 <>
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    {getContent('about', 'hero_title_1') || 'Наша'}
+                    {getContent('about', 'hero_title_1')}
                   </span>
                   <br />
                   <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
-                    {getContent('about', 'hero_title_2') || 'студия'}
+                    {getContent('about', 'hero_title_2')}
                   </span>
                 </>
-              ) : pageSEO && pageSEO.h1_tag ? (
+              ) : !loading && pageSEO && pageSEO.h1_tag ? (
                 <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
                   {pageSEO.h1_tag}
                 </span>
-              ) : (
+              ) : !loading ? (
                 <>
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                     Наша
                   </span>
                   <br />
                   <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
-                    студия
+                    компания
                   </span>
                 </>
+              ) : (
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
+                  ...
+                </span>
               )}
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-16 max-w-4xl mx-auto leading-relaxed">
