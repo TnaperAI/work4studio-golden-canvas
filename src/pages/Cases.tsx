@@ -232,12 +232,6 @@ const Cases = () => {
     return (a.sort_order || 0) - (b.sort_order || 0);
   });
 
-  // Добавим отладочную информацию
-  console.log('Cases:', cases.length);
-  console.log('Selected category:', selectedCategory);
-  console.log('Filtered cases:', filteredCases.length);
-  console.log('Available categories:', categories);
-
   const featuredCases = filteredCases.filter(c => c.is_featured);
   const regularCases = filteredCases.filter(c => !c.is_featured);
 
