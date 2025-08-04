@@ -219,6 +219,8 @@ const Cases = () => {
     }
   }, [slug, cases]);
 
+  const categories = Array.from(new Set(cases.map(c => c.category)));
+
   const filteredCases = cases.filter(caseItem => {
     const matchesCategory = selectedCategory === 'all' || caseItem.category === selectedCategory;
     return matchesCategory;
@@ -230,7 +232,11 @@ const Cases = () => {
     return (a.sort_order || 0) - (b.sort_order || 0);
   });
 
-  const categories = Array.from(new Set(cases.map(c => c.category)));
+  // Добавим отладочную информацию
+  console.log('Cases:', cases.length);
+  console.log('Selected category:', selectedCategory);
+  console.log('Filtered cases:', filteredCases.length);
+  console.log('Available categories:', categories);
 
   const featuredCases = filteredCases.filter(c => c.is_featured);
   const regularCases = filteredCases.filter(c => !c.is_featured);
