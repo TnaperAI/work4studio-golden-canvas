@@ -49,20 +49,76 @@
     
     <!-- Критические стили для предотвращения FOUC -->
     <style>
-      /* Минимальные критические стили */
-      html, body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-      #root { min-height: 100vh; }
+      /* Минимальные критические стили для мгновенного рендеринга */
+      html, body { 
+        margin: 0; 
+        padding: 0; 
+        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+        background-color: #000000;
+        color: #ffffff;
+        line-height: 1.5;
+      }
+      #root { 
+        min-height: 100vh; 
+        display: flex;
+        flex-direction: column;
+      }
       .min-h-screen { min-height: 100vh; }
       .flex { display: flex; }
       .items-center { align-items: center; }
       .justify-center { justify-content: center; }
       .relative { position: relative; }
       .absolute { position: absolute; }
+      .fixed { position: fixed; }
       .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
       .text-center { text-align: center; }
       .opacity-100 { opacity: 1; }
       .transform-none { transform: none; }
+      .bg-background { background-color: #000000; }
+      .text-foreground { color: #ffffff; }
+      
+      /* Loading state для текста героя */
+      .hero-title-loading {
+        width: 100%;
+        height: 120px;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        animation: shimmer 1.5s infinite;
+        border-radius: 8px;
+      }
+      
+      @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+      
+      /* CSS для предотвращения layout shift */
+      .hero-container {
+        min-height: 100vh;
+        padding-top: 8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     </style>
+    
+    <!-- Инлайн критический CSS загрузчик -->
+    <script>
+      // Предзагрузка критических ресурсов
+      const criticalResources = [
+        'https://fonts.gstatic.com/s/inter/v19/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2',
+        'https://fonts.gstatic.com/s/orbitron/v34/yMJRMIlzdpvBhQQL_Qq7dy1biN15.woff2'
+      ];
+      
+      criticalResources.forEach(url => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'font';
+        link.type = 'font/woff2';
+        link.crossOrigin = 'anonymous';
+        link.href = url;
+        document.head.appendChild(link);
+      });
+    </script>
     
     <!-- Отложенная загрузка Yandex.Metrika -->
     <script>
@@ -81,7 +137,7 @@
                accurateTrackBounce:true,
                webvisor:true
           });
-        }, 2000); // Задержка 2 секунды после загрузки
+        }, 3000); // Увеличили задержку до 3 секунд
       });
     </script>
   </head>

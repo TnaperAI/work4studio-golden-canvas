@@ -7,7 +7,7 @@ const Hero = () => {
   const { getContent } = useSiteContent();
 
   return (
-    <section className="min-h-screen flex items-center justify-center relative pt-32 overflow-hidden bg-background">
+    <section className="hero-container bg-background relative overflow-hidden">"
       {/* Background elements - фиксированные размеры для предотвращения Layout Shift */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-xl animate-pulse will-change-transform"></div>

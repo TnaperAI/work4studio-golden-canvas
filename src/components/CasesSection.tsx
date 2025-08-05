@@ -3,13 +3,7 @@ import { ExternalLink, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useSiteContent } from '@/hooks/useSiteContent';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+import OptimizedImage from './OptimizedImage';
 
 const categoryNames: Record<string, string> = {
   website: 'Веб-сайт',
@@ -123,10 +117,13 @@ const CasesSection = () => {
               >
                 <div className="relative overflow-hidden">
                   {caseItem.main_image ? (
-                    <img
+                    <OptimizedImage
                       src={caseItem.main_image}
                       alt={caseItem.title}
                       className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
+                      width={400}
+                      height={200}
+                      priority={index < 3}
                     />
                   ) : (
                     <div className="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
