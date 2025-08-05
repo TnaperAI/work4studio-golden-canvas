@@ -2,11 +2,21 @@ import { useEffect } from 'react';
 
 export const useScrollAnimation = () => {
   useEffect(() => {
+    // Проверяем поддержку Intersection Observer
+    if (!('IntersectionObserver' in window)) {
+      // Fallback: сразу добавляем класс всем элементам
+      const animateElements = document.querySelectorAll('.animate-on-scroll');
+      animateElements.forEach((el) => el.classList.add('in-view'));
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('in-view');
+            // Отключаем наблюдение после первого появления для лучшей производительности
+            observer.unobserve(entry.target);
           }
         });
       },
@@ -20,7 +30,7 @@ export const useScrollAnimation = () => {
     animateElements.forEach((el) => observer.observe(el));
 
     return () => {
-      animateElements.forEach((el) => observer.unobserve(el));
+      observer.disconnect();
     };
   }, []);
 };

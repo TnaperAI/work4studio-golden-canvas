@@ -2,6 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Оптимизации производительности */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeSpeed;
+    scroll-behavior: smooth;
+  }
+  
+  /* Предотвращение layout shift */
+  img, video {
+    height: auto;
+    max-width: 100%;
+  }
+  
+  /* GPU ускорение для анимаций */
+  .will-change-transform {
+    will-change: transform;
+  }
+  
+  /* Оптимизация composite layers */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+  
+  /* Критические стили для быстрого рендеринга */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  
+  .animate-on-scroll.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Ускорение скролла */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* Embla Carousel Styles */
 .embla {
   overflow: hidden;

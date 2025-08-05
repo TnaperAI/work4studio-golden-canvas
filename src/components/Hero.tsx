@@ -8,15 +8,15 @@ const Hero = () => {
 
   return (
     <section className="min-h-screen flex items-center justify-center relative pt-32 overflow-hidden bg-background">
-      {/* Background elements */}
+      {/* Background elements - фиксированные размеры для предотвращения Layout Shift */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-48 h-48 bg-gradient-to-br from-accent/20 to-transparent rounded-full blur-xl animate-pulse"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/10 to-accent/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-xl animate-pulse will-change-transform"></div>
+        <div className="absolute bottom-20 right-10 w-48 h-48 bg-gradient-to-br from-accent/20 to-transparent rounded-full blur-xl animate-pulse will-change-transform"></div>
+        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-gradient-to-r from-primary/10 to-accent/10 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2 will-change-transform"></div>
       </div>
       
       <div className="container-custom relative z-10">
-        <div className="text-center max-w-5xl mx-auto space-y-10 animate-on-scroll">
+        <div className="text-center max-w-5xl mx-auto space-y-10 opacity-100 transform-none">
           {/* Main heading */}
           <div className="space-y-8">
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight">
