@@ -181,7 +181,7 @@ const ContactForm = () => {
 
                 <div className="space-y-6">
                   <a
-                    href="mailto:work44studio@gmail.com"
+                    href="mailto:info@work4studio.com"
                     className="flex items-center p-6 bg-card border border-border rounded-2xl group hover:shadow-xl transition-all duration-300 hover:scale-105"
                   >
                     <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
@@ -189,7 +189,7 @@ const ContactForm = () => {
                     </div>
                     <div className="ml-6">
                       <h4 className="text-xl font-bold mb-1">Email</h4>
-                      <p className="text-muted-foreground text-lg">work44studio@gmail.com</p>
+                      <p className="text-muted-foreground text-lg">info@work4studio.com</p>
                     </div>
                   </a>
 
