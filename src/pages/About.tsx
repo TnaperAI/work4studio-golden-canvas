@@ -432,83 +432,9 @@ const About = () => {
               Профессионалы, которые воплощают ваши идеи в жизнь
             </p>
           </div>
-          {teamMembers.length > 3 ? (
-            // Карусель для команды больше 3 человек
-            <div className="animate-on-scroll">
-              {/* Десктоп - автоматическая карусель */}
-              <div className="hidden md:block">
-                <TeamCarousel members={teamMembers} autoplay={true} />
-              </div>
-              {/* Мобильный - обычный скролл */}
-              <div className="md:hidden overflow-x-auto">
-                <div className="flex gap-4 pb-4" style={{ width: `${teamMembers.length * 300}px` }}>
-                  {teamMembers.map((member, index) => (
-                    <div key={member.id} className="flex-shrink-0 w-72">
-                      <div className="bg-card border border-border rounded-3xl p-8 hover:shadow-2xl hover:scale-105 transition-all duration-500 group text-center h-full">
-                        <div className="w-32 h-32 mx-auto mb-6 relative">
-                          <div className="w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20 group-hover:scale-105 transition-transform duration-300">
-                            {member.image ? (
-                              <img 
-                                src={member.image} 
-                                alt={member.name}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
-                                <span className="text-2xl font-heading font-bold text-primary">
-                                  {member.name.split(' ').map(n => n[0]).join('')}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <h3 className="text-xl font-heading font-bold mb-2">{member.name}</h3>
-                        <p className="text-primary font-medium mb-2">{member.position}</p>
-                        <p className="text-sm text-muted-foreground mb-4">{member.experience}</p>
-                        <p className="text-muted-foreground leading-relaxed mb-6">{member.description}</p>
-                        <div className="flex flex-wrap gap-2 justify-center">
-                          {member.skills.map((skill, skillIndex) => (
-                            <Badge key={skillIndex} variant="secondary" className="text-xs">
-                              {skill}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ) : (
-            // Обычная сетка для 3 или меньше участников
-            <div className="grid md:grid-cols-3 gap-8">
-              {teamMembers.map((member, index) => (
-                <div key={member.id} className="bg-card border border-border rounded-3xl overflow-hidden hover:shadow-2xl hover:scale-105 transition-all duration-500 group animate-on-scroll" style={{ animationDelay: `${index * 100}ms` }}>
-                  <div className="aspect-square overflow-hidden relative">
-                    <img 
-                      src={member.image} 
-                      alt={member.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  </div>
-                  <div className="p-8">
-                    <h3 className="text-2xl font-heading font-bold mb-2">{member.name}</h3>
-                    <p className="text-primary font-semibold mb-2 text-lg">{member.position}</p>
-                    <p className="text-sm text-muted-foreground mb-3 font-medium bg-gradient-to-r from-card/50 to-secondary/30 px-3 py-1 rounded-full inline-block">{member.experience}</p>
-                    <p className="text-muted-foreground mb-6 leading-relaxed">{member.description}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {member.skills.map((skill, skillIndex) => (
-                        <Badge key={skillIndex} className="bg-gradient-to-r from-primary/10 to-accent/10 text-foreground border border-border/30 hover:from-primary/20 hover:to-accent/20 transition-colors">
-                          {skill}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <div className="animate-on-scroll">
+            <TeamCarousel members={teamMembers} />
+          </div>
         </section>
 
         {/* CTA Section */}
