@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface LegalDocument {
   id: string;
@@ -15,6 +16,7 @@ interface ConsentCheckboxProps {
 
 const ConsentCheckbox = ({ isAgreed, onChange, className = "" }: ConsentCheckboxProps) => {
   const [legalDocuments, setLegalDocuments] = useState<LegalDocument[]>([]);
+  const { currentLanguage } = useLanguage();
 
   useEffect(() => {
     const fetchLegalDocuments = async () => {
@@ -45,23 +47,26 @@ const ConsentCheckbox = ({ isAgreed, onChange, className = "" }: ConsentCheckbox
         required
       />
       <label htmlFor="agreement" className="text-sm text-muted-foreground leading-relaxed">
-        Я соглашаюсь с условиями{' '}
+        {currentLanguage === 'en' ? 'I agree to the terms of the ' : 'Я соглашаюсь с условиями '}{' '}
         <a 
           href="/legal/terms_of_service" 
           target="_blank"
           className="text-primary hover:underline"
         >
-          {termsDoc?.title || 'Публичной оферты'}
+          {termsDoc?.title || (currentLanguage === 'en' ? 'Terms of Service' : 'Публичной оферты')}
         </a>{' '}
-        и{' '}
+        {currentLanguage === 'en' ? ' and ' : ' и '}{' '}
         <a 
           href="/legal/privacy_policy" 
           target="_blank"
           className="text-primary hover:underline"
         >
-          {privacyDoc?.title || 'Политики конфиденциальности'}
+          {privacyDoc?.title || (currentLanguage === 'en' ? 'Privacy Policy' : 'Политики конфиденциальности')}
         </a>{' '}
-        и даю согласие на обработку моих персональных данных.
+        {currentLanguage === 'en' 
+          ? ' and give consent to the processing of my personal data.'
+          : ' и даю согласие на обработку моих персональных данных.'
+        }
       </label>
     </div>
   );
