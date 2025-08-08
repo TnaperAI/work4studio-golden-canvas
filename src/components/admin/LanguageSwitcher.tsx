@@ -80,13 +80,96 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
     });
   };
 
-  // Handle automatic translation
+  // Handle automatic translation with extended coverage
   const handleTranslate = async (fromLang: Language, toLang: Language) => {
     if (translating) return;
     
     setTranslating(true);
     try {
+      // 1. Translate site_content (existing functionality)
       await translateContent(fromLang, toLang);
+      
+      // 2. Translate company_info
+      const { data: companyData } = await supabase
+        .from('company_info')
+        .select('*')
+        .single();
+        
+      if (companyData) {
+        const companyFields = ['description', 'mission', 'vision'];
+        const translatedCompanyData: any = { ...companyData };
+        
+        for (const field of companyFields) {
+          if (companyData[field]) {
+            try {
+              const response = await supabase.functions.invoke('translate-content', {
+                body: { 
+                  text: companyData[field], 
+                  from: fromLang, 
+                  to: toLang 
+                }
+              });
+              
+              if (response.data?.success && response.data?.translatedText) {
+                translatedCompanyData[field] = response.data.translatedText;
+              }
+            } catch (error) {
+              console.error(`Error translating company ${field}:`, error);
+            }
+          }
+        }
+        
+        // Save translated company info (we'll create separate records for different languages if needed)
+        await supabase
+          .from('company_info')
+          .upsert(translatedCompanyData);
+      }
+      
+      // 3. Translate team_members
+      const { data: teamData } = await supabase
+        .from('team_members')
+        .select('*')
+        .eq('is_active', true);
+        
+      if (teamData && teamData.length > 0) {
+        const teamUpdates = [];
+        
+        for (const member of teamData) {
+          const translatedMember: any = { ...member };
+          
+          // Translate description and position
+          const fieldsToTranslate = ['description', 'position'];
+          
+          for (const field of fieldsToTranslate) {
+            if (member[field]) {
+              try {
+                const response = await supabase.functions.invoke('translate-content', {
+                  body: { 
+                    text: member[field], 
+                    from: fromLang, 
+                    to: toLang 
+                  }
+                });
+                
+                if (response.data?.success && response.data?.translatedText) {
+                  translatedMember[field] = response.data.translatedText;
+                }
+              } catch (error) {
+                console.error(`Error translating team member ${member.name} ${field}:`, error);
+              }
+            }
+          }
+          
+          teamUpdates.push(translatedMember);
+        }
+        
+        // Save translated team members
+        if (teamUpdates.length > 0) {
+          await supabase
+            .from('team_members')
+            .upsert(teamUpdates);
+        }
+      }
       
       // Reload statistics after translation
       const loadRealStats = async () => {
@@ -119,8 +202,8 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
       await loadRealStats();
       
       toast({
-        title: "Перевод завершён",
-        description: `Контент переведён с ${fromLang === 'ru' ? 'русского' : 'английского'} на ${toLang === 'ru' ? 'русский' : 'английский'}`,
+        title: "Полный перевод завершён",
+        description: `Переведён весь контент: тексты, информация о компании и команде с ${fromLang === 'ru' ? 'русского' : 'английского'} на ${toLang === 'ru' ? 'русский' : 'английский'}`,
       });
     } catch (error) {
       console.error('Translation error:', error);
