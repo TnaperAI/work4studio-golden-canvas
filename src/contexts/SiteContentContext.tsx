@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useLanguage } from './LanguageContext';
 
 export interface SiteContent {
   id: string;
@@ -13,8 +14,9 @@ export interface SiteContent {
 interface SiteContentContextType {
   content: SiteContent[];
   loading: boolean;
-  getContent: (section: string, key: string) => string;
-  updateContent: (section: string, key: string, value: string) => Promise<void>;
+  getContent: (section: string, key: string, lang?: string) => string;
+  updateContent: (section: string, key: string, value: string, lang?: string) => Promise<void>;
+  language: string;
 }
 
 const SiteContentContext = createContext<SiteContentContextType | undefined>(undefined);
@@ -26,6 +28,7 @@ interface SiteContentProviderProps {
 export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ children }) => {
   const [content, setContent] = useState<SiteContent[]>([]);
   const [loading, setLoading] = useState(true);
+  const { language } = useLanguage();
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -72,17 +75,19 @@ export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ childr
     };
   }, []);
 
-  const getContent = (section: string, key: string): string => {
-    const item = content.find(c => c.section === section && c.key === key);
+  const getContent = (section: string, key: string, lang?: string): string => {
+    const currentLang = lang || language;
+    const item = content.find(c => c.section === section && c.key === key && c.language === currentLang);
     return item?.value || '';
   };
 
-  const updateContent = async (section: string, key: string, value: string): Promise<void> => {
+  const updateContent = async (section: string, key: string, value: string, lang?: string): Promise<void> => {
+    const currentLang = lang || language;
     const { error } = await supabase
       .from('site_content')
       .upsert(
-        { section, key, value },
-        { onConflict: 'section,key' }
+        { section, key, value, language: currentLang },
+        { onConflict: 'section,key,language' }
       );
 
     if (error) {
@@ -96,6 +101,7 @@ export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ childr
     loading,
     getContent,
     updateContent,
+    language,
   };
 
   return (
