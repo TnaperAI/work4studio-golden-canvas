@@ -77,12 +77,13 @@ export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ childr
     };
   }, []);
 
-  const getContentByLanguage = (section: string, key: string, language: Language): string => {
+  // Define all functions using useCallback to prevent recreation on every render
+  const getContentByLanguage = React.useCallback((section: string, key: string, language: Language): string => {
     const item = content.find(c => c.section === section && c.key === key && c.language === language);
     return item?.value || '';
-  };
+  }, [content]);
 
-  const getContent = (section: string, key: string, language?: Language): string => {
+  const getContent = React.useCallback((section: string, key: string, language?: Language): string => {
     const targetLanguage = language || currentLanguage;
     
     // Try to get content in target language
@@ -94,9 +95,9 @@ export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ childr
     }
     
     return item?.value || '';
-  };
+  }, [content, currentLanguage]);
 
-  const updateContent = async (section: string, key: string, value: string, language?: Language): Promise<void> => {
+  const updateContent = React.useCallback(async (section: string, key: string, value: string, language?: Language): Promise<void> => {
     const targetLanguage = language || currentLanguage;
     
     const { error } = await supabase
@@ -110,9 +111,9 @@ export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ childr
       console.error('Error updating content:', error);
       throw error;
     }
-  };
+  }, [currentLanguage]);
 
-  const translateContent = async (fromLanguage: Language, toLanguage: Language, section?: string): Promise<void> => {
+  const translateContent = React.useCallback(async (fromLanguage: Language, toLanguage: Language, section?: string): Promise<void> => {
     try {
       // Get content to translate
       let sourceContent = content.filter(c => c.language === fromLanguage);
@@ -195,17 +196,16 @@ export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ childr
       console.error('Error in translateContent:', error);
       throw error;
     }
-  };
+  }, [content]);
 
-
-  const value = {
+  const value = React.useMemo(() => ({
     content,
     loading,
     getContent,
     updateContent,
     getContentByLanguage,
     translateContent,
-  };
+  }), [content, loading, getContent, updateContent, getContentByLanguage, translateContent]);
 
   return (
     <SiteContentContext.Provider value={value}>
