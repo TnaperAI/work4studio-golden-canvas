@@ -82,7 +82,7 @@ ${text}`;
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "model": "meta-llama/llama-3.1-8b-instruct:free", // Using free model for cost efficiency
+        "model": "openrouter/auto", // Use automatic routing to available models
         "messages": [
           {
             "role": "user",
