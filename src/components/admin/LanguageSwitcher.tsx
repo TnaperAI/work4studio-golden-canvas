@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLanguage, type Language } from '@/contexts/LanguageContext';
 import { useSiteContent } from '@/contexts/SiteContentContext';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { Globe, Check, AlertCircle } from 'lucide-react';
 
 interface LanguageSwitcherProps {
@@ -18,17 +19,56 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   const { content, translateContent } = useSiteContent();
   const { toast } = useToast();
   const [translating, setTranslating] = useState(false);
+  const [realStats, setRealStats] = useState<{[key: string]: {total: number, ruTotal: number, percentage: number}}>({});
 
-  // Calculate content statistics for each language
-  const getLanguageStats = (language: Language) => {
-    const langContent = content.filter(item => item.language === language);
-    const totalRuContent = content.filter(item => item.language === 'ru').length;
-    
-    return {
-      total: langContent.length,
-      ruTotal: totalRuContent,
-      percentage: totalRuContent > 0 ? Math.round((langContent.length / totalRuContent) * 100) : 0
+  // Load real statistics from database
+  useEffect(() => {
+    const loadRealStats = async () => {
+      try {
+        // Get site_content statistics
+        const { data: siteContentStats } = await supabase
+          .from('site_content')
+          .select('language')
+          .order('language');
+
+        // Get page_seo statistics  
+        const { data: seoStats } = await supabase
+          .from('page_seo')
+          .select('language')
+          .order('language');
+
+        // Calculate totals
+        const ruSiteContent = siteContentStats?.filter(item => item.language === 'ru').length || 0;
+        const enSiteContent = siteContentStats?.filter(item => item.language === 'en').length || 0;
+        const ruSeo = seoStats?.filter(item => item.language === 'ru').length || 0;
+        const enSeo = seoStats?.filter(item => item.language === 'en').length || 0;
+
+        const ruTotal = ruSiteContent + ruSeo;
+        const enTotal = enSiteContent + enSeo;
+
+        setRealStats({
+          ru: {
+            total: ruTotal,
+            ruTotal: ruTotal,
+            percentage: 100
+          },
+          en: {
+            total: enTotal,
+            ruTotal: ruTotal,
+            percentage: ruTotal > 0 ? Math.round((enTotal / ruTotal) * 100) : 0
+          }
+        });
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      }
     };
+
+    loadRealStats();
+  }, []);
+
+  // Calculate content statistics for each language using real data
+  const getLanguageStats = (language: Language) => {
+    return realStats[language] || { total: 0, ruTotal: 0, percentage: 0 };
   };
 
   // Handle language switch
@@ -47,6 +87,37 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
     setTranslating(true);
     try {
       await translateContent(fromLang, toLang);
+      
+      // Reload statistics after translation
+      const loadRealStats = async () => {
+        try {
+          const { data: siteContentStats } = await supabase
+            .from('site_content')
+            .select('language');
+
+          const { data: seoStats } = await supabase
+            .from('page_seo')
+            .select('language');
+
+          const ruSiteContent = siteContentStats?.filter(item => item.language === 'ru').length || 0;
+          const enSiteContent = siteContentStats?.filter(item => item.language === 'en').length || 0;
+          const ruSeo = seoStats?.filter(item => item.language === 'ru').length || 0;
+          const enSeo = seoStats?.filter(item => item.language === 'en').length || 0;
+
+          const ruTotal = ruSiteContent + ruSeo;
+          const enTotal = enSiteContent + enSeo;
+
+          setRealStats({
+            ru: { total: ruTotal, ruTotal: ruTotal, percentage: 100 },
+            en: { total: enTotal, ruTotal: ruTotal, percentage: ruTotal > 0 ? Math.round((enTotal / ruTotal) * 100) : 0 }
+          });
+        } catch (error) {
+          console.error('Error reloading stats:', error);
+        }
+      };
+
+      await loadRealStats();
+      
       toast({
         title: "Перевод завершён",
         description: `Контент переведён с ${fromLang === 'ru' ? 'русского' : 'английского'} на ${toLang === 'ru' ? 'русский' : 'английский'}`,
