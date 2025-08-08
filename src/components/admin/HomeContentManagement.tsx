@@ -95,7 +95,15 @@ const HomeContentManagement = () => {
       fields: [
         { key: 'title', label: 'Заголовок', type: 'text' },
         { key: 'subtitle', label: 'Подзаголовок', type: 'textarea' },
-        { key: 'cta_button', label: 'Текст кнопки', type: 'text' }
+        { key: 'cta_button', label: 'Текст кнопки', type: 'text' },
+        { key: 'advantage_1_title', label: 'Преимущество 1 - заголовок', type: 'text' },
+        { key: 'advantage_1_description', label: 'Преимущество 1 - описание', type: 'textarea' },
+        { key: 'advantage_2_title', label: 'Преимущество 2 - заголовок', type: 'text' },
+        { key: 'advantage_2_description', label: 'Преимущество 2 - описание', type: 'textarea' },
+        { key: 'advantage_3_title', label: 'Преимущество 3 - заголовок', type: 'text' },
+        { key: 'advantage_3_description', label: 'Преимущество 3 - описание', type: 'textarea' },
+        { key: 'advantage_4_title', label: 'Преимущество 4 - заголовок', type: 'text' },
+        { key: 'advantage_4_description', label: 'Преимущество 4 - описание', type: 'textarea' }
       ]
     },
     {
@@ -105,6 +113,10 @@ const HomeContentManagement = () => {
       fields: [
         { key: 'days', label: 'Количество дней', type: 'text' },
         { key: 'days_text', label: 'Описание для дней', type: 'text' },
+        { key: 'projects', label: 'Количество проектов', type: 'text' },
+        { key: 'projects_text', label: 'Описание проектов', type: 'text' },
+        { key: 'satisfaction', label: 'Процент довольных клиентов', type: 'text' },
+        { key: 'satisfaction_text', label: 'Описание удовлетворенности', type: 'text' },
         { key: 'support', label: 'Поддержка', type: 'text' },
         { key: 'support_text', label: 'Описание поддержки', type: 'text' },
         { key: 'code', label: 'Код (%)', type: 'text' },
@@ -114,14 +126,21 @@ const HomeContentManagement = () => {
     {
       id: 'services',
       title: 'Блок услуг',
-      description: 'Информация о разделе услуг',
+      description: 'Информация о разделе услуг на главной странице',
       fields: [
         { key: 'title', label: 'Заголовок', type: 'text' },
         { key: 'subtitle', label: 'Описание', type: 'textarea' },
         { key: 'main_title', label: 'Основной заголовок услуги', type: 'text' },
         { key: 'main_description', label: 'Описание услуги', type: 'textarea' },
         { key: 'features', label: 'Особенности (через запятую)', type: 'textarea' },
-        { key: 'button', label: 'Текст кнопки', type: 'text' }
+        { key: 'button', label: 'Текст кнопки', type: 'text' },
+        { key: 'grid_title', label: 'Заголовок сетки услуг', type: 'text' },
+        { key: 'grid_subtitle', label: 'Описание сетки услуг', type: 'textarea' },
+        { key: 'badge_1_text', label: 'Бейдж 1', type: 'text' },
+        { key: 'badge_2_text', label: 'Бейдж 2', type: 'text' },
+        { key: 'cta_title', label: 'CTA заголовок', type: 'text' },
+        { key: 'cta_subtitle', label: 'CTA описание', type: 'textarea' },
+        { key: 'cta_button', label: 'CTA кнопка', type: 'text' }
       ]
     },
     {
@@ -149,6 +168,19 @@ const HomeContentManagement = () => {
         { key: 'title', label: 'Заголовок', type: 'text' },
         { key: 'subtitle', label: 'Описание', type: 'textarea' },
         { key: 'button', label: 'Текст кнопки', type: 'text' }
+      ]
+    },
+    {
+      id: 'header',
+      title: 'Навигация сайта',
+      description: 'Тексты меню и кнопок в шапке сайта',
+      fields: [
+        { key: 'nav_home', label: 'Главная', type: 'text' },
+        { key: 'nav_services', label: 'Услуги', type: 'text' },
+        { key: 'nav_cases', label: 'Кейсы', type: 'text' },
+        { key: 'nav_about', label: 'О нас', type: 'text' },
+        { key: 'nav_contact', label: 'Контакты', type: 'text' },
+        { key: 'cta_button', label: 'CTA кнопка в шапке', type: 'text' }
       ]
     }
   ];
