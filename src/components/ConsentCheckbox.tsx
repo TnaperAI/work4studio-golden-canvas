@@ -49,7 +49,7 @@ const ConsentCheckbox = ({ isAgreed, onChange, className = "" }: ConsentCheckbox
       <label htmlFor="agreement" className="text-sm text-muted-foreground leading-relaxed">
         {currentLanguage === 'en' ? 'I agree to the terms of the ' : 'Я соглашаюсь с условиями '}{' '}
         <a 
-          href="/legal/terms_of_service" 
+          href={currentLanguage === 'en' ? "/legal/terms_of_service" : "/legal/ru/terms_of_service"} 
           target="_blank"
           className="text-primary hover:underline"
         >
@@ -57,7 +57,7 @@ const ConsentCheckbox = ({ isAgreed, onChange, className = "" }: ConsentCheckbox
         </a>{' '}
         {currentLanguage === 'en' ? ' and ' : ' и '}{' '}
         <a 
-          href="/legal/privacy_policy" 
+          href={currentLanguage === 'en' ? "/legal/privacy_policy" : "/legal/ru/privacy_policy"} 
           target="_blank"
           className="text-primary hover:underline"
         >
