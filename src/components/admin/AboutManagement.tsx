@@ -95,10 +95,11 @@ const AboutManagement = () => {
 
       if (teamError) throw teamError;
 
-      // Fetch company info
+      // Fetch company info (только русская версия)
       const { data: companyData, error: companyError } = await supabase
         .from('company_info')
         .select('*')
+        .eq('language', 'ru')
         .maybeSingle();
 
       if (companyError) throw companyError;
@@ -173,10 +174,15 @@ const AboutManagement = () => {
     if (!companyInfo) return;
 
     try {
-      // Save company info
+      // Save company info - убедиться что обновляется русская запись
+      const updatedCompanyInfo = {
+        ...companyInfo,
+        language: 'ru'
+      };
+      
       const { error: companyError } = await supabase
         .from('company_info')
-        .upsert(companyInfo, { onConflict: 'id' });
+        .upsert(updatedCompanyInfo, { onConflict: 'language' });
 
       if (companyError) throw companyError;
 
@@ -191,6 +197,7 @@ const AboutManagement = () => {
         description: 'Информация о компании обновлена',
       });
     } catch (error: any) {
+      console.error('Error saving company info:', error);
       toast({
         title: 'Ошибка',
         description: 'Не удалось сохранить данные',
