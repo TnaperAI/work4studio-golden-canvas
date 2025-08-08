@@ -105,13 +105,18 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
               const response = await supabase.functions.invoke('translate-content', {
                 body: { 
                   text: companyData[field], 
-                  from: fromLang, 
-                  to: toLang 
+                  fromLanguage: fromLang, 
+                  toLanguage: toLang 
                 }
               });
               
+              console.log(`Translation response for company ${field}:`, response);
+              
               if (response.data?.success && response.data?.translatedText) {
                 translatedCompanyData[field] = response.data.translatedText;
+                console.log(`Successfully translated company ${field}`);
+              } else {
+                console.error(`Failed to translate company ${field}:`, response.data?.error || response.error);
               }
             } catch (error) {
               console.error(`Error translating company ${field}:`, error);
@@ -146,13 +151,18 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
                 const response = await supabase.functions.invoke('translate-content', {
                   body: { 
                     text: member[field], 
-                    from: fromLang, 
-                    to: toLang 
+                    fromLanguage: fromLang, 
+                    toLanguage: toLang 
                   }
                 });
                 
+                console.log(`Translation response for team member ${member.name} ${field}:`, response);
+                
                 if (response.data?.success && response.data?.translatedText) {
                   translatedMember[field] = response.data.translatedText;
+                  console.log(`Successfully translated team member ${member.name} ${field}`);
+                } else {
+                  console.error(`Failed to translate team member ${member.name} ${field}:`, response.data?.error || response.error);
                 }
               } catch (error) {
                 console.error(`Error translating team member ${member.name} ${field}:`, error);
