@@ -87,8 +87,7 @@ ${text}`;
         ...(preferredModel ? {} : { models: [
           "openai/gpt-4o-mini",
           "google/gemini-1.5-flash",
-          "qwen/qwen-2.5-7b-instruct",
-          "mistralai/mistral-7b-instruct"
+          "qwen/qwen-2.5-7b-instruct"
         ]}),
         messages: [
           { role: "user", content: prompt }
