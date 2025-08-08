@@ -241,10 +241,10 @@ const About = () => {
   const teamMembers = team.length > 0 ? team : defaultTeam;
 
   const stats = [
-    { icon: Calendar, label: 'Год основания', value: company.founding_year },
-    { icon: Users, label: 'Команда', value: company.team_size },
-    { icon: Trophy, label: 'Проектов завершено', value: company.projects_completed },
-    { icon: Star, label: 'Довольных клиентов', value: company.clients_served }
+    { icon: Calendar, label: getContent('about', 'stats_founding_year_label') || 'Год основания', value: company.founding_year },
+    { icon: Users, label: getContent('about', 'stats_team_label') || 'Команда', value: company.team_size },
+    { icon: Trophy, label: getContent('about', 'stats_projects_label') || 'Проектов завершено', value: company.projects_completed },
+    { icon: Star, label: getContent('about', 'stats_clients_label') || 'Довольных клиентов', value: company.clients_served }
   ];
 
   // Получаем данные ценностей из базы данных или используем дефолтные
@@ -283,12 +283,12 @@ const About = () => {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/">Главная</Link>
+                  <Link to="/">{getContent('about', 'breadcrumb_home') || 'Главная'}</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>О нас</BreadcrumbPage>
+                <BreadcrumbPage>{getContent('about', 'breadcrumb_about') || 'О нас'}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -369,7 +369,7 @@ const About = () => {
                 </div>
                 <h3 className="text-2xl md:text-3xl font-heading font-bold">
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    Наша миссия
+                    {getContent('about', 'mission_title') || 'Наша миссия'}
                   </span>
                 </h3>
               </div>
@@ -382,7 +382,7 @@ const About = () => {
                 </div>
                 <h3 className="text-2xl md:text-3xl font-heading font-bold">
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    Наше видение
+                    {getContent('about', 'vision_title') || 'Наше видение'}
                   </span>
                 </h3>
               </div>
@@ -400,7 +400,7 @@ const About = () => {
               </span>
               <br />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                ценности
+                {getContent('about', 'values_title_second') || 'ценности'}
               </span>
             </h2>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
@@ -425,15 +425,15 @@ const About = () => {
           <div className="text-center mb-16 animate-on-scroll">
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
               <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                Наша
+                {getContent('about', 'team_title_first') || 'Наша'}
               </span>
               <br />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                команда
+                {getContent('about', 'team_title_second') || 'команда'}
               </span>
             </h2>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Профессионалы, которые воплощают ваши идеи в жизнь
+              {getContent('about', 'team_subtitle') || 'Профессионалы, которые воплощают ваши идеи в жизнь'}
             </p>
           </div>
           <div className="animate-on-scroll">
@@ -450,19 +450,19 @@ const About = () => {
             <div className="relative z-10">
               <h3 className="text-4xl md:text-5xl font-heading font-bold mb-8 leading-tight">
                 <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                  Готовы начать
+                  {getContent('about', 'cta_title_first') || 'Готовы начать'}
                 </span>
                 <br />
                 <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  проект?
+                  {getContent('about', 'cta_title_second') || 'проект?'}
                 </span>
               </h3>
               <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
-                Свяжитесь с нами для обсуждения вашего проекта. Мы поможем воплотить ваши идеи в жизнь и создать что-то удивительное вместе.
+                {getContent('about', 'cta_subtitle') || 'Свяжитесь с нами для обсуждения вашего проекта. Мы поможем воплотить ваши идеи в жизнь и создать что-то удивительное вместе.'}
               </p>
               <Button asChild className="btn-gold text-base md:text-xl px-6 py-3 md:px-8 md:py-4 hover:shadow-2xl hover:scale-105 transition-all duration-300">
                 <Link to="/contact">
-                  Связаться с нами
+                  {getContent('about', 'cta_button_text') || 'Связаться с нами'}
                   <ArrowRight className="ml-3 h-5 w-5 md:h-6 md:w-6" />
                 </Link>
               </Button>
