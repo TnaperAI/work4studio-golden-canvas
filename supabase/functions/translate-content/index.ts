@@ -9,6 +9,7 @@ interface TranslateRequest {
   text: string;
   fromLanguage: string;
   toLanguage: string;
+  model?: string;
 }
 
 interface TranslateResponse {
@@ -37,7 +38,7 @@ serve(async (req) => {
     }
 
     const body: TranslateRequest = await req.json();
-    const { text, fromLanguage, toLanguage } = body;
+    const { text, fromLanguage, toLanguage, model: preferredModel } = body;
 
     if (!text || !fromLanguage || !toLanguage) {
       return new Response(JSON.stringify({ 
@@ -82,15 +83,18 @@ ${text}`;
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "model": "openrouter/auto", // Use automatic routing to available models
-        "messages": [
-          {
-            "role": "user",
-            "content": prompt
-          }
+        model: preferredModel || "openrouter/auto",
+        ...(preferredModel ? {} : { models: [
+          "openai/gpt-4o-mini",
+          "google/gemini-1.5-flash",
+          "qwen/qwen-2.5-7b-instruct",
+          "mistralai/mistral-7b-instruct"
+        ]}),
+        messages: [
+          { role: "user", content: prompt }
         ],
-        "max_tokens": 1000,
-        "temperature": 0.3, // Lower temperature for more consistent translations
+        max_tokens: 1000,
+        temperature: 0.3,
       }),
     });
 
