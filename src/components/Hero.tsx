@@ -25,7 +25,7 @@ const Hero = () => {
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto px-4 leading-relaxed">
-              {getContent('hero', 'subtitle')}
+              {getContent('hero', 'subtitle') || 'Современные веб-решения для роста вашего бизнеса'}
             </p>
           </div>
           
@@ -35,7 +35,7 @@ const Hero = () => {
               className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-lg px-10 py-4 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
               onClick={() => setIsContactModalOpen(true)}
             >
-              {getContent('hero', 'cta_button')}
+              {getContent('hero', 'button_text') || 'Обсудить проект'}
             </button>
           </div>
           
@@ -43,21 +43,27 @@ const Hero = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-20 max-w-4xl mx-auto">
             <div className="text-center p-8 rounded-2xl bg-card border border-border hover:shadow-xl transition-all duration-300 hover:scale-105">
               <div className="text-5xl md:text-6xl font-heading font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-3">
-                {getContent('stats', 'days')}
+                {getContent('hero', 'stats_projects') || '50+'}
               </div>
-              <div className="text-muted-foreground font-medium text-lg">{getContent('stats', 'days_text')}</div>
+              <div className="text-muted-foreground font-medium text-lg">
+                {getContent('hero', 'stats_projects_label') || 'Проектов выполнено'}
+              </div>
             </div>
             <div className="text-center p-8 rounded-2xl bg-card border border-border hover:shadow-xl transition-all duration-300 hover:scale-105">
               <div className="text-5xl md:text-6xl font-heading font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-3">
-                {getContent('stats', 'support')}
+                {getContent('hero', 'stats_clients') || '40+'}
               </div>
-              <div className="text-muted-foreground font-medium text-lg">{getContent('stats', 'support_text')}</div>
+              <div className="text-muted-foreground font-medium text-lg">
+                {getContent('hero', 'stats_clients_label') || 'Довольных клиентов'}
+              </div>
             </div>
             <div className="text-center p-8 rounded-2xl bg-card border border-border hover:shadow-xl transition-all duration-300 hover:scale-105">
               <div className="text-5xl md:text-6xl font-heading font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-3">
-                {getContent('stats', 'code')}
+                {getContent('hero', 'stats_experience') || '3+'}
               </div>
-              <div className="text-muted-foreground font-medium text-lg">{getContent('stats', 'code_text')}</div>
+              <div className="text-muted-foreground font-medium text-lg">
+                {getContent('hero', 'stats_experience_label') || 'Лет опыта'}
+              </div>
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ArrowRight, Globe, Wrench } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 interface Service {
   id: string;
@@ -16,6 +17,7 @@ interface Service {
 const Services = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
+  const { getContent } = useSiteContent();
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -76,10 +78,10 @@ const Services = () => {
       <div className="container-custom">
         <div className="text-center mb-16 animate-on-scroll">
           <h2 className="mb-6">
-            Наши <span className="text-primary">услуги</span>
+            {getContent('services', 'title') || 'Наши'} <span className="text-primary">{getContent('services', 'title').includes('Services') ? 'Services' : 'услуги'}</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Полный цикл работы с вашим веб-проектом — от идеи до постоянной поддержки
+            {getContent('services', 'subtitle') || 'Полный цикл работы с вашим веб-проектом — от идеи до постоянной поддержки'}
           </p>
         </div>
 

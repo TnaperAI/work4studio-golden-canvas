@@ -1,4 +1,7 @@
+import { useSiteContent } from '@/hooks/useSiteContent';
+
 const CTA = () => {
+  const { getContent } = useSiteContent();
   const scrollToForm = () => {
     const element = document.getElementById('contact-form');
     if (element) {
@@ -13,12 +16,11 @@ const CTA = () => {
       <div className="container-custom relative z-10">
         <div className="text-center animate-on-scroll">
           <h2 className="mb-6">
-            Хотите <span className="text-primary">такой же сайт</span>?
+            {getContent('cta', 'title') || 'Хотите'} <span className="text-primary">{getContent('cta', 'title').includes('Ready') ? 'Your Project?' : 'такой же сайт?'}</span>
           </h2>
           
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Расскажите о своём проекте, и мы создадим индивидуальное решение, 
-            которое будет работать именно для вашего бизнеса
+            {getContent('cta', 'subtitle') || 'Расскажите о своём проекте, и мы создадим индивидуальное решение, которое будет работать именно для вашего бизнеса'}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -26,7 +28,7 @@ const CTA = () => {
               onClick={scrollToForm}
               className="btn-gold"
             >
-              Оставить заявку
+              {getContent('cta', 'button_text') || 'Оставить заявку'}
             </button>
             
             <a

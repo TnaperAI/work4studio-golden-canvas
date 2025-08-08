@@ -1,8 +1,10 @@
 import { ArrowRight, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import casesImage from '@/assets/cases-preview.jpg';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const Cases = () => {
+  const { getContent } = useSiteContent();
   const cases = [
     {
       id: 1,
@@ -35,10 +37,10 @@ const Cases = () => {
       <div className="container-custom">
         <div className="text-center mb-16 animate-on-scroll">
           <h2 className="mb-6">
-            Наши <span className="text-primary">кейсы</span>
+            {getContent('cases', 'title') || 'Наши'} <span className="text-primary">{getContent('cases', 'title').includes('Work') ? 'Work' : 'кейсы'}</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Примеры успешных проектов, которые приносят реальные результаты нашим клиентам
+            {getContent('cases', 'subtitle') || 'Примеры успешных проектов, которые приносят реальные результаты нашим клиентам'}
           </p>
         </div>
 
@@ -93,7 +95,7 @@ const Cases = () => {
             to="/cases"
             className="btn-gold inline-flex items-center"
           >
-            Посмотреть все кейсы
+            {getContent('cases', 'button_text') || 'Посмотреть все кейсы'}
             <ArrowRight className="w-5 h-5 ml-2" />
           </Link>
         </div>
