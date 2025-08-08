@@ -17,9 +17,7 @@ const ServicesSection = () => {
             <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
               {getContent('services', 'title') || 'Наши'}
             </span>{' '}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              {getContent('services', 'title_highlight') || 'услуги'}
-            </span>
+            {getContent('services', 'title_highlight') || 'услуги'}
           </h2>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
             {getContent('services', 'subtitle') || 'Полный цикл работы с вашим веб-проектом от идеи до запуска'}
