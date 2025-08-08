@@ -16,7 +16,7 @@ const CTA = () => {
       <div className="container-custom relative z-10">
         <div className="text-center animate-on-scroll">
           <h2 className="mb-6">
-            {getContent('cta', 'title') || 'Хотите'} <span className="text-primary">{getContent('cta', 'title').includes('Ready') ? 'Your Project?' : 'такой же сайт?'}</span>
+            {getContent('cta', 'title') || 'Хотите такой же сайт?'}
           </h2>
           
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
@@ -28,14 +28,14 @@ const CTA = () => {
               onClick={scrollToForm}
               className="btn-gold"
             >
-              {getContent('cta', 'button_text') || 'Оставить заявку'}
+              {getContent('cta', 'button') || 'Оставить заявку'}
             </button>
             
             <a
               href="mailto:info@work4studio.com"
               className="px-8 py-4 border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 rounded-lg font-medium uppercase tracking-wide"
             >
-              Написать на Email
+              {getContent('cta', 'email_button') || 'Написать на Email'}
             </a>
           </div>
           

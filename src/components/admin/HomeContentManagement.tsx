@@ -109,6 +109,12 @@ const HomeContentManagement = ({ language: propLanguage }: HomeContentManagement
         { key: 'title', label: 'Заголовок', type: 'text' },
         { key: 'subtitle', label: 'Подзаголовок', type: 'textarea' },
         { key: 'cta_button', label: 'Текст кнопки', type: 'text' },
+        { key: 'stats_projects', label: 'Статистика - проекты (число)', type: 'text' },
+        { key: 'stats_projects_label', label: 'Статистика - проекты (текст)', type: 'text' },
+        { key: 'stats_clients', label: 'Статистика - клиенты (число)', type: 'text' },
+        { key: 'stats_clients_label', label: 'Статистика - клиенты (текст)', type: 'text' },
+        { key: 'stats_experience', label: 'Статистика - опыт (число)', type: 'text' },
+        { key: 'stats_experience_label', label: 'Статистика - опыт (текст)', type: 'text' },
         { key: 'advantage_1_title', label: 'Преимущество 1 - заголовок', type: 'text' },
         { key: 'advantage_1_description', label: 'Преимущество 1 - описание', type: 'textarea' },
         { key: 'advantage_2_title', label: 'Преимущество 2 - заголовок', type: 'text' },
@@ -117,6 +123,17 @@ const HomeContentManagement = ({ language: propLanguage }: HomeContentManagement
         { key: 'advantage_3_description', label: 'Преимущество 3 - описание', type: 'textarea' },
         { key: 'advantage_4_title', label: 'Преимущество 4 - заголовок', type: 'text' },
         { key: 'advantage_4_description', label: 'Преимущество 4 - описание', type: 'textarea' }
+      ]
+    },
+    {
+      id: 'cta',
+      title: 'Блок призыва к действию (CTA)',
+      description: 'Заголовки и кнопки в блоке CTA',
+      fields: [
+        { key: 'title', label: 'Заголовок', type: 'text' },
+        { key: 'subtitle', label: 'Описание', type: 'textarea' },
+        { key: 'button', label: 'Основная кнопка', type: 'text' },
+        { key: 'email_button', label: 'Кнопка Email', type: 'text' }
       ]
     },
     {

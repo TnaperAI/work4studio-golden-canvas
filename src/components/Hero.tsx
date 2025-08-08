@@ -35,7 +35,7 @@ const Hero = () => {
               className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-lg px-10 py-4 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
               onClick={() => setIsContactModalOpen(true)}
             >
-              {getContent('hero', 'button_text') || 'Обсудить проект'}
+              {getContent('hero', 'cta_button') || 'Обсудить проект'}
             </button>
           </div>
           
