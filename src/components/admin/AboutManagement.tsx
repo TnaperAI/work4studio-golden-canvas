@@ -86,40 +86,59 @@ const AboutManagement = () => {
   }, [loading]);
 
   const fetchData = async () => {
+    console.log('AboutManagement: fetchData called');
     try {
       // Fetch team members
+      console.log('AboutManagement: Fetching team members...');
       const { data: teamData, error: teamError } = await supabase
         .from('team_members')
         .select('*')
         .order('sort_order');
 
-      if (teamError) throw teamError;
+      if (teamError) {
+        console.error('AboutManagement: Team error:', teamError);
+        throw teamError;
+      }
+      console.log('AboutManagement: Team data:', teamData);
 
       // Fetch company info (только русская версия)
+      console.log('AboutManagement: Fetching company info...');
       const { data: companyData, error: companyError } = await supabase
         .from('company_info')
         .select('*')
         .eq('language', 'ru')
         .maybeSingle();
 
-      if (companyError) throw companyError;
+      if (companyError) {
+        console.error('AboutManagement: Company error:', companyError);
+        throw companyError;
+      }
+      console.log('AboutManagement: Company data:', companyData);
 
       // Fetch page SEO
+      console.log('AboutManagement: Fetching page SEO...');
       const { data: seoData, error: seoError } = await supabase
         .from('page_seo')
         .select('*')
         .eq('page_slug', 'about')
+        .eq('language', 'ru')
         .maybeSingle();
 
-      if (seoError) throw seoError;
+      if (seoError) {
+        console.error('AboutManagement: SEO error:', seoError);
+        throw seoError;
+      }
+      console.log('AboutManagement: SEO data:', seoData);
 
       setTeam(teamData || []);
       setCompanyInfo(companyData);
       setPageSEO(seoData);
+      console.log('AboutManagement: Data loaded successfully');
     } catch (error: any) {
+      console.error('AboutManagement: fetchData error:', error);
       toast({
         title: 'Ошибка',
-        description: 'Не удалось загрузить данные',
+        description: 'Не удалось загрузить данные: ' + error.message,
         variant: 'destructive',
       });
     } finally {
