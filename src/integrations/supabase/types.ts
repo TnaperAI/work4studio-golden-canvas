@@ -529,6 +529,7 @@ export type Database = {
           created_at: string
           id: string
           key: string
+          language: string
           section: string
           updated_at: string
           value: string
@@ -537,6 +538,7 @@ export type Database = {
           created_at?: string
           id?: string
           key: string
+          language?: string
           section: string
           updated_at?: string
           value: string
@@ -545,6 +547,7 @@ export type Database = {
           created_at?: string
           id?: string
           key?: string
+          language?: string
           section?: string
           updated_at?: string
           value?: string
