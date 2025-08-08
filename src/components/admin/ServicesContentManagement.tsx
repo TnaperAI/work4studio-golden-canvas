@@ -6,26 +6,20 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useSiteContent } from '@/hooks/useSiteContent';
-import { LanguageSwitcher } from '@/components/admin/LanguageSwitcher';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { Save, RotateCcw } from 'lucide-react';
 
 const ServicesContentManagement = () => {
   const { content, getContent, updateContent } = useSiteContent();
-  const { currentLanguage } = useLanguage();
   const { toast } = useToast();
   const [formData, setFormData] = useState<Record<string, Record<string, string>>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // Инициализируем данные формы из контента для текущего языка
+  // Инициализируем данные формы из контента
   useEffect(() => {
     if (content.length > 0) {
       const groupedContent: Record<string, Record<string, string>> = {};
       
-      // Фильтруем контент по текущему языку
-      const currentLanguageContent = content.filter(item => item.language === currentLanguage);
-      
-      currentLanguageContent.forEach(item => {
+      content.forEach(item => {
         if (!groupedContent[item.section]) {
           groupedContent[item.section] = {};
         }
@@ -34,7 +28,7 @@ const ServicesContentManagement = () => {
       
       setFormData(groupedContent);
     }
-  }, [content, currentLanguage]);
+  }, [content]);
 
   const handleChange = (section: string, key: string, value: string) => {
     setFormData(prev => ({
@@ -78,10 +72,7 @@ const ServicesContentManagement = () => {
   const handleReset = () => {
     const groupedContent: Record<string, Record<string, string>> = {};
     
-    // Фильтруем контент по текущему языку для сброса
-    const currentLanguageContent = content.filter(item => item.language === currentLanguage);
-    
-    currentLanguageContent.forEach(item => {
+    content.forEach(item => {
       if (!groupedContent[item.section]) {
         groupedContent[item.section] = {};
       }
@@ -95,7 +86,6 @@ const ServicesContentManagement = () => {
       description: 'Данные восстановлены из базы'
     });
   };
-
 
   const sections = [
     {
@@ -118,19 +108,14 @@ const ServicesContentManagement = () => {
 
   return (
     <div className="space-y-6">
-      {/* Language Switcher */}
-      <LanguageSwitcher />
-      
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-heading font-bold">
-            Контент страницы услуг ({currentLanguage.toUpperCase()})
-          </h1>
+          <h1 className="text-3xl font-heading font-bold">Контент страницы услуг</h1>
           <p className="text-muted-foreground">
             Управление текстовым контентом на странице /services
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-4">
           <Button
             variant="outline"
             onClick={handleReset}

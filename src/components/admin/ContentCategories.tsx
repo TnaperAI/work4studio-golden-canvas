@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import CasesManagement from './CasesManagement';
 import CaseEditor from './CaseEditor';
 import AboutManagement from './AboutManagement';
-import ContactManagement from './ContactManagement';
 import ServicesManagement from './ServicesManagement';
 import ServiceEditor from './ServiceEditor';
 import HomeContentManagement from './HomeContentManagement';
@@ -48,7 +47,6 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
   const [showServiceEditor, setShowServiceEditor] = useState(false);
   const [showCaseEditor, setShowCaseEditor] = useState(false);
   const [showAboutManagement, setShowAboutManagement] = useState(false);
-  const [showContactManagement, setShowContactManagement] = useState(false);
   const [showHomeManagement, setShowHomeManagement] = useState(false);
   const [showServicesContentManagement, setShowServicesContentManagement] = useState(false);
   const { toast } = useToast();
@@ -211,28 +209,6 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
     );
   }
 
-  // Show contact management 
-  if (showContactManagement) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center space-x-4">
-          <Button 
-            variant="ghost" 
-            onClick={() => {
-              setShowContactManagement(false);
-              setSelectedCategory(null);
-            }}
-            className="p-2"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Назад к категориям
-          </Button>
-        </div>
-        <ContactManagement />
-      </div>
-    );
-  }
-
   // Show home management 
   if (showHomeManagement) {
     return (
@@ -309,8 +285,6 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
               onClick={() => {
                 if (page.slug === 'about') {
                   setShowAboutManagement(true);
-                } else if (page.slug === 'contact') {
-                  setShowContactManagement(true);
                 } else if (page.slug === 'home') {
                   setShowHomeManagement(true);
                 } else if (page.slug === 'services') {

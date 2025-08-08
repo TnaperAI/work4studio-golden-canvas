@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 interface LegalDocument {
   id: string;
@@ -16,7 +15,6 @@ interface ConsentCheckboxProps {
 
 const ConsentCheckbox = ({ isAgreed, onChange, className = "" }: ConsentCheckboxProps) => {
   const [legalDocuments, setLegalDocuments] = useState<LegalDocument[]>([]);
-  const { currentLanguage } = useLanguage();
 
   useEffect(() => {
     const fetchLegalDocuments = async () => {
@@ -47,26 +45,23 @@ const ConsentCheckbox = ({ isAgreed, onChange, className = "" }: ConsentCheckbox
         required
       />
       <label htmlFor="agreement" className="text-sm text-muted-foreground leading-relaxed">
-        {currentLanguage === 'en' ? 'I agree to the terms of the ' : 'Я соглашаюсь с условиями '}{' '}
+        Я соглашаюсь с условиями{' '}
         <a 
-          href={currentLanguage === 'en' ? "/legal/terms_of_service" : "/legal/ru/terms_of_service"} 
+          href="/legal/terms_of_service" 
           target="_blank"
           className="text-primary hover:underline"
         >
-          {currentLanguage === 'en' ? 'Terms of Service' : 'Публичной оферты'}
+          {termsDoc?.title || 'Публичной оферты'}
         </a>{' '}
-        {currentLanguage === 'en' ? ' and ' : ' и '}{' '}
+        и{' '}
         <a 
-          href={currentLanguage === 'en' ? "/legal/privacy_policy" : "/legal/ru/privacy_policy"} 
+          href="/legal/privacy_policy" 
           target="_blank"
           className="text-primary hover:underline"
         >
-          {currentLanguage === 'en' ? 'Privacy Policy' : 'Политики конфиденциальности'}
+          {privacyDoc?.title || 'Политики конфиденциальности'}
         </a>{' '}
-        {currentLanguage === 'en' 
-          ? ' and give consent to the processing of my personal data.'
-          : ' и даю согласие на обработку моих персональных данных.'
-        }
+        и даю согласие на обработку моих персональных данных.
       </label>
     </div>
   );

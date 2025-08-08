@@ -114,7 +114,6 @@ export type Database = {
           description: string | null
           founding_year: string | null
           id: string
-          language: string
           mission: string | null
           projects_completed: string | null
           team_size: string | null
@@ -127,7 +126,6 @@ export type Database = {
           description?: string | null
           founding_year?: string | null
           id?: string
-          language?: string
           mission?: string | null
           projects_completed?: string | null
           team_size?: string | null
@@ -140,7 +138,6 @@ export type Database = {
           description?: string | null
           founding_year?: string | null
           id?: string
-          language?: string
           mission?: string | null
           projects_completed?: string | null
           team_size?: string | null
@@ -308,7 +305,6 @@ export type Database = {
           created_at: string
           h1_tag: string | null
           id: string
-          language: string
           meta_description: string | null
           meta_keywords: string | null
           meta_title: string | null
@@ -324,7 +320,6 @@ export type Database = {
           created_at?: string
           h1_tag?: string | null
           id?: string
-          language?: string
           meta_description?: string | null
           meta_keywords?: string | null
           meta_title?: string | null
@@ -340,7 +335,6 @@ export type Database = {
           created_at?: string
           h1_tag?: string | null
           id?: string
-          language?: string
           meta_description?: string | null
           meta_keywords?: string | null
           meta_title?: string | null
@@ -535,7 +529,6 @@ export type Database = {
           created_at: string
           id: string
           key: string
-          language: string
           section: string
           updated_at: string
           value: string
@@ -544,7 +537,6 @@ export type Database = {
           created_at?: string
           id?: string
           key: string
-          language?: string
           section: string
           updated_at?: string
           value: string
@@ -553,7 +545,6 @@ export type Database = {
           created_at?: string
           id?: string
           key?: string
-          language?: string
           section?: string
           updated_at?: string
           value?: string

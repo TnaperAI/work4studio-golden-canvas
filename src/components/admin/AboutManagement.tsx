@@ -10,8 +10,6 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useSiteContent } from '@/hooks/useSiteContent';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { LanguageSwitcher } from './LanguageSwitcher';
 import { Plus, X, Edit, Trash2, Users, Building, Globe, Heart } from 'lucide-react';
 
 interface TeamMember {
@@ -54,7 +52,6 @@ interface PageSEO {
 const AboutManagement = () => {
   const { toast } = useToast();
   const { getContent, updateContent } = useSiteContent();
-  const { currentLanguage } = useLanguage();
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
   const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
@@ -80,13 +77,13 @@ const AboutManagement = () => {
 
   useEffect(() => {
     fetchData();
-  }, [currentLanguage]);
+  }, []);
 
   useEffect(() => {
     if (!loading) {
       loadValuesData();
     }
-  }, [loading, currentLanguage]);
+  }, [loading]);
 
   const fetchData = async () => {
     try {
@@ -102,7 +99,6 @@ const AboutManagement = () => {
       const { data: companyData, error: companyError } = await supabase
         .from('company_info')
         .select('*')
-        .eq('language', currentLanguage)
         .maybeSingle();
 
       if (companyError) throw companyError;
@@ -112,27 +108,17 @@ const AboutManagement = () => {
         .from('page_seo')
         .select('*')
         .eq('page_slug', 'about')
-        .eq('language', currentLanguage)
         .maybeSingle();
 
       if (seoError) throw seoError;
 
       setTeam(teamData || []);
-      setCompanyInfo(companyData || {
-        id: '',
-        mission: '',
-        vision: '',
-        founding_year: '',
-        team_size: '',
-        projects_completed: '',
-        clients_served: '',
-        description: ''
-      });
+      setCompanyInfo(companyData);
       setPageSEO(seoData);
     } catch (error: any) {
       toast({
-        title: currentLanguage === 'en' ? 'Error' : 'Ошибка',
-        description: currentLanguage === 'en' ? 'Failed to load data' : 'Не удалось загрузить данные',
+        title: 'Ошибка',
+        description: 'Не удалось загрузить данные',
         variant: 'destructive',
       });
     } finally {
@@ -167,13 +153,13 @@ const AboutManagement = () => {
       );
 
       toast({
-        title: currentLanguage === 'en' ? 'Success' : 'Успешно',
-        description: currentLanguage === 'en' ? 'Values data updated' : 'Данные ценностей обновлены',
+        title: 'Успешно',
+        description: 'Данные ценностей обновлены',
       });
     } catch (error: any) {
       toast({
-        title: currentLanguage === 'en' ? 'Error' : 'Ошибка',
-        description: currentLanguage === 'en' ? 'Failed to save values data' : 'Не удалось сохранить данные ценностей',
+        title: 'Ошибка',
+        description: 'Не удалось сохранить данные ценностей',
         variant: 'destructive',
       });
     }
@@ -187,15 +173,10 @@ const AboutManagement = () => {
     if (!companyInfo) return;
 
     try {
-      // Save company info with language
-      const companyDataWithLanguage = {
-        ...companyInfo,
-        language: currentLanguage
-      };
-      
+      // Save company info
       const { error: companyError } = await supabase
         .from('company_info')
-        .upsert(companyDataWithLanguage, { onConflict: 'language' });
+        .upsert(companyInfo, { onConflict: 'id' });
 
       if (companyError) throw companyError;
 
@@ -206,13 +187,13 @@ const AboutManagement = () => {
       ]);
 
       toast({
-        title: currentLanguage === 'en' ? 'Success' : 'Успешно',
-        description: currentLanguage === 'en' ? 'Company information updated' : 'Информация о компании обновлена',
+        title: 'Успешно',
+        description: 'Информация о компании обновлена',
       });
     } catch (error: any) {
       toast({
-        title: currentLanguage === 'en' ? 'Error' : 'Ошибка',
-        description: currentLanguage === 'en' ? 'Failed to save data' : 'Не удалось сохранить данные',
+        title: 'Ошибка',
+        description: 'Не удалось сохранить данные',
         variant: 'destructive',
       });
     }
@@ -239,10 +220,8 @@ const AboutManagement = () => {
       }
 
       toast({
-        title: currentLanguage === 'en' ? 'Success' : 'Успешно',
-        description: editingTeamMember.id && editingTeamMember.id !== '' 
-          ? (currentLanguage === 'en' ? 'Team member updated' : 'Участник команды обновлен')
-          : (currentLanguage === 'en' ? 'Team member added' : 'Участник команды добавлен'),
+        title: 'Успешно',
+        description: editingTeamMember.id && editingTeamMember.id !== '' ? 'Участник команды обновлен' : 'Участник команды добавлен',
       });
 
       fetchData();
@@ -250,8 +229,8 @@ const AboutManagement = () => {
       setShowTeamForm(false);
     } catch (error: any) {
       toast({
-        title: currentLanguage === 'en' ? 'Error' : 'Ошибка',
-        description: currentLanguage === 'en' ? 'Failed to save team member' : 'Не удалось сохранить участника команды',
+        title: 'Ошибка',
+        description: 'Не удалось сохранить участника команды',
         variant: 'destructive',
       });
     }
@@ -263,24 +242,23 @@ const AboutManagement = () => {
     try {
       const seoData = {
         ...pageSEO,
-        page_slug: 'about',
-        language: currentLanguage
+        page_slug: 'about'
       };
 
       const { error } = await supabase
         .from('page_seo')
-        .upsert(seoData, { onConflict: 'page_slug,language' });
+        .upsert(seoData, { onConflict: 'page_slug' });
 
       if (error) throw error;
 
       toast({
-        title: currentLanguage === 'en' ? 'Success' : 'Успешно',
-        description: currentLanguage === 'en' ? 'Page SEO settings updated' : 'SEO настройки страницы обновлены',
+        title: 'Успешно',
+        description: 'SEO настройки страницы обновлены',
       });
     } catch (error: any) {
       toast({
-        title: currentLanguage === 'en' ? 'Error' : 'Ошибка',
-        description: currentLanguage === 'en' ? 'Failed to save SEO settings' : 'Не удалось сохранить SEO настройки',
+        title: 'Ошибка',
+        description: 'Не удалось сохранить SEO настройки',
         variant: 'destructive',
       });
     }
@@ -296,15 +274,15 @@ const AboutManagement = () => {
       if (error) throw error;
 
       toast({
-        title: currentLanguage === 'en' ? 'Success' : 'Успешно',
-        description: currentLanguage === 'en' ? 'Team member deleted' : 'Участник команды удален',
+        title: 'Успешно',
+        description: 'Участник команды удален',
       });
 
       fetchData();
     } catch (error: any) {
       toast({
-        title: currentLanguage === 'en' ? 'Error' : 'Ошибка',
-        description: currentLanguage === 'en' ? 'Failed to delete team member' : 'Не удалось удалить участника команды',
+        title: 'Ошибка',
+        description: 'Не удалось удалить участника команды',
         variant: 'destructive',
       });
     }
@@ -336,8 +314,8 @@ const AboutManagement = () => {
     // Validate file type
     if (!file.type.match(/^image\/(jpeg|jpg|png)$/)) {
       toast({
-        title: currentLanguage === 'en' ? 'Error' : 'Ошибка',
-        description: currentLanguage === 'en' ? 'Only JPEG and PNG files are supported' : 'Поддерживаются только файлы JPEG и PNG',
+        title: 'Ошибка',
+        description: 'Поддерживаются только файлы JPEG и PNG',
         variant: 'destructive',
       });
       return;
@@ -346,8 +324,8 @@ const AboutManagement = () => {
     // Validate file size (5MB max)
     if (file.size > 5 * 1024 * 1024) {
       toast({
-        title: currentLanguage === 'en' ? 'Error' : 'Ошибка',
-        description: currentLanguage === 'en' ? 'File size must not exceed 5MB' : 'Размер файла не должен превышать 5MB',
+        title: 'Ошибка',
+        description: 'Размер файла не должен превышать 5MB',
         variant: 'destructive',
       });
       return;
@@ -380,13 +358,13 @@ const AboutManagement = () => {
       });
 
       toast({
-        title: currentLanguage === 'en' ? 'Success' : 'Успешно',
-        description: currentLanguage === 'en' ? 'Image uploaded' : 'Изображение загружено',
+        title: 'Успешно',
+        description: 'Изображение загружено',
       });
     } catch (error: any) {
       toast({
-        title: currentLanguage === 'en' ? 'Error' : 'Ошибка',
-        description: currentLanguage === 'en' ? 'Failed to upload image' : 'Не удалось загрузить изображение',
+        title: 'Ошибка',
+        description: 'Не удалось загрузить изображение',
         variant: 'destructive',
       });
     } finally {
@@ -410,62 +388,44 @@ const AboutManagement = () => {
         <div>
           <h1 className="text-3xl font-heading font-bold flex items-center gap-2">
             <Building className="h-8 w-8" />
-            {currentLanguage === 'en' ? 'About Page Management' : 'Управление страницей "О нас"'}
+            Управление страницей "О нас"
           </h1>
           <p className="text-muted-foreground">
-            {currentLanguage === 'en' 
-              ? 'Edit company information and team details'
-              : 'Редактирование информации о компании и команде'
-            }
+            Редактирование информации о компании и команде
           </p>
         </div>
-        <LanguageSwitcher />
       </div>
 
       <Tabs defaultValue="company" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="company">
-            {currentLanguage === 'en' ? 'Company Information' : 'Информация о компании'}
-          </TabsTrigger>
-          <TabsTrigger value="team">
-            {currentLanguage === 'en' ? 'Team' : 'Команда'}
-          </TabsTrigger>
-          <TabsTrigger value="values">
-            {currentLanguage === 'en' ? 'Our Values' : 'Наши ценности'}
-          </TabsTrigger>
-          <TabsTrigger value="seo">
-            {currentLanguage === 'en' ? 'SEO Settings' : 'SEO настройки'}
-          </TabsTrigger>
+          <TabsTrigger value="company">Информация о компании</TabsTrigger>
+          <TabsTrigger value="team">Команда</TabsTrigger>
+          <TabsTrigger value="values">Наши ценности</TabsTrigger>
+          <TabsTrigger value="seo">SEO настройки</TabsTrigger>
         </TabsList>
 
         <TabsContent value="company" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>
-                {currentLanguage === 'en' ? 'Basic Information' : 'Основная информация'}
-              </CardTitle>
+              <CardTitle>Основная информация</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Hero Title Fields */}
               <div className="grid gap-4 md:grid-cols-2 mb-6 p-4 bg-muted/30 rounded-lg">
                 <div className="space-y-2">
-                  <Label>
-                    {currentLanguage === 'en' ? 'Page title (part 1)' : 'Заголовок страницы (часть 1)'}
-                  </Label>
+                  <Label>Заголовок страницы (часть 1)</Label>
                   <Input
                     value={valuesData.hero_title_1 || ''}
                     onChange={(e) => updateValuesField('hero_title_1', e.target.value)}
-                    placeholder={currentLanguage === 'en' ? 'Our' : 'Наша'}
+                    placeholder="Наша"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>
-                    {currentLanguage === 'en' ? 'Page title (part 2)' : 'Заголовок страницы (часть 2)'}
-                  </Label>
+                  <Label>Заголовок страницы (часть 2)</Label>
                   <Input
                     value={valuesData.hero_title_2 || ''}
                     onChange={(e) => updateValuesField('hero_title_2', e.target.value)}
-                    placeholder={currentLanguage === 'en' ? 'studio' : 'студия'}
+                    placeholder="студия"
                   />
                 </div>
               </div>
@@ -473,9 +433,7 @@ const AboutManagement = () => {
                 <>
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="space-y-2">
-                      <Label>
-                        {currentLanguage === 'en' ? 'Company description' : 'Описание компании'}
-                      </Label>
+                      <Label>Описание компании</Label>
                       <Textarea
                         value={companyInfo.description || ''}
                         onChange={(e) => setCompanyInfo({
@@ -486,9 +444,7 @@ const AboutManagement = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>
-                        {currentLanguage === 'en' ? 'Mission' : 'Миссия'}
-                      </Label>
+                      <Label>Миссия</Label>
                       <Textarea
                         value={companyInfo.mission || ''}
                         onChange={(e) => setCompanyInfo({
@@ -499,9 +455,7 @@ const AboutManagement = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>
-                        {currentLanguage === 'en' ? 'Vision' : 'Видение'}
-                      </Label>
+                      <Label>Видение</Label>
                       <Textarea
                         value={companyInfo.vision || ''}
                         onChange={(e) => setCompanyInfo({
@@ -515,9 +469,7 @@ const AboutManagement = () => {
                   
                   <div className="grid gap-4 md:grid-cols-4">
                     <div className="space-y-2">
-                      <Label>
-                        {currentLanguage === 'en' ? 'Founded in' : 'Год основания'}
-                      </Label>
+                      <Label>Год основания</Label>
                       <Input
                         value={companyInfo.founding_year || ''}
                         onChange={(e) => setCompanyInfo({
@@ -527,9 +479,7 @@ const AboutManagement = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>
-                        {currentLanguage === 'en' ? 'Team size' : 'Размер команды'}
-                      </Label>
+                      <Label>Размер команды</Label>
                       <Input
                         value={companyInfo.team_size || ''}
                         onChange={(e) => setCompanyInfo({
@@ -539,9 +489,7 @@ const AboutManagement = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>
-                        {currentLanguage === 'en' ? 'Projects completed' : 'Проектов завершено'}
-                      </Label>
+                      <Label>Проектов завершено</Label>
                       <Input
                         value={companyInfo.projects_completed || ''}
                         onChange={(e) => setCompanyInfo({
@@ -551,9 +499,7 @@ const AboutManagement = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>
-                        {currentLanguage === 'en' ? 'Clients served' : 'Клиентов обслужено'}
-                      </Label>
+                      <Label>Клиентов обслужено</Label>
                       <Input
                         value={companyInfo.clients_served || ''}
                         onChange={(e) => setCompanyInfo({
@@ -565,7 +511,7 @@ const AboutManagement = () => {
                   </div>
 
                   <Button onClick={saveCompanyInfo}>
-                    {currentLanguage === 'en' ? 'Save company information' : 'Сохранить информацию о компании'}
+                    Сохранить информацию о компании
                   </Button>
                 </>
               )}
@@ -577,7 +523,7 @@ const AboutManagement = () => {
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold flex items-center gap-2">
               <Users className="h-5 w-5" />
-              {currentLanguage === 'en' ? `Team (${team.length})` : `Команда (${team.length})`}
+              Команда ({team.length})
             </h2>
             <Button 
               onClick={() => {
@@ -586,7 +532,7 @@ const AboutManagement = () => {
               }}
             >
               <Plus className="h-4 w-4 mr-2" />
-              {currentLanguage === 'en' ? 'Add member' : 'Добавить участника'}
+              Добавить участника
             </Button>
           </div>
 
@@ -668,16 +614,13 @@ const AboutManagement = () => {
             <Card className="border-2 border-primary/20">
               <CardHeader>
                 <CardTitle>
-                  {editingTeamMember.id 
-                    ? (currentLanguage === 'en' ? 'Edit' : 'Редактировать')
-                    : (currentLanguage === 'en' ? 'Add' : 'Добавить')
-                  } {currentLanguage === 'en' ? 'team member' : 'участника команды'}
+                  {editingTeamMember.id ? 'Редактировать' : 'Добавить'} участника команды
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label>{currentLanguage === 'en' ? 'Name *' : 'Имя *'}</Label>
+                    <Label>Имя *</Label>
                     <Input
                       value={editingTeamMember.name}
                       onChange={(e) => setEditingTeamMember({
@@ -687,7 +630,7 @@ const AboutManagement = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>{currentLanguage === 'en' ? 'Position *' : 'Должность *'}</Label>
+                    <Label>Должность *</Label>
                     <Input
                       value={editingTeamMember.position}
                       onChange={(e) => setEditingTeamMember({
@@ -697,18 +640,18 @@ const AboutManagement = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>{currentLanguage === 'en' ? 'Experience' : 'Опыт'}</Label>
+                    <Label>Опыт</Label>
                     <Input
                       value={editingTeamMember.experience}
                       onChange={(e) => setEditingTeamMember({
                         ...editingTeamMember,
                         experience: e.target.value
                       })}
-                      placeholder={currentLanguage === 'en' ? '5+ years' : '5+ лет'}
+                      placeholder="5+ лет"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>{currentLanguage === 'en' ? 'Sort order' : 'Порядок сортировки'}</Label>
+                    <Label>Порядок сортировки</Label>
                     <Input
                       type="number"
                       value={editingTeamMember.sort_order}
@@ -721,18 +664,16 @@ const AboutManagement = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>{currentLanguage === 'en' ? 'Image' : 'Изображение'}</Label>
+                  <Label>Изображение</Label>
                   <div className="space-y-2">
                     {editingTeamMember.image && (
                       <div className="flex items-center gap-2 p-2 border rounded">
                         <img 
                           src={editingTeamMember.image} 
-                          alt={currentLanguage === 'en' ? 'Preview' : 'Предпросмотр'} 
+                          alt="Предпросмотр" 
                           className="w-16 h-16 object-cover rounded"
                         />
-                        <span className="text-sm text-muted-foreground">
-                          {currentLanguage === 'en' ? 'Current image' : 'Текущее изображение'}
-                        </span>
+                        <span className="text-sm text-muted-foreground">Текущее изображение</span>
                         <Button
                           type="button"
                           variant="outline"
@@ -755,14 +696,14 @@ const AboutManagement = () => {
                     {uploading && (
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-                        {currentLanguage === 'en' ? 'Uploading image...' : 'Загрузка изображения...'}
+                        Загрузка изображения...
                       </div>
                     )}
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label>{currentLanguage === 'en' ? 'Description' : 'Описание'}</Label>
+                  <Label>Описание</Label>
                   <Textarea
                     value={editingTeamMember.description}
                     onChange={(e) => setEditingTeamMember({
@@ -774,12 +715,12 @@ const AboutManagement = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>{currentLanguage === 'en' ? 'Skills' : 'Навыки'}</Label>
+                  <Label>Навыки</Label>
                   <div className="flex gap-2">
                     <Input
                       value={newSkill}
                       onChange={(e) => setNewSkill(e.target.value)}
-                      placeholder={currentLanguage === 'en' ? 'Add skill...' : 'Добавить навык...'}
+                      placeholder="Добавить навык..."
                       onKeyPress={(e) => e.key === 'Enter' && addSkill()}
                     />
                     <Button type="button" onClick={addSkill}>
@@ -806,7 +747,7 @@ const AboutManagement = () => {
                       is_active: checked
                     })}
                   />
-                  <Label>{currentLanguage === 'en' ? 'Active member' : 'Активный участник'}</Label>
+                  <Label>Активный участник</Label>
                 </div>
 
                 <div className="flex justify-end gap-2">
@@ -817,10 +758,10 @@ const AboutManagement = () => {
                       setEditingTeamMember(null);
                     }}
                   >
-                    {currentLanguage === 'en' ? 'Cancel' : 'Отмена'}
+                    Отмена
                   </Button>
                   <Button onClick={saveTeamMember}>
-                    {currentLanguage === 'en' ? 'Save' : 'Сохранить'}
+                    Сохранить
                   </Button>
                 </div>
               </CardContent>
@@ -833,120 +774,93 @@ const AboutManagement = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Heart className="h-5 w-5" />
-                {currentLanguage === 'en' ? 'Our Values' : 'Наши ценности'}
+                Наши ценности
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label>
-                    {currentLanguage === 'en' ? 'Values section title' : 'Заголовок секции "Наши ценности"'}
-                  </Label>
+                  <Label>Заголовок секции "Наши ценности"</Label>
                   <Input
                     value={valuesData.values_title || ''}
                     onChange={(e) => updateValuesField('values_title', e.target.value)}
-                    placeholder={currentLanguage === 'en' ? 'Our Values' : 'Наши ценности'}
+                    placeholder="Наши ценности"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>
-                    {currentLanguage === 'en' ? 'Values section subtitle' : 'Подзаголовок секции "Наши ценности"'}
-                  </Label>
+                  <Label>Подзаголовок секции "Наши ценности"</Label>
                   <Textarea
                     value={valuesData.values_subtitle || ''}
                     onChange={(e) => updateValuesField('values_subtitle', e.target.value)}
-                    placeholder={currentLanguage === 'en' 
-                      ? 'Principles that guide our work' 
-                      : 'Принципы, которыми мы руководствуемся в работе'
-                    }
+                    placeholder="Принципы, которыми мы руководствуемся в работе"
                     rows={2}
                   />
                 </div>
                 
                 <div className="grid gap-4">
                   <div className="border p-4 rounded-lg">
-                    <h4 className="font-medium mb-2">
-                      {currentLanguage === 'en' ? 'Value 1' : 'Ценность 1'}
-                    </h4>
+                    <h4 className="font-medium mb-2">Ценность 1</h4>
                     <div className="grid gap-2">
                       <Input
                         value={valuesData.value_1_title || ''}
                         onChange={(e) => updateValuesField('value_1_title', e.target.value)}
-                        placeholder={currentLanguage === 'en' ? 'Quality' : 'Качество'}
+                        placeholder="Качество"
                       />
                       <Textarea
                         value={valuesData.value_1_description || ''}
                         onChange={(e) => updateValuesField('value_1_description', e.target.value)}
-                        placeholder={currentLanguage === 'en' 
-                          ? 'We strive for excellence in every project'
-                          : 'Мы стремимся к совершенству в каждом проекте'
-                        }
+                        placeholder="Мы стремимся к совершенству в каждом проекте"
                         rows={2}
                       />
                     </div>
                   </div>
                   
                   <div className="border p-4 rounded-lg">
-                    <h4 className="font-medium mb-2">
-                      {currentLanguage === 'en' ? 'Value 2' : 'Ценность 2'}
-                    </h4>
+                    <h4 className="font-medium mb-2">Ценность 2</h4>
                     <div className="grid gap-2">
                       <Input
                         value={valuesData.value_2_title || ''}
                         onChange={(e) => updateValuesField('value_2_title', e.target.value)}
-                        placeholder={currentLanguage === 'en' ? 'Innovation' : 'Инновации'}
+                        placeholder="Инновации"
                       />
                       <Textarea
                         value={valuesData.value_2_description || ''}
                         onChange={(e) => updateValuesField('value_2_description', e.target.value)}
-                        placeholder={currentLanguage === 'en' 
-                          ? 'We use modern technologies and approaches'
-                          : 'Используем современные технологии и подходы'
-                        }
+                        placeholder="Используем современные технологии и подходы"
                         rows={2}
                       />
                     </div>
                   </div>
                   
                   <div className="border p-4 rounded-lg">
-                    <h4 className="font-medium mb-2">
-                      {currentLanguage === 'en' ? 'Value 3' : 'Ценность 3'}
-                    </h4>
+                    <h4 className="font-medium mb-2">Ценность 3</h4>
                     <div className="grid gap-2">
                       <Input
                         value={valuesData.value_3_title || ''}
                         onChange={(e) => updateValuesField('value_3_title', e.target.value)}
-                        placeholder={currentLanguage === 'en' ? 'Honesty' : 'Честность'}
+                        placeholder="Честность"
                       />
                       <Textarea
                         value={valuesData.value_3_description || ''}
                         onChange={(e) => updateValuesField('value_3_description', e.target.value)}
-                        placeholder={currentLanguage === 'en' 
-                          ? 'Transparency in work and open communication'
-                          : 'Прозрачность в работе и открытое общение'
-                        }
+                        placeholder="Прозрачность в работе и открытое общение"
                         rows={2}
                       />
                     </div>
                   </div>
                   
                   <div className="border p-4 rounded-lg">
-                    <h4 className="font-medium mb-2">
-                      {currentLanguage === 'en' ? 'Value 4' : 'Ценность 4'}
-                    </h4>
+                    <h4 className="font-medium mb-2">Ценность 4</h4>
                     <div className="grid gap-2">
                       <Input
                         value={valuesData.value_4_title || ''}
                         onChange={(e) => updateValuesField('value_4_title', e.target.value)}
-                        placeholder={currentLanguage === 'en' ? 'Results' : 'Результат'}
+                        placeholder="Результат"
                       />
                       <Textarea
                         value={valuesData.value_4_description || ''}
                         onChange={(e) => updateValuesField('value_4_description', e.target.value)}
-                        placeholder={currentLanguage === 'en' 
-                          ? 'We focus on achieving client goals'
-                          : 'Фокусируемся на достижении целей клиента'
-                        }
+                        placeholder="Фокусируемся на достижении целей клиента"
                         rows={2}
                       />
                     </div>
@@ -954,7 +868,7 @@ const AboutManagement = () => {
                 </div>
 
                 <Button onClick={saveValuesData}>
-                  {currentLanguage === 'en' ? 'Save values' : 'Сохранить ценности'}
+                  Сохранить ценности
                 </Button>
               </div>
             </CardContent>
@@ -966,7 +880,7 @@ const AboutManagement = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Globe className="h-5 w-5" />
-                {currentLanguage === 'en' ? 'About Page SEO Settings' : 'SEO настройки страницы "О нас"'}
+                SEO настройки страницы "О нас"
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -974,25 +888,25 @@ const AboutManagement = () => {
                 <>
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="space-y-2">
-                      <Label>{currentLanguage === 'en' ? 'Page Title' : 'Заголовок страницы (Page Title)'}</Label>
+                      <Label>Заголовок страницы (Page Title)</Label>
                       <Input
                         value={pageSEO.page_title || ''}
                         onChange={(e) => setPageSEO({
                           ...pageSEO,
                           page_title: e.target.value
                         })}
-                        placeholder={currentLanguage === 'en' ? 'About Us - Company Name' : 'О нас - Название компании'}
+                        placeholder="О нас - Название компании"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>{currentLanguage === 'en' ? 'H1 Tag' : 'H1 заголовок'}</Label>
+                      <Label>H1 заголовок</Label>
                       <Input
                         value={pageSEO.h1_tag || ''}
                         onChange={(e) => setPageSEO({
                           ...pageSEO,
                           h1_tag: e.target.value
                         })}
-                        placeholder={currentLanguage === 'en' ? 'About Our Company' : 'О нашей компании'}
+                        placeholder="О нашей компании"
                       />
                     </div>
                   </div>
@@ -1006,18 +920,18 @@ const AboutManagement = () => {
                           ...pageSEO,
                           meta_title: e.target.value
                         })}
-                        placeholder={currentLanguage === 'en' ? 'About Us | Company Name' : 'О нас | Название компании'}
+                        placeholder="О нас | Название компании"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>{currentLanguage === 'en' ? 'Meta Keywords (comma separated)' : 'Meta Keywords (через запятую)'}</Label>
+                      <Label>Meta Keywords (через запятую)</Label>
                       <Input
                         value={pageSEO.meta_keywords || ''}
                         onChange={(e) => setPageSEO({
                           ...pageSEO,
                           meta_keywords: e.target.value
                         })}
-                        placeholder={currentLanguage === 'en' ? 'company, team, experience' : 'компания, команда, опыт'}
+                        placeholder="компания, команда, опыт"
                       />
                     </div>
                   </div>
@@ -1030,7 +944,7 @@ const AboutManagement = () => {
                         ...pageSEO,
                         meta_description: e.target.value
                       })}
-                      placeholder={currentLanguage === 'en' ? 'Brief page description for search engines' : 'Краткое описание страницы для поисковых систем'}
+                      placeholder="Краткое описание страницы для поисковых систем"
                       rows={3}
                     />
                   </div>
@@ -1056,7 +970,7 @@ const AboutManagement = () => {
                           ...pageSEO,
                           og_title: e.target.value
                         })}
-                        placeholder={currentLanguage === 'en' ? 'About Us - Company Name' : 'О нас - Название компании'}
+                        placeholder="О нас - Название компании"
                       />
                     </div>
                     <div className="space-y-2">
@@ -1080,13 +994,13 @@ const AboutManagement = () => {
                         ...pageSEO,
                         og_description: e.target.value
                       })}
-                      placeholder={currentLanguage === 'en' ? 'Description for social media' : 'Описание для социальных сетей'}
+                      placeholder="Описание для социальных сетей"
                       rows={3}
                     />
                   </div>
 
                   <Button onClick={savePageSEO}>
-                    {currentLanguage === 'en' ? 'Save SEO settings' : 'Сохранить SEO настройки'}
+                    Сохранить SEO настройки
                   </Button>
                 </>
               ) : (

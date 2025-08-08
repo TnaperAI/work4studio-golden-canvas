@@ -2,21 +2,18 @@ import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import ContactFormModal from './ContactFormModal';
-import { LanguageSwitcher } from './LanguageSwitcher';
-import { useSiteContent } from '@/hooks/useSiteContent';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const location = useLocation();
-  const { getContent } = useSiteContent();
 
   const navigation = [
-    { name: getContent('header', 'nav_home') || 'Главная', href: '/' },
-    { name: getContent('header', 'nav_services') || 'Услуги', href: '/services' },
-    { name: getContent('header', 'nav_cases') || 'Кейсы', href: '/cases' },
-    { name: getContent('header', 'nav_about') || 'О нас', href: '/about' },
-    { name: getContent('header', 'nav_contact') || 'Контакты', href: '/contact' },
+    { name: 'Главная', href: '/' },
+    { name: 'Услуги', href: '/services' },
+    { name: 'Кейсы', href: '/cases' },
+    { name: 'О нас', href: '/about' },
+    { name: 'Контакты', href: '/contact' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -41,7 +38,7 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-6">
+          <div className="hidden lg:flex items-center space-x-8">
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -58,21 +55,16 @@ const Header = () => {
                 }`}></span>
               </Link>
             ))}
-            
-            {/* Language Switcher */}
-            <LanguageSwitcher />
-            
             <button 
               className="bg-gradient-to-r from-primary to-accent text-primary-foreground px-6 py-3 rounded-xl font-semibold text-sm hover:shadow-xl hover:scale-105 transition-all duration-300 shadow-lg"
               onClick={() => setIsContactModalOpen(true)}
             >
-              {getContent('header', 'cta_button') || 'Обсудить проект'}
+              Обсудить проект
             </button>
           </div>
 
-          {/* Mobile menu button and language switcher */}
-          <div className="lg:hidden flex items-center gap-2">
-            <LanguageSwitcher />
+          {/* Mobile menu button */}
+          <div className="lg:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-foreground hover:text-primary transition-colors p-2 rounded-lg hover:bg-secondary/50"
@@ -108,7 +100,7 @@ const Header = () => {
                     setIsOpen(false);
                   }}
                 >
-                  {getContent('header', 'cta_button') || 'Обсудить проект'}
+                  Обсудить проект
                 </button>
               </div>
             </div>
