@@ -15,9 +15,9 @@ const ServicesSection = () => {
         <div className="text-center mb-20 animate-on-scroll">
           <h2 className="text-4xl md:text-6xl font-bold mb-6">
             <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-              {getContent('services', 'title') || 'Наши'}
+              {getContent('services', 'title')}
             </span>{' '}
-            {getContent('services', 'title_highlight') || 'услуги'}
+            {getContent('services', 'title_highlight')}
           </h2>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
             {getContent('services', 'subtitle') || 'Полный цикл работы с вашим веб-проектом от идеи до запуска'}
