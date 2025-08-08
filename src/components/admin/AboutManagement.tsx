@@ -80,7 +80,7 @@ const AboutManagement = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [currentLanguage]);
 
   useEffect(() => {
     if (!loading) {
@@ -111,12 +111,22 @@ const AboutManagement = () => {
         .from('page_seo')
         .select('*')
         .eq('page_slug', 'about')
+        .eq('language', currentLanguage)
         .maybeSingle();
 
       if (seoError) throw seoError;
 
       setTeam(teamData || []);
-      setCompanyInfo(companyData);
+      setCompanyInfo(companyData || {
+        id: '',
+        mission: '',
+        vision: '',
+        founding_year: '',
+        team_size: '',
+        projects_completed: '',
+        clients_served: '',
+        description: ''
+      });
       setPageSEO(seoData);
     } catch (error: any) {
       toast({
@@ -247,12 +257,13 @@ const AboutManagement = () => {
     try {
       const seoData = {
         ...pageSEO,
-        page_slug: 'about'
+        page_slug: 'about',
+        language: currentLanguage
       };
 
       const { error } = await supabase
         .from('page_seo')
-        .upsert(seoData, { onConflict: 'page_slug' });
+        .upsert(seoData, { onConflict: 'page_slug,language' });
 
       if (error) throw error;
 
