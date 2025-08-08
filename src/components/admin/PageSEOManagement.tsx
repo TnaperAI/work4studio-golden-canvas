@@ -7,7 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Globe, Save } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { LanguageSwitcher } from '@/components/admin/LanguageSwitcher';
+import { Globe, Save, Copy } from 'lucide-react';
 
 interface PageSEO {
   id: string;
@@ -21,6 +23,7 @@ interface PageSEO {
   og_title: string;
   og_description: string;
   og_image: string;
+  language: string;
 }
 
 interface ServicePage {
@@ -38,6 +41,7 @@ const staticPages = [
 
 const PageSEOManagement = () => {
   const { toast } = useToast();
+  const { currentLanguage } = useLanguage();
   const [selectedPage, setSelectedPage] = useState<string>('home');
   const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
   const [loading, setLoading] = useState(false);
@@ -111,7 +115,8 @@ const PageSEOManagement = () => {
             canonical_url: serviceData.canonical_url,
             og_title: serviceData.og_title,
             og_description: serviceData.og_description,
-            og_image: serviceData.og_image
+            og_image: serviceData.og_image,
+            language: currentLanguage
           };
         }
       } else {
@@ -145,7 +150,8 @@ const PageSEOManagement = () => {
           canonical_url: '',
           og_title: '',
           og_description: '',
-          og_image: ''
+          og_image: '',
+          language: currentLanguage
         });
       }
     } catch (error) {
