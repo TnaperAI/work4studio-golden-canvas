@@ -25,10 +25,10 @@ const LanguageSwitcher = () => {
         <Button variant="ghost" size="sm" className="flex items-center gap-2">
           <Globe className="h-4 w-4" />
           <span className="hidden sm:inline">
-            {currentLanguage?.flag} {currentLanguage?.name}
+            {currentLanguage?.name}
           </span>
           <span className="sm:hidden">
-            {currentLanguage?.flag}
+            {currentLanguage?.name}
           </span>
         </Button>
       </DropdownMenuTrigger>
@@ -41,7 +41,6 @@ const LanguageSwitcher = () => {
               language === lang.code ? 'bg-muted' : ''
             }`}
           >
-            <span>{lang.flag}</span>
             <span>{lang.name}</span>
             {language === lang.code && (
               <span className="ml-auto text-primary">✓</span>
