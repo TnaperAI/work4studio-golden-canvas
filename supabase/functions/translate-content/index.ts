@@ -9,7 +9,6 @@ interface TranslateRequest {
   text: string;
   fromLanguage: string;
   toLanguage: string;
-  model?: string;
 }
 
 interface TranslateResponse {
@@ -25,7 +24,11 @@ serve(async (req) => {
   }
 
   try {
+    console.log('Starting translation request');
+    
     const OPENROUTER_API_KEY = Deno.env.get('OPENROUTER_API_KEY');
+    console.log('API Key exists:', !!OPENROUTER_API_KEY);
+    
     if (!OPENROUTER_API_KEY) {
       throw new Error('OPENROUTER_API_KEY is not set');
     }
@@ -38,7 +41,9 @@ serve(async (req) => {
     }
 
     const body: TranslateRequest = await req.json();
-    const { text, fromLanguage, toLanguage, model: preferredModel } = body;
+    const { text, fromLanguage, toLanguage } = body;
+
+    console.log('Request body:', { text: text.substring(0, 50), fromLanguage, toLanguage });
 
     if (!text || !fromLanguage || !toLanguage) {
       return new Response(JSON.stringify({ 
@@ -50,7 +55,7 @@ serve(async (req) => {
       });
     }
 
-    // Create translation prompt
+    // Create simple translation prompt
     const languageNames = {
       'ru': 'Russian',
       'en': 'English'
@@ -59,36 +64,23 @@ serve(async (req) => {
     const fromLangName = languageNames[fromLanguage as keyof typeof languageNames] || fromLanguage;
     const toLangName = languageNames[toLanguage as keyof typeof languageNames] || toLanguage;
 
-    const prompt = `You are a professional translator. Translate the following text from ${fromLangName} to ${toLangName}. 
+    const prompt = `Translate the following text from ${fromLangName} to ${toLangName}. Only return the translated text, no explanations:
 
-IMPORTANT RULES:
-- Only return the translated text, no explanations or additional comments
-- Preserve the original meaning and tone
-- Keep formatting if any (HTML tags, markdown, etc.)
-- For web/marketing content, use natural and engaging language
-- For technical terms, use appropriate professional terminology
-
-Text to translate:
 ${text}`;
 
-    console.log('Translating text:', { text: text.substring(0, 100), fromLanguage, toLanguage });
+    console.log('Making request to OpenRouter...');
 
-    // Call OpenRouter API
+    // Call OpenRouter API with simple model
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-        "HTTP-Referer": "https://lovable.dev", // Optional, for traffic analytics
-        "X-Title": "Work4Studio Translation Service", // Optional, shows in rankings
         "Content-Type": "application/json",
+        "HTTP-Referer": "https://lovable.dev",
+        "X-Title": "Work4Studio Translation Service",
       },
       body: JSON.stringify({
-        model: preferredModel || "openrouter/auto",
-        ...(preferredModel ? {} : { models: [
-          "openai/gpt-4o-mini",
-          "google/gemini-1.5-flash",
-          "qwen/qwen-2.5-7b-instruct"
-        ]}),
+        model: "openai/gpt-4o-mini",
         messages: [
           { role: "user", content: prompt }
         ],
@@ -97,6 +89,8 @@ ${text}`;
       }),
     });
 
+    console.log('OpenRouter response status:', response.status);
+
     if (!response.ok) {
       const errorText = await response.text();
       console.error('OpenRouter API error:', response.status, errorText);
@@ -104,13 +98,14 @@ ${text}`;
     }
 
     const data = await response.json();
-    console.log('OpenRouter response:', data);
+    console.log('OpenRouter response data:', JSON.stringify(data, null, 2));
 
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
       throw new Error('Invalid response from OpenRouter API');
     }
 
     const translatedText = data.choices[0].message.content.trim();
+    console.log('Translation result:', translatedText);
 
     const result: TranslateResponse = {
       translatedText,
