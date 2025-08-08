@@ -6,13 +6,22 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Save, RotateCcw } from 'lucide-react';
 
-const ServicesContentManagement = () => {
+interface ServicesContentManagementProps {
+  language?: 'ru' | 'en';
+}
+
+const ServicesContentManagement = ({ language: propLanguage }: ServicesContentManagementProps) => {
   const { content, getContent, updateContent } = useSiteContent();
   const { toast } = useToast();
+  const { language: contextLanguage } = useLanguage();
   const [formData, setFormData] = useState<Record<string, Record<string, string>>>({});
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Use prop language if provided, otherwise use context language
+  const currentLanguage = propLanguage || contextLanguage;
 
   // Инициализируем данные формы из контента
   useEffect(() => {
@@ -20,15 +29,17 @@ const ServicesContentManagement = () => {
       const groupedContent: Record<string, Record<string, string>> = {};
       
       content.forEach(item => {
-        if (!groupedContent[item.section]) {
-          groupedContent[item.section] = {};
+        if (item.language === currentLanguage) {
+          if (!groupedContent[item.section]) {
+            groupedContent[item.section] = {};
+          }
+          groupedContent[item.section][item.key] = item.value;
         }
-        groupedContent[item.section][item.key] = item.value;
       });
       
       setFormData(groupedContent);
     }
-  }, [content]);
+  }, [content, currentLanguage]);
 
   const handleChange = (section: string, key: string, value: string) => {
     setFormData(prev => ({
@@ -47,7 +58,7 @@ const ServicesContentManagement = () => {
       
       Object.entries(formData).forEach(([section, sectionData]) => {
         Object.entries(sectionData).forEach(([key, value]) => {
-          updates.push(updateContent(section, key, value));
+          updates.push(updateContent(section, key, value, currentLanguage));
         });
       });
 
@@ -55,7 +66,7 @@ const ServicesContentManagement = () => {
       
       toast({
         title: 'Контент обновлен',
-        description: 'Изменения успешно сохранены'
+        description: `Изменения успешно сохранены (${currentLanguage === 'ru' ? 'Русский' : 'English'})`
       });
     } catch (error) {
       console.error('Error updating content:', error);
@@ -73,10 +84,12 @@ const ServicesContentManagement = () => {
     const groupedContent: Record<string, Record<string, string>> = {};
     
     content.forEach(item => {
-      if (!groupedContent[item.section]) {
-        groupedContent[item.section] = {};
+      if (item.language === currentLanguage) {
+        if (!groupedContent[item.section]) {
+          groupedContent[item.section] = {};
+        }
+        groupedContent[item.section][item.key] = item.value;
       }
-      groupedContent[item.section][item.key] = item.value;
     });
     
     setFormData(groupedContent);
@@ -110,7 +123,9 @@ const ServicesContentManagement = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-heading font-bold">Контент страницы услуг</h1>
+          <h1 className="text-3xl font-heading font-bold">
+            Контент страницы услуг ({currentLanguage === 'ru' ? 'Русский' : 'English'})
+          </h1>
           <p className="text-muted-foreground">
             Управление текстовым контентом на странице /services
           </p>

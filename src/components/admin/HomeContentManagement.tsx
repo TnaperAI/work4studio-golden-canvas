@@ -6,13 +6,22 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Save, RotateCcw } from 'lucide-react';
 
-const HomeContentManagement = () => {
+interface HomeContentManagementProps {
+  language?: 'ru' | 'en';
+}
+
+const HomeContentManagement = ({ language: propLanguage }: HomeContentManagementProps) => {
   const { content, getContent, updateContent } = useSiteContent();
   const { toast } = useToast();
+  const { language: contextLanguage } = useLanguage();
   const [formData, setFormData] = useState<Record<string, Record<string, string>>>({});
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Use prop language if provided, otherwise use context language
+  const currentLanguage = propLanguage || contextLanguage;
 
   // Инициализируем данные формы из контента
   useEffect(() => {
@@ -20,15 +29,17 @@ const HomeContentManagement = () => {
       const groupedContent: Record<string, Record<string, string>> = {};
       
       content.forEach(item => {
-        if (!groupedContent[item.section]) {
-          groupedContent[item.section] = {};
+        if (item.language === currentLanguage) {
+          if (!groupedContent[item.section]) {
+            groupedContent[item.section] = {};
+          }
+          groupedContent[item.section][item.key] = item.value;
         }
-        groupedContent[item.section][item.key] = item.value;
       });
       
       setFormData(groupedContent);
     }
-  }, [content]);
+  }, [content, currentLanguage]);
 
   const handleChange = (section: string, key: string, value: string) => {
     setFormData(prev => ({
@@ -47,7 +58,7 @@ const HomeContentManagement = () => {
       
       Object.entries(formData).forEach(([section, sectionData]) => {
         Object.entries(sectionData).forEach(([key, value]) => {
-          updates.push(updateContent(section, key, value));
+          updates.push(updateContent(section, key, value, currentLanguage));
         });
       });
 
@@ -55,7 +66,7 @@ const HomeContentManagement = () => {
       
       toast({
         title: 'Контент обновлен',
-        description: 'Изменения успешно сохранены'
+        description: `Изменения успешно сохранены (${currentLanguage === 'ru' ? 'Русский' : 'English'})`
       });
     } catch (error) {
       console.error('Error updating content:', error);
@@ -73,10 +84,12 @@ const HomeContentManagement = () => {
     const groupedContent: Record<string, Record<string, string>> = {};
     
     content.forEach(item => {
-      if (!groupedContent[item.section]) {
-        groupedContent[item.section] = {};
+      if (item.language === currentLanguage) {
+        if (!groupedContent[item.section]) {
+          groupedContent[item.section] = {};
+        }
+        groupedContent[item.section][item.key] = item.value;
       }
-      groupedContent[item.section][item.key] = item.value;
     });
     
     setFormData(groupedContent);
@@ -189,7 +202,9 @@ const HomeContentManagement = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-heading font-bold">Контент главной страницы</h1>
+          <h1 className="text-3xl font-heading font-bold">
+            Контент главной страницы ({currentLanguage === 'ru' ? 'Русский' : 'English'})
+          </h1>
           <p className="text-muted-foreground">
             Управление текстовым контентом на главной странице сайта
           </p>

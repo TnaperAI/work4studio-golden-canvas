@@ -227,7 +227,7 @@ const ContentCategories = ({ onPageSelect, language = 'ru' }: ContentCategoriesP
             Назад к категориям
           </Button>
         </div>
-        <HomeContentManagement />
+        <HomeContentManagement language={language} />
       </div>
     );
   }
@@ -249,7 +249,7 @@ const ContentCategories = ({ onPageSelect, language = 'ru' }: ContentCategoriesP
             Назад к категориям
           </Button>
         </div>
-        <ServicesContentManagement />
+        <ServicesContentManagement language={language} />
       </div>
     );
   }
