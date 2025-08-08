@@ -38,9 +38,10 @@ interface CategoryPage {
 
 interface ContentCategoriesProps {
   onPageSelect: (pageSlug: string) => void;
+  language?: 'ru' | 'en';
 }
 
-const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
+const ContentCategories = ({ onPageSelect, language = 'ru' }: ContentCategoriesProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
@@ -324,9 +325,14 @@ const ContentCategories = ({ onPageSelect }: ContentCategoriesProps) => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-heading font-bold">Управление контентом</h1>
+        <h1 className="text-3xl font-heading font-bold">
+          {language === 'ru' ? 'Управление контентом (Русский)' : 'Content Management (English)'}
+        </h1>
         <p className="text-muted-foreground">
-          Выберите категорию для редактирования контента и SEO
+          {language === 'ru' 
+            ? 'Выберите категорию для редактирования контента и SEO' 
+            : 'Select a category to edit content and SEO'
+          }
         </p>
       </div>
 

@@ -13,8 +13,16 @@ import {
   X,
   Scale,
   Globe,
-  Search
+  Search,
+  ChevronDown,
+  Languages
 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -28,7 +36,16 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   const navigation = [
     { name: 'Дашборд', href: '#dashboard', icon: Home },
-    { name: 'Контент сайта', href: '#content', icon: FileText },
+    { 
+      name: 'Контент сайта', 
+      href: '#content', 
+      icon: Languages,
+      hasDropdown: true,
+      subItems: [
+        { name: 'Русский контент', href: '#content-ru' },
+        { name: 'English Content', href: '#content-en' }
+      ]
+    },
     { name: 'Заявки', href: '#submissions', icon: Users },
     { name: 'Поиск компаний', href: '#company-parser', icon: Search },
     { name: 'SEO настройки', href: '#seo', icon: Globe },
@@ -43,7 +60,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const isActive = (path: string) => {
     const hash = window.location.hash.replace('#', '');
     if (path === '#dashboard') return hash === 'dashboard' || hash === '';
-    if (path === '#content') return hash === 'content';
+    if (path === '#content') return hash === 'content' || hash === 'content-ru' || hash === 'content-en';
+    if (path === '#content-ru') return hash === 'content-ru';
+    if (path === '#content-en') return hash === 'content-en';
     if (path === '#submissions') return hash === 'submissions';
     if (path === '#company-parser') return hash === 'company-parser';
     if (path === '#seo') return hash === 'seo';
@@ -80,6 +99,48 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         <nav className="flex-1 px-4 py-6 space-y-2">
           {navigation.map((item) => {
             const Icon = item.icon;
+            
+            if (item.hasDropdown) {
+              return (
+                <DropdownMenu key={item.name}>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className={`
+                        w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-colors
+                        ${isActive(item.href)
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                        }
+                      `}
+                    >
+                      <div className="flex items-center">
+                        <Icon className="mr-3 h-4 w-4" />
+                        {item.name}
+                      </div>
+                      <ChevronDown className="h-4 w-4" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent side="right" align="start" className="w-48">
+                    {item.subItems?.map((subItem) => (
+                      <DropdownMenuItem key={subItem.name} asChild>
+                        <a
+                          href={subItem.href}
+                          className={`w-full cursor-pointer ${
+                            isActive(subItem.href)
+                              ? 'bg-muted text-primary font-medium'
+                              : ''
+                          }`}
+                          onClick={() => setSidebarOpen(false)}
+                        >
+                          {subItem.name}
+                        </a>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              );
+            }
+            
             return (
               <a
                 key={item.name}

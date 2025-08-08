@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Dashboard from './Dashboard';
 import ContentManagement from './ContentManagement';
+import LanguageContentMenu from './LanguageContentMenu';
 import ContactSubmissionsManagement from './ContactSubmissionsManagement';
 import PageEditor from './PageEditor';
 import Settings from './Settings';
@@ -8,7 +9,7 @@ import LegalDocumentsManagement from './LegalDocumentsManagement';
 import PageSEOManagement from './PageSEOManagement';
 import CompanyParser from './CompanyParser';
 
-type AdminView = 'dashboard' | 'content' | 'page-editor' | 'submissions' | 'legal' | 'seo' | 'company-parser' | 'settings';
+type AdminView = 'dashboard' | 'content' | 'content-ru' | 'content-en' | 'page-editor' | 'submissions' | 'legal' | 'seo' | 'company-parser' | 'settings';
 
 const AdminDashboard = () => {
   const [currentView, setCurrentView] = useState<AdminView>('dashboard');
@@ -19,6 +20,10 @@ const AdminDashboard = () => {
       const hash = window.location.hash.replace('#', '');
       if (hash === 'content') {
         setCurrentView('content');
+      } else if (hash === 'content-ru') {
+        setCurrentView('content-ru');
+      } else if (hash === 'content-en') {
+        setCurrentView('content-en');
       } else if (hash === 'submissions') {
         setCurrentView('submissions');
       } else if (hash === 'legal') {
@@ -70,7 +75,19 @@ const AdminDashboard = () => {
 
   if (currentView === 'content') {
     return (
-      <ContentManagement onPageSelect={handlePageSelect} />
+      <LanguageContentMenu onPageSelect={handlePageSelect} />
+    );
+  }
+
+  if (currentView === 'content-ru') {
+    return (
+      <ContentManagement onPageSelect={handlePageSelect} language="ru" />
+    );
+  }
+
+  if (currentView === 'content-en') {
+    return (
+      <ContentManagement onPageSelect={handlePageSelect} language="en" />
     );
   }
 

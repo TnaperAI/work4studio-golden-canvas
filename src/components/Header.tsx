@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import ContactFormModal from './ContactFormModal';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,6 +56,7 @@ const Header = () => {
                 }`}></span>
               </Link>
             ))}
+            <LanguageSwitcher />
             <button 
               className="bg-gradient-to-r from-primary to-accent text-primary-foreground px-6 py-3 rounded-xl font-semibold text-sm hover:shadow-xl hover:scale-105 transition-all duration-300 shadow-lg"
               onClick={() => setIsContactModalOpen(true)}
@@ -92,7 +94,10 @@ const Header = () => {
                   {item.name}
                 </Link>
               ))}
-              <div className="pt-4">
+              <div className="pt-4 space-y-4">
+                <div className="flex justify-center">
+                  <LanguageSwitcher />
+                </div>
                 <button 
                   className="bg-gradient-to-r from-primary to-accent text-primary-foreground px-6 py-3 rounded-xl font-semibold text-lg w-full hover:shadow-xl transition-all duration-300 shadow-lg"
                   onClick={() => {
