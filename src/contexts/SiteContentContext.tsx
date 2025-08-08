@@ -17,7 +17,6 @@ interface SiteContentContextType {
   loading: boolean;
   getContent: (section: string, key: string, language?: Language) => string;
   updateContent: (section: string, key: string, value: string, language?: Language) => Promise<void>;
-  copyContentToLanguage: (fromLanguage: Language, toLanguage: Language) => Promise<void>;
   getContentByLanguage: (section: string, key: string, language: Language) => string;
 }
 
@@ -112,43 +111,12 @@ export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ childr
     }
   };
 
-  const copyContentToLanguage = async (fromLanguage: Language, toLanguage: Language): Promise<void> => {
-    try {
-      // Get all content for the source language
-      const sourceContent = content.filter(c => c.language === fromLanguage);
-      
-      // Prepare data for batch insert
-      const contentToCopy = sourceContent.map(item => ({
-        section: item.section,
-        key: item.key,
-        value: item.value,
-        language: toLanguage
-      }));
-
-      if (contentToCopy.length === 0) {
-        throw new Error(`No content found for language: ${fromLanguage}`);
-      }
-
-      const { error } = await supabase
-        .from('site_content')
-        .upsert(contentToCopy, { onConflict: 'section,key,language' });
-
-      if (error) {
-        console.error('Error copying content:', error);
-        throw error;
-      }
-    } catch (error) {
-      console.error('Error in copyContentToLanguage:', error);
-      throw error;
-    }
-  };
 
   const value = {
     content,
     loading,
     getContent,
     updateContent,
-    copyContentToLanguage,
     getContentByLanguage,
   };
 

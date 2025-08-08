@@ -5,19 +5,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLanguage, type Language } from '@/contexts/LanguageContext';
 import { useSiteContent } from '@/contexts/SiteContentContext';
 import { useToast } from '@/hooks/use-toast';
-import { Globe, Copy, Check, AlertCircle } from 'lucide-react';
+import { Globe, Check, AlertCircle } from 'lucide-react';
 
 interface LanguageSwitcherProps {
-  showCopyActions?: boolean;
+  className?: string;
 }
 
 export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ 
-  showCopyActions = false 
+  className = "" 
 }) => {
   const { currentLanguage, setLanguage, availableLanguages } = useLanguage();
-  const { content, copyContentToLanguage } = useSiteContent();
+  const { content } = useSiteContent();
   const { toast } = useToast();
-  const [copying, setCopying] = useState(false);
 
   // Calculate content statistics for each language
   const getLanguageStats = (language: Language) => {
@@ -38,28 +37,6 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
       title: "Язык изменён",
       description: `Выбран язык: ${availableLanguages.find(l => l.code === language)?.name}`,
     });
-  };
-
-  // Handle content copying
-  const handleCopyContent = async (fromLang: Language, toLang: Language) => {
-    if (copying) return;
-    
-    setCopying(true);
-    try {
-      await copyContentToLanguage(fromLang, toLang);
-      toast({
-        title: "Контент скопирован",
-        description: `Контент из ${fromLang === 'ru' ? 'русского' : 'английского'} языка скопирован в ${toLang === 'ru' ? 'русский' : 'английский'}`,
-      });
-    } catch (error) {
-      toast({
-        title: "Ошибка копирования",
-        description: "Не удалось скопировать контент",
-        variant: "destructive",
-      });
-    } finally {
-      setCopying(false);
-    }
   };
 
   const getStatusColor = (percentage: number) => {
@@ -135,37 +112,15 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
           </div>
         </div>
 
-        {/* Copy Actions */}
-        {showCopyActions && (
-          <div className="space-y-2">
-            <p className="text-sm font-medium">Массовые операции:</p>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleCopyContent('ru', 'en')}
-                disabled={copying}
-                className="flex items-center gap-2"
-              >
-                <Copy className="h-4 w-4" />
-                Скопировать RU → EN
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleCopyContent('en', 'ru')}
-                disabled={copying}
-                className="flex items-center gap-2"
-              >
-                <Copy className="h-4 w-4" />
-                Скопировать EN → RU
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Внимание: копирование перезапишет существующие переводы
+        {/* Copy Actions - Placeholder for future automatic translation */}
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Автоматический перевод:</p>
+          <div className="p-3 rounded-md border bg-muted/50">
+            <p className="text-sm text-muted-foreground text-center">
+              Функция автоматического перевода будет добавлена в ближайшее время
             </p>
           </div>
-        )}
+        </div>
       </CardContent>
     </Card>
   );

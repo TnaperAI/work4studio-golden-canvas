@@ -8,10 +8,10 @@ import { useToast } from '@/hooks/use-toast';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { LanguageSwitcher } from '@/components/admin/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Save, RotateCcw, Copy } from 'lucide-react';
+import { Save, RotateCcw } from 'lucide-react';
 
 const ServicesContentManagement = () => {
-  const { content, getContent, updateContent, copyContentToLanguage } = useSiteContent();
+  const { content, getContent, updateContent } = useSiteContent();
   const { currentLanguage } = useLanguage();
   const { toast } = useToast();
   const [formData, setFormData] = useState<Record<string, Record<string, string>>>({});
@@ -96,33 +96,6 @@ const ServicesContentManagement = () => {
     });
   };
 
-  const handleCopyFromRussian = async () => {
-    if (currentLanguage === 'ru') {
-      toast({
-        title: 'Внимание',
-        description: 'Вы уже работаете с русским языком',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      await copyContentToLanguage('ru', currentLanguage);
-      toast({
-        title: 'Контент скопирован',
-        description: 'Русский контент скопирован в текущий язык'
-      });
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось скопировать контент',
-        variant: 'destructive'
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const sections = [
     {
@@ -146,7 +119,7 @@ const ServicesContentManagement = () => {
   return (
     <div className="space-y-6">
       {/* Language Switcher */}
-      <LanguageSwitcher showCopyActions={true} />
+      <LanguageSwitcher />
       
       <div className="flex items-center justify-between">
         <div>
@@ -158,16 +131,6 @@ const ServicesContentManagement = () => {
           </p>
         </div>
         <div className="flex gap-2">
-          {currentLanguage !== 'ru' && (
-            <Button
-              variant="outline"
-              onClick={handleCopyFromRussian}
-              disabled={isLoading}
-            >
-              <Copy className="h-4 w-4 mr-2" />
-              Копировать с RU
-            </Button>
-          )}
           <Button
             variant="outline"
             onClick={handleReset}
