@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Send, Mail, MessageCircle, Phone } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useLanguage } from '@/contexts/LanguageContext';
 import ConsentCheckbox from '@/components/ConsentCheckbox';
 
 const ContactForm = () => {
@@ -14,14 +15,17 @@ const ContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
   const { toast } = useToast();
+  const { currentLanguage } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!isAgreed) {
       toast({
-        title: "Согласие обязательно",
-        description: "Необходимо согласиться с условиями для отправки заявки.",
+        title: currentLanguage === 'en' ? "Consent required" : "Согласие обязательно",
+        description: currentLanguage === 'en' 
+          ? "You must agree to the terms to submit the request."
+          : "Необходимо согласиться с условиями для отправки заявки.",
         variant: "destructive",
       });
       return;
@@ -47,8 +51,10 @@ const ContactForm = () => {
       }
 
       toast({
-        title: "Заявка отправлена!",
-        description: "Мы получили вашу заявку и свяжемся с вами в ближайшее время.",
+        title: currentLanguage === 'en' ? "Request sent!" : "Заявка отправлена!",
+        description: currentLanguage === 'en' 
+          ? "We received your request and will contact you shortly."
+          : "Мы получили вашу заявку и свяжемся с вами в ближайшее время.",
       });
 
       setFormData({ name: '', email: '', phone: '', message: '' });
@@ -56,8 +62,10 @@ const ContactForm = () => {
     } catch (error) {
       console.error('Error submitting form:', error);
       toast({
-        title: "Ошибка",
-        description: "Произошла ошибка при отправке заявки. Попробуйте еще раз.",
+        title: currentLanguage === 'en' ? "Error" : "Ошибка",
+        description: currentLanguage === 'en' 
+          ? "An error occurred while submitting the request. Please try again."
+          : "Произошла ошибка при отправке заявки. Попробуйте еще раз.",
         variant: "destructive",
       });
     } finally {
@@ -82,11 +90,18 @@ const ContactForm = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-20 animate-on-scroll">
             <h2 className="text-4xl md:text-6xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">Обсудим ваш</span>{' '}
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">проект</span>
+              <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+                {currentLanguage === 'en' ? 'Let\'s discuss your' : 'Обсудим ваш'}
+              </span>{' '}
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                {currentLanguage === 'en' ? 'project' : 'проект'}
+              </span>
             </h2>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-              Оставьте заявку, и мы свяжемся с вами для обсуждения деталей и создания идеального решения
+              {currentLanguage === 'en' 
+                ? 'Submit a request and we will contact you to discuss details and create the perfect solution'
+                : 'Оставьте заявку, и мы свяжемся с вами для обсуждения деталей и создания идеального решения'
+              }
             </p>
           </div>
 
@@ -97,7 +112,7 @@ const ContactForm = () => {
                 <form onSubmit={handleSubmit} className="space-y-8">
                   <div>
                     <label htmlFor="name" className="block text-lg font-semibold mb-3">
-                      Ваше имя
+                      {currentLanguage === 'en' ? 'Your name' : 'Ваше имя'}
                     </label>
                     <input
                       type="text"
@@ -107,7 +122,7 @@ const ContactForm = () => {
                       onChange={handleChange}
                       required
                       className="w-full px-6 py-4 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all text-lg"
-                      placeholder="Как к вам обращаться?"
+                      placeholder={currentLanguage === 'en' ? 'How should we address you?' : 'Как к вам обращаться?'}
                     />
                   </div>
 
@@ -130,7 +145,7 @@ const ContactForm = () => {
 
                   <div>
                     <label htmlFor="message" className="block text-lg font-semibold mb-3">
-                      Сообщение
+                      {currentLanguage === 'en' ? 'Message' : 'Сообщение'}
                     </label>
                     <textarea
                       id="message"
@@ -140,7 +155,7 @@ const ContactForm = () => {
                       required
                       rows={6}
                       className="w-full px-6 py-4 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all resize-none text-lg"
-                      placeholder="Расскажите о вашем проекте..."
+                      placeholder={currentLanguage === 'en' ? 'Tell us about your project...' : 'Расскажите о вашем проекте...'}
                     />
                   </div>
 
@@ -158,7 +173,7 @@ const ContactForm = () => {
                       <div className="animate-spin rounded-full h-6 w-6 border-2 border-current border-t-transparent" />
                     ) : (
                       <>
-                        Отправить заявку
+                        {currentLanguage === 'en' ? 'Submit request' : 'Отправить заявку'}
                         <Send className="w-6 h-6 ml-3" />
                       </>
                     )}
@@ -172,10 +187,13 @@ const ContactForm = () => {
               <div className="space-y-10">
                 <div>
                   <h3 className="text-3xl md:text-4xl font-heading font-bold mb-8 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    Свяжитесь с нами напрямую
+                    {currentLanguage === 'en' ? 'Contact us directly' : 'Свяжитесь с нами напрямую'}
                   </h3>
                   <p className="text-xl text-muted-foreground leading-relaxed">
-                    Предпочитаете личное общение? Выберите удобный способ связи и получите быстрый ответ
+                    {currentLanguage === 'en' 
+                      ? 'Prefer personal communication? Choose a convenient contact method and get a quick response'
+                      : 'Предпочитаете личное общение? Выберите удобный способ связи и получите быстрый ответ'
+                    }
                   </p>
                 </div>
 
@@ -206,7 +224,9 @@ const ContactForm = () => {
                     </div>
                     <div className="ml-6">
                       <h4 className="text-xl font-bold mb-1">Telegram</h4>
-                      <p className="text-muted-foreground text-lg">Написать напрямую</p>
+                      <p className="text-muted-foreground text-lg">
+                        {currentLanguage === 'en' ? 'Message directly' : 'Написать напрямую'}
+                      </p>
                     </div>
                   </a>
 
@@ -218,7 +238,9 @@ const ContactForm = () => {
                       <Phone className="w-8 h-8 text-primary" />
                     </div>
                     <div className="ml-6 text-left">
-                      <h4 className="text-xl font-bold mb-1">Позвонить</h4>
+                      <h4 className="text-xl font-bold mb-1">
+                        {currentLanguage === 'en' ? 'Call' : 'Позвонить'}
+                      </h4>
                       <p className="text-muted-foreground text-lg">+20 109 645 3054</p>
                     </div>
                   </a>
@@ -226,7 +248,12 @@ const ContactForm = () => {
 
                 <div className="p-8 bg-secondary border border-primary/20 rounded-2xl">
                   <p className="text-lg text-center leading-relaxed">
-                    ⚡ <strong className="text-primary">Быстрый ответ:</strong> Отвечаем в течение 30 минут в рабочее время
+                    ⚡ <strong className="text-primary">
+                      {currentLanguage === 'en' ? 'Quick response:' : 'Быстрый ответ:'}
+                    </strong> {currentLanguage === 'en' 
+                      ? 'We respond within 30 minutes during business hours'
+                      : 'Отвечаем в течение 30 минут в рабочее время'
+                    }
                   </p>
                 </div>
               </div>
