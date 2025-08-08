@@ -53,7 +53,7 @@ const ConsentCheckbox = ({ isAgreed, onChange, className = "" }: ConsentCheckbox
           target="_blank"
           className="text-primary hover:underline"
         >
-          {currentLanguage === 'en' ? (termsDoc?.title || 'Terms of Service') : (termsDoc?.title || 'Публичной оферты')}
+          {currentLanguage === 'en' ? 'Terms of Service' : 'Публичной оферты'}
         </a>{' '}
         {currentLanguage === 'en' ? ' and ' : ' и '}{' '}
         <a 
@@ -61,7 +61,7 @@ const ConsentCheckbox = ({ isAgreed, onChange, className = "" }: ConsentCheckbox
           target="_blank"
           className="text-primary hover:underline"
         >
-          {currentLanguage === 'en' ? (privacyDoc?.title || 'Privacy Policy') : (privacyDoc?.title || 'Политики конфиденциальности')}
+          {currentLanguage === 'en' ? 'Privacy Policy' : 'Политики конфиденциальности'}
         </a>{' '}
         {currentLanguage === 'en' 
           ? ' and give consent to the processing of my personal data.'
