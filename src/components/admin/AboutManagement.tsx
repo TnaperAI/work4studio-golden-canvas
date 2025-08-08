@@ -131,7 +131,16 @@ const AboutManagement = () => {
       console.log('AboutManagement: SEO data:', seoData);
 
       setTeam(teamData || []);
-      setCompanyInfo(companyData);
+      setCompanyInfo(companyData || {
+        id: '',
+        mission: '',
+        vision: '',
+        founding_year: '',
+        team_size: '',
+        projects_completed: '',
+        clients_served: '',
+        description: ''
+      });
       setPageSEO(seoData);
       console.log('AboutManagement: Data loaded successfully');
     } catch (error: any) {
