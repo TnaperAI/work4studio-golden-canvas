@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import { LanguageSwitcher } from './LanguageSwitcher';
 import { 
   Mail, 
   Phone, 
@@ -15,7 +17,9 @@ import {
   Clock,
   Globe,
   Save,
-  Loader2
+  Loader2,
+  FileText,
+  Settings
 } from 'lucide-react';
 
 interface ContactInfo {
@@ -217,206 +221,273 @@ const ContactManagement = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-heading font-bold">Управление контактами</h1>
-        <p className="text-muted-foreground">
-          Редактирование контактной информации и содержимого страницы контактов ({currentLanguage.toUpperCase()})
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-heading font-bold flex items-center gap-2">
+            <Mail className="h-8 w-8" />
+            {currentLanguage === 'en' ? 'Contact Page Management' : 'Управление страницей контактов'}
+          </h1>
+          <p className="text-muted-foreground">
+            {currentLanguage === 'en' 
+              ? `Edit contact information and page content (${currentLanguage.toUpperCase()})`
+              : `Редактирование контактной информации и содержимого страницы (${currentLanguage.toUpperCase()})`
+            }
+          </p>
+        </div>
+        <LanguageSwitcher />
       </div>
 
-      {/* Contact Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Mail className="h-5 w-5" />
-            Контактная информация
-          </CardTitle>
-          <CardDescription>
-            Основная информация для связи с компанией
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="flex items-center gap-2">
-                <Mail className="h-4 w-4" />
-                Email
-              </Label>
-              <Input
-                value={contactInfo.email}
-                onChange={(e) => updateContactField('email', e.target.value)}
-                placeholder="contact@work4studio.com"
-                type="email"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="flex items-center gap-2">
-                <Phone className="h-4 w-4" />
-                Телефон
-              </Label>
-              <Input
-                value={contactInfo.phone}
-                onChange={(e) => updateContactField('phone', e.target.value)}
-                placeholder="+7 (999) 123-45-67"
-              />
-            </div>
-          </div>
+      <Tabs defaultValue="contact-info" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="contact-info">
+            {currentLanguage === 'en' ? 'Contact Information' : 'Контактная информация'}
+          </TabsTrigger>
+          <TabsTrigger value="page-content">
+            {currentLanguage === 'en' ? 'Page Content' : 'Контент страницы'}
+          </TabsTrigger>
+          <TabsTrigger value="seo">
+            {currentLanguage === 'en' ? 'SEO Settings' : 'SEO настройки'}
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="contact-info" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Mail className="h-5 w-5" />
+                {currentLanguage === 'en' ? 'Contact Information' : 'Контактная информация'}
+              </CardTitle>
+              <CardDescription>
+                {currentLanguage === 'en' 
+                  ? 'Basic contact information for the company'
+                  : 'Основная информация для связи с компанией'
+                }
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    Email
+                  </Label>
+                  <Input
+                    value={contactInfo.email}
+                    onChange={(e) => updateContactField('email', e.target.value)}
+                    placeholder="contact@work4studio.com"
+                    type="email"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <Phone className="h-4 w-4" />
+                    {currentLanguage === 'en' ? 'Phone' : 'Телефон'}
+                  </Label>
+                  <Input
+                    value={contactInfo.phone}
+                    onChange={(e) => updateContactField('phone', e.target.value)}
+                    placeholder="+7 (999) 123-45-67"
+                  />
+                </div>
+              </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                Адрес
-              </Label>
-              <Textarea
-                value={contactInfo.address}
-                onChange={(e) => updateContactField('address', e.target.value)}
-                placeholder="г. Москва, ул. Примерная, д. 1"
-                rows={3}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="flex items-center gap-2">
-                <Clock className="h-4 w-4" />
-                Часы работы
-              </Label>
-              <Textarea
-                value={contactInfo.working_hours}
-                onChange={(e) => updateContactField('working_hours', e.target.value)}
-                placeholder="Пн-Пт: 9:00-18:00, Сб-Вс: выходной"
-                rows={3}
-              />
-            </div>
-          </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4" />
+                    {currentLanguage === 'en' ? 'Address' : 'Адрес'}
+                  </Label>
+                  <Textarea
+                    value={contactInfo.address}
+                    onChange={(e) => updateContactField('address', e.target.value)}
+                    placeholder={currentLanguage === 'en' ? 'Moscow, Example Street, 1' : 'г. Москва, ул. Примерная, д. 1'}
+                    rows={3}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    {currentLanguage === 'en' ? 'Working Hours' : 'Часы работы'}
+                  </Label>
+                  <Textarea
+                    value={contactInfo.working_hours}
+                    onChange={(e) => updateContactField('working_hours', e.target.value)}
+                    placeholder={currentLanguage === 'en' ? 'Mon-Fri: 9:00-18:00, Sat-Sun: Closed' : 'Пн-Пт: 9:00-18:00, Сб-Вс: выходной'}
+                    rows={3}
+                  />
+                </div>
+              </div>
 
-          <div className="space-y-2">
-            <Label className="flex items-center gap-2">
-              <Globe className="h-4 w-4" />
-              Веб-сайт
-            </Label>
-            <Input
-              value={contactInfo.website}
-              onChange={(e) => updateContactField('website', e.target.value)}
-              placeholder="https://work4studio.com"
-              type="url"
-            />
-          </div>
-        </CardContent>
-      </Card>
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <Globe className="h-4 w-4" />
+                  {currentLanguage === 'en' ? 'Website' : 'Веб-сайт'}
+                </Label>
+                <Input
+                  value={contactInfo.website}
+                  onChange={(e) => updateContactField('website', e.target.value)}
+                  placeholder="https://work4studio.com"
+                  type="url"
+                />
+              </div>
 
-      {/* Page Content */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Контент страницы</CardTitle>
-          <CardDescription>
-            Заголовки и текстовое содержимое страницы контактов
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Заголовок страницы</Label>
-              <Input
-                value={siteContent.title || ''}
-                onChange={(e) => updateContentField('title', e.target.value)}
-                placeholder={currentLanguage === 'en' ? 'Contact Us' : 'Свяжитесь с нами'}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Подзаголовок</Label>
-              <Input
-                value={siteContent.subtitle || ''}
-                onChange={(e) => updateContentField('subtitle', e.target.value)}
-                placeholder={currentLanguage === 'en' ? 'Ready to start your project?' : 'Готовы начать ваш проект?'}
-              />
-            </div>
-          </div>
+              <Button onClick={handleContactInfoSave} disabled={saving}>
+                {saving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {currentLanguage === 'en' ? 'Saving...' : 'Сохранение...'}
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    {currentLanguage === 'en' ? 'Save Contact Info' : 'Сохранить контакты'}
+                  </>
+                )}
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-          <div className="space-y-2">
-            <Label>Заголовок формы</Label>
-            <Input
-              value={siteContent.form_title || ''}
-              onChange={(e) => updateContentField('form_title', e.target.value)}
-              placeholder={currentLanguage === 'en' ? 'Send us a message' : 'Отправьте нам сообщение'}
-            />
-          </div>
+        <TabsContent value="page-content" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                {currentLanguage === 'en' ? 'Page Content' : 'Контент страницы'}
+              </CardTitle>
+              <CardDescription>
+                {currentLanguage === 'en' 
+                  ? 'Headlines and text content for the contact page'
+                  : 'Заголовки и текстовое содержимое страницы контактов'
+                }
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>{currentLanguage === 'en' ? 'Page Title' : 'Заголовок страницы'}</Label>
+                  <Input
+                    value={siteContent.title || ''}
+                    onChange={(e) => updateContentField('title', e.target.value)}
+                    placeholder={currentLanguage === 'en' ? 'Contact Us' : 'Свяжитесь с нами'}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>{currentLanguage === 'en' ? 'Subtitle' : 'Подзаголовок'}</Label>
+                  <Input
+                    value={siteContent.subtitle || ''}
+                    onChange={(e) => updateContentField('subtitle', e.target.value)}
+                    placeholder={currentLanguage === 'en' ? 'Ready to start your project?' : 'Готовы начать ваш проект?'}
+                  />
+                </div>
+              </div>
 
-          <div className="space-y-2">
-            <Label>Подзаголовок формы</Label>
-            <Textarea
-              value={siteContent.form_subtitle || ''}
-              onChange={(e) => updateContentField('form_subtitle', e.target.value)}
-              placeholder={currentLanguage === 'en' ? 'Tell us about your project and we will get back to you' : 'Расскажите нам о вашем проекте, и мы свяжемся с вами'}
-              rows={2}
-            />
-          </div>
+              <div className="space-y-2">
+                <Label>{currentLanguage === 'en' ? 'Form Title' : 'Заголовок формы'}</Label>
+                <Input
+                  value={siteContent.form_title || ''}
+                  onChange={(e) => updateContentField('form_title', e.target.value)}
+                  placeholder={currentLanguage === 'en' ? 'Send us a message' : 'Отправьте нам сообщение'}
+                />
+              </div>
 
-          <div className="space-y-2">
-            <Label>Заголовок блока информации</Label>
-            <Input
-              value={siteContent.info_title || ''}
-              onChange={(e) => updateContentField('info_title', e.target.value)}
-              placeholder={currentLanguage === 'en' ? 'Contact Information' : 'Контактная информация'}
-            />
-          </div>
+              <div className="space-y-2">
+                <Label>{currentLanguage === 'en' ? 'Form Subtitle' : 'Подзаголовок формы'}</Label>
+                <Textarea
+                  value={siteContent.form_subtitle || ''}
+                  onChange={(e) => updateContentField('form_subtitle', e.target.value)}
+                  placeholder={currentLanguage === 'en' ? 'Tell us about your project and we will get back to you' : 'Расскажите нам о вашем проекте, и мы свяжемся с вами'}
+                  rows={2}
+                />
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Заголовок CTA</Label>
-              <Input
-                value={siteContent.cta_title || ''}
-                onChange={(e) => updateContentField('cta_title', e.target.value)}
-                placeholder={currentLanguage === 'en' ? 'Ready to get started?' : 'Готовы начать?'}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Подзаголовок CTA</Label>
-              <Input
-                value={siteContent.cta_subtitle || ''}
-                onChange={(e) => updateContentField('cta_subtitle', e.target.value)}
-                placeholder={currentLanguage === 'en' ? 'Contact us today' : 'Свяжитесь с нами сегодня'}
-              />
-            </div>
-          </div>
+              <div className="space-y-2">
+                <Label>{currentLanguage === 'en' ? 'Info Block Title' : 'Заголовок блока информации'}</Label>
+                <Input
+                  value={siteContent.info_title || ''}
+                  onChange={(e) => updateContentField('info_title', e.target.value)}
+                  placeholder={currentLanguage === 'en' ? 'Contact Information' : 'Контактная информация'}
+                />
+              </div>
 
-          <div className="space-y-2">
-            <Label>Текст кнопки CTA</Label>
-            <Input
-              value={siteContent.cta_button || ''}
-              onChange={(e) => updateContentField('cta_button', e.target.value)}
-              placeholder={currentLanguage === 'en' ? 'Get in touch' : 'Связаться'}
-            />
-          </div>
-        </CardContent>
-      </Card>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>{currentLanguage === 'en' ? 'CTA Title' : 'Заголовок CTA'}</Label>
+                  <Input
+                    value={siteContent.cta_title || ''}
+                    onChange={(e) => updateContentField('cta_title', e.target.value)}
+                    placeholder={currentLanguage === 'en' ? 'Ready to get started?' : 'Готовы начать?'}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>{currentLanguage === 'en' ? 'CTA Subtitle' : 'Подзаголовок CTA'}</Label>
+                  <Input
+                    value={siteContent.cta_subtitle || ''}
+                    onChange={(e) => updateContentField('cta_subtitle', e.target.value)}
+                    placeholder={currentLanguage === 'en' ? 'Contact us today' : 'Свяжитесь с нами сегодня'}
+                  />
+                </div>
+              </div>
 
-      {/* SEO Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle>SEO настройки</CardTitle>
-          <CardDescription>
-            Мета-теги и SEO информация для страницы контактов
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Заголовок страницы (Title)</Label>
-              <Input
-                value={pageSEO.page_title}
-                onChange={(e) => updateSEOField('page_title', e.target.value)}
-                placeholder={currentLanguage === 'en' ? 'Contact Us' : 'Контакты'}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>H1 тег</Label>
-              <Input
-                value={pageSEO.h1_tag}
-                onChange={(e) => updateSEOField('h1_tag', e.target.value)}
-                placeholder={currentLanguage === 'en' ? 'Contact Us' : 'Свяжитесь с нами'}
-              />
-            </div>
-          </div>
+              <div className="space-y-2">
+                <Label>{currentLanguage === 'en' ? 'CTA Button Text' : 'Текст кнопки CTA'}</Label>
+                <Input
+                  value={siteContent.cta_button || ''}
+                  onChange={(e) => updateContentField('cta_button', e.target.value)}
+                  placeholder={currentLanguage === 'en' ? 'Get in touch' : 'Связаться'}
+                />
+              </div>
+
+              <Button onClick={handleContactInfoSave} disabled={saving}>
+                {saving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {currentLanguage === 'en' ? 'Saving...' : 'Сохранение...'}
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    {currentLanguage === 'en' ? 'Save Page Content' : 'Сохранить контент'}
+                  </>
+                )}
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="seo" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                {currentLanguage === 'en' ? 'SEO Settings' : 'SEO настройки'}
+              </CardTitle>
+              <CardDescription>
+                {currentLanguage === 'en' 
+                  ? 'Meta tags and SEO information for the contact page'
+                  : 'Мета-теги и SEO информация для страницы контактов'
+                }
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>{currentLanguage === 'en' ? 'Page Title' : 'Заголовок страницы (Title)'}</Label>
+                  <Input
+                    value={pageSEO.page_title}
+                    onChange={(e) => updateSEOField('page_title', e.target.value)}
+                    placeholder={currentLanguage === 'en' ? 'Contact Us' : 'Контакты'}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>{currentLanguage === 'en' ? 'H1 Tag' : 'H1 тег'}</Label>
+                  <Input
+                    value={pageSEO.h1_tag}
+                    onChange={(e) => updateSEOField('h1_tag', e.target.value)}
+                    placeholder={currentLanguage === 'en' ? 'Contact Us' : 'Свяжитесь с нами'}
+                  />
+                </div>
+              </div>
 
           <div className="space-y-2">
             <Label>Meta Title</Label>
@@ -483,29 +554,23 @@ const ContactManagement = () => {
               rows={2}
             />
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Save Button */}
-      <div className="flex justify-end">
-        <Button 
-          onClick={handleContactInfoSave} 
-          disabled={saving}
-          className="min-w-[120px]"
-        >
-          {saving ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Сохранение...
-            </>
-          ) : (
-            <>
-              <Save className="mr-2 h-4 w-4" />
-              Сохранить
-            </>
-          )}
-        </Button>
-      </div>
+              <Button onClick={handleContactInfoSave} disabled={saving}>
+                {saving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {currentLanguage === 'en' ? 'Saving...' : 'Сохранение...'}
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    {currentLanguage === 'en' ? 'Save SEO Settings' : 'Сохранить SEO'}
+                  </>
+                )}
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
