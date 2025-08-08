@@ -152,15 +152,24 @@ const Footer = () => {
               {currentLanguage === 'en' ? '© 2024 Work4Studio. All rights reserved.' : '© 2024 Work4Studio. Все права защищены.'}
             </p>
             <div className="flex items-center space-x-6">
-              {legalDocuments.map((doc) => (
-                <Link 
-                  key={doc.id}
-                  to={`/legal/${doc.type}`} 
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors underline"
-                >
-                  {doc.title}
-                </Link>
-              ))}
+              {legalDocuments.map((doc) => {
+                const getDocTitle = (type: string) => {
+                  if (currentLanguage === 'en') {
+                    return type === 'privacy_policy' ? 'Privacy Policy' : 'Terms of Service';
+                  }
+                  return type === 'privacy_policy' ? 'Политика конфиденциальности' : 'Пользовательское соглашение';
+                };
+                
+                return (
+                  <Link 
+                    key={doc.id}
+                    to={`/legal/${doc.type}`} 
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors underline"
+                  >
+                    {getDocTitle(doc.type)}
+                  </Link>
+                );
+              })}
             </div>
             <div className="flex items-center space-x-3">
               <span className="text-sm text-muted-foreground">
