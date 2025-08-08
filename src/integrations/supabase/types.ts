@@ -114,6 +114,7 @@ export type Database = {
           description: string | null
           founding_year: string | null
           id: string
+          language: string
           mission: string | null
           projects_completed: string | null
           team_size: string | null
@@ -126,6 +127,7 @@ export type Database = {
           description?: string | null
           founding_year?: string | null
           id?: string
+          language?: string
           mission?: string | null
           projects_completed?: string | null
           team_size?: string | null
@@ -138,6 +140,7 @@ export type Database = {
           description?: string | null
           founding_year?: string | null
           id?: string
+          language?: string
           mission?: string | null
           projects_completed?: string | null
           team_size?: string | null

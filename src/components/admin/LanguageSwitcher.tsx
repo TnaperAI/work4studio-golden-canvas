@@ -93,11 +93,16 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
       const { data: companyData } = await supabase
         .from('company_info')
         .select('*')
+        .eq('language', fromLang)
         .single();
         
       if (companyData) {
         const companyFields = ['description', 'mission', 'vision'];
-        const translatedCompanyData: any = { ...companyData };
+        const translatedCompanyData: any = { 
+          ...companyData,
+          language: toLang,
+          id: undefined // Remove ID so it generates a new one
+        };
         
         for (const field of companyFields) {
           if (companyData[field]) {
@@ -124,10 +129,10 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
           }
         }
         
-        // Save translated company info (we'll create separate records for different languages if needed)
+        // Save translated company info with upsert by language
         await supabase
           .from('company_info')
-          .upsert(translatedCompanyData);
+          .upsert(translatedCompanyData, { onConflict: 'language' });
       }
       
       // 3. Translate team_members

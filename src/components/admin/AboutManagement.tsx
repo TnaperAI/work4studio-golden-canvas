@@ -102,6 +102,7 @@ const AboutManagement = () => {
       const { data: companyData, error: companyError } = await supabase
         .from('company_info')
         .select('*')
+        .eq('language', currentLanguage)
         .maybeSingle();
 
       if (companyError) throw companyError;
@@ -186,10 +187,15 @@ const AboutManagement = () => {
     if (!companyInfo) return;
 
     try {
-      // Save company info
+      // Save company info with language
+      const companyDataWithLanguage = {
+        ...companyInfo,
+        language: currentLanguage
+      };
+      
       const { error: companyError } = await supabase
         .from('company_info')
-        .upsert(companyInfo, { onConflict: 'id' });
+        .upsert(companyDataWithLanguage, { onConflict: 'language' });
 
       if (companyError) throw companyError;
 
