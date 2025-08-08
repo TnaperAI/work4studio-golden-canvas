@@ -7,6 +7,7 @@ export interface SiteContent {
   section: string;
   key: string;
   value: string;
+  language: string;
   created_at: string;
   updated_at: string;
 }
