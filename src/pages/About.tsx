@@ -18,6 +18,7 @@ import BackToTop from '@/components/BackToTop';
 import { TeamCarousel } from '@/components/TeamCarousel';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   Users, 
   Target, 
@@ -72,11 +73,12 @@ const About = () => {
   const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
   const [loading, setLoading] = useState(true);
   const { getContent } = useSiteContent();
+  const { currentLanguage } = useLanguage();
   useScrollAnimation();
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [currentLanguage]);
 
   // Перезапускаем анимацию скролла после загрузки данных
   useEffect(() => {
@@ -156,6 +158,7 @@ const About = () => {
       const { data: companyData, error: companyError } = await supabase
         .from('company_info')
         .select('*')
+        .eq('language', currentLanguage)
         .maybeSingle();
 
       // Fetch page SEO
@@ -163,6 +166,7 @@ const About = () => {
         .from('page_seo')
         .select('*')
         .eq('page_slug', 'about')
+        .eq('language', currentLanguage)
         .maybeSingle();
 
       if (teamError) {
