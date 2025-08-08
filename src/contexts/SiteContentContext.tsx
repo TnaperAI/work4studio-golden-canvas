@@ -18,6 +18,7 @@ interface SiteContentContextType {
   getContent: (section: string, key: string, language?: Language) => string;
   updateContent: (section: string, key: string, value: string, language?: Language) => Promise<void>;
   getContentByLanguage: (section: string, key: string, language: Language) => string;
+  translateContent: (fromLanguage: Language, toLanguage: Language, section?: string) => Promise<void>;
 }
 
 const SiteContentContext = createContext<SiteContentContextType | undefined>(undefined);
@@ -111,6 +112,91 @@ export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ childr
     }
   };
 
+  const translateContent = async (fromLanguage: Language, toLanguage: Language, section?: string): Promise<void> => {
+    try {
+      // Get content to translate
+      let sourceContent = content.filter(c => c.language === fromLanguage);
+      
+      // Filter by section if specified
+      if (section) {
+        sourceContent = sourceContent.filter(c => c.section === section);
+      }
+
+      if (sourceContent.length === 0) {
+        throw new Error(`No content found for language: ${fromLanguage}${section ? ` in section: ${section}` : ''}`);
+      }
+
+      // Translate content in batches to avoid rate limits
+      const batchSize = 5;
+      const translatedContent = [];
+
+      for (let i = 0; i < sourceContent.length; i += batchSize) {
+        const batch = sourceContent.slice(i, i + batchSize);
+        
+        const batchPromises = batch.map(async (item) => {
+          try {
+            const { data, error } = await supabase.functions.invoke('translate-content', {
+              body: {
+                text: item.value,
+                fromLanguage,
+                toLanguage
+              }
+            });
+
+            if (error) {
+              console.error('Translation error for item:', item.key, error);
+              return null;
+            }
+
+            if (!data.success) {
+              console.error('Translation failed for item:', item.key, data.error);
+              return null;
+            }
+
+            return {
+              section: item.section,
+              key: item.key,
+              value: data.translatedText,
+              language: toLanguage
+            };
+          } catch (error) {
+            console.error('Error translating item:', item.key, error);
+            return null;
+          }
+        });
+
+        const batchResults = await Promise.all(batchPromises);
+        const validResults = batchResults.filter(result => result !== null);
+        translatedContent.push(...validResults);
+
+        // Small delay between batches to respect rate limits
+        if (i + batchSize < sourceContent.length) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
+
+      if (translatedContent.length === 0) {
+        throw new Error('Failed to translate any content');
+      }
+
+      // Save translated content to database
+      const { error } = await supabase
+        .from('site_content')
+        .upsert(translatedContent, { onConflict: 'section,key,language' });
+
+      if (error) {
+        console.error('Error saving translated content:', error);
+        throw error;
+      }
+
+      console.log(`Successfully translated ${translatedContent.length} items from ${fromLanguage} to ${toLanguage}`);
+      
+    } catch (error) {
+      console.error('Error in translateContent:', error);
+      throw error;
+    }
+  };
+
 
   const value = {
     content,
@@ -118,6 +204,7 @@ export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ childr
     getContent,
     updateContent,
     getContentByLanguage,
+    translateContent,
   };
 
   return (

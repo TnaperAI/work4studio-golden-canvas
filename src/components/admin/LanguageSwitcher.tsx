@@ -15,8 +15,9 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   className = "" 
 }) => {
   const { currentLanguage, setLanguage, availableLanguages } = useLanguage();
-  const { content } = useSiteContent();
+  const { content, translateContent } = useSiteContent();
   const { toast } = useToast();
+  const [translating, setTranslating] = useState(false);
 
   // Calculate content statistics for each language
   const getLanguageStats = (language: Language) => {
@@ -39,6 +40,29 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
     });
   };
 
+  // Handle automatic translation
+  const handleTranslate = async (fromLang: Language, toLang: Language) => {
+    if (translating) return;
+    
+    setTranslating(true);
+    try {
+      await translateContent(fromLang, toLang);
+      toast({
+        title: "Перевод завершён",
+        description: `Контент переведён с ${fromLang === 'ru' ? 'русского' : 'английского'} на ${toLang === 'ru' ? 'русский' : 'английский'}`,
+      });
+    } catch (error) {
+      console.error('Translation error:', error);
+      toast({
+        title: "Ошибка перевода",
+        description: error instanceof Error ? error.message : "Не удалось выполнить перевод",
+        variant: "destructive",
+      });
+    } finally {
+      setTranslating(false);
+    }
+  };
+
   const getStatusColor = (percentage: number) => {
     if (percentage >= 90) return 'bg-green-500';
     if (percentage >= 50) return 'bg-yellow-500';
@@ -51,7 +75,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   };
 
   return (
-    <Card className="w-full">
+    <Card className={`w-full ${className}`}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Globe className="h-5 w-5" />
@@ -112,14 +136,42 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
           </div>
         </div>
 
-        {/* Copy Actions - Placeholder for future automatic translation */}
+        {/* Automatic Translation */}
         <div className="space-y-2">
           <p className="text-sm font-medium">Автоматический перевод:</p>
-          <div className="p-3 rounded-md border bg-muted/50">
-            <p className="text-sm text-muted-foreground text-center">
-              Функция автоматического перевода будет добавлена в ближайшее время
-            </p>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleTranslate('ru', 'en')}
+              disabled={translating}
+              className="flex items-center gap-2"
+            >
+              {translating ? (
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              ) : (
+                <Globe className="h-4 w-4" />
+              )}
+              Перевести RU → EN
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleTranslate('en', 'ru')}
+              disabled={translating}
+              className="flex items-center gap-2"
+            >
+              {translating ? (
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              ) : (
+                <Globe className="h-4 w-4" />
+              )}
+              Перевести EN → RU
+            </Button>
           </div>
+          <p className="text-xs text-muted-foreground">
+            Использует AI для автоматического перевода всего контента
+          </p>
         </div>
       </CardContent>
     </Card>
