@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ConsentCheckbox from '@/components/ConsentCheckbox';
-
+import { useLanguage } from '@/contexts/LanguageContext';
 interface ContactFormModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -24,15 +24,15 @@ const ContactFormModal = ({ isOpen, onClose, source = 'modal' }: ContactFormModa
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
   const { toast } = useToast();
-
+  const { language } = useLanguage();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!isAgreed) {
       toast({
-        title: "Согласие обязательно",
-        description: "Необходимо согласиться с условиями для отправки заявки.",
-        variant: "destructive",
+        title: language === 'en' ? 'Consent required' : 'Согласие обязательно',
+        description: language === 'en' ? 'You must agree to the terms to submit the request.' : 'Необходимо согласиться с условиями для отправки заявки.',
+        variant: 'destructive',
       });
       return;
     }
@@ -57,8 +57,8 @@ const ContactFormModal = ({ isOpen, onClose, source = 'modal' }: ContactFormModa
       }
 
       toast({
-        title: "Заявка отправлена!",
-        description: "Мы получили вашу заявку и свяжемся с вами в ближайшее время.",
+        title: language === 'en' ? 'Request sent!' : 'Заявка отправлена!',
+        description: language === 'en' ? 'We received your request and will contact you soon.' : 'Мы получили вашу заявку и свяжемся с вами в ближайшее время.',
       });
 
       onClose();
@@ -67,9 +67,9 @@ const ContactFormModal = ({ isOpen, onClose, source = 'modal' }: ContactFormModa
     } catch (error) {
       console.error('Error submitting form:', error);
       toast({
-        title: "Ошибка",
-        description: "Произошла ошибка при отправке заявки. Попробуйте еще раз.",
-        variant: "destructive",
+        title: language === 'en' ? 'Error' : 'Ошибка',
+        description: language === 'en' ? 'An error occurred while submitting the request. Please try again.' : 'Произошла ошибка при отправке заявки. Попробуйте еще раз.',
+        variant: 'destructive',
       });
     } finally {
       setIsSubmitting(false);
@@ -88,20 +88,20 @@ const ContactFormModal = ({ isOpen, onClose, source = 'modal' }: ContactFormModa
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-2xl font-heading text-center">
-            Обсудить проект
+            {language === 'en' ? 'Discuss project' : 'Обсудить проект'}
           </DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <div>
-              <Label htmlFor="name">Имя *</Label>
+              <Label htmlFor="name">{language === 'en' ? 'Name *' : 'Имя *'}</Label>
               <Input
                 id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Ваше имя"
+                placeholder={language === 'en' ? 'Your name' : 'Ваше имя'}
                 required
                 className="mt-1"
               />
@@ -122,7 +122,7 @@ const ContactFormModal = ({ isOpen, onClose, source = 'modal' }: ContactFormModa
             </div>
             
             <div>
-              <Label htmlFor="phone">Телефон</Label>
+              <Label htmlFor="phone">{language === 'en' ? 'Phone' : 'Телефон'}</Label>
               <Input
                 id="phone"
                 name="phone"
@@ -135,13 +135,13 @@ const ContactFormModal = ({ isOpen, onClose, source = 'modal' }: ContactFormModa
             </div>
             
             <div>
-              <Label htmlFor="message">Расскажите о проекте *</Label>
+              <Label htmlFor="message">{language === 'en' ? 'Tell us about the project *' : 'Расскажите о проекте *'}</Label>
               <Textarea
                 id="message"
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                placeholder="Опишите ваш проект, цели и пожелания..."
+                placeholder={language === 'en' ? 'Describe your project, goals, and requirements...' : 'Опишите ваш проект, цели и пожелания...'}
                 required
                 className="mt-1 min-h-[100px]"
               />
@@ -160,7 +160,7 @@ const ContactFormModal = ({ isOpen, onClose, source = 'modal' }: ContactFormModa
               onClick={onClose}
               className="btn-secondary flex-1"
             >
-              Отмена
+              {language === 'en' ? 'Cancel' : 'Отмена'}
             </button>
             <button
               type="submit"
@@ -172,7 +172,7 @@ const ContactFormModal = ({ isOpen, onClose, source = 'modal' }: ContactFormModa
               ) : (
                 <>
                   <Send className="w-4 h-4" />
-                  <span>Отправить</span>
+                  <span>{language === 'en' ? 'Send' : 'Отправить'}</span>
                 </>
               )}
             </button>
