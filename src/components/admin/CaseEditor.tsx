@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Plus, X, Upload, Image as ImageIcon } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface CaseData {
   id?: string;
@@ -47,18 +48,19 @@ interface CaseEditorProps {
 }
 
 const categoryOptions = [
-  { value: 'website', label: 'Веб-сайт' },
-  { value: 'ecommerce', label: 'Интернет-магазин' },
-  { value: 'mobile', label: 'Мобильное приложение' },
-  { value: 'landing', label: 'Лендинг' },
-  { value: 'corporate', label: 'Корпоративный сайт' },
-  { value: 'startup', label: 'Стартап' },
-  { value: 'redesign', label: 'Редизайн' },
+  { value: 'website', label: language === 'ru' ? 'Веб-сайт' : 'Website' },
+  { value: 'ecommerce', label: language === 'ru' ? 'Интернет-магазин' : 'E-commerce' },
+  { value: 'mobile', label: language === 'ru' ? 'Мобильное приложение' : 'Mobile app' },
+  { value: 'landing', label: language === 'ru' ? 'Лендинг' : 'Landing page' },
+  { value: 'corporate', label: language === 'ru' ? 'Корпоративный сайт' : 'Corporate website' },
+  { value: 'startup', label: language === 'ru' ? 'Стартап' : 'Startup' },
+  { value: 'redesign', label: language === 'ru' ? 'Редизайн' : 'Redesign' },
   { value: 'crm', label: 'CRM' }
 ];
 
 const CaseEditor = ({ caseId, onBack }: CaseEditorProps) => {
   const { toast } = useToast();
+  const { language } = useLanguage();
   const [loading, setLoading] = useState(!!caseId);
   const [saving, setSaving] = useState(false);
   const [newTechnology, setNewTechnology] = useState('');
@@ -333,29 +335,29 @@ const CaseEditor = ({ caseId, onBack }: CaseEditorProps) => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center space-x-4">
-        <Button variant="ghost" onClick={onBack}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Назад к кейсам
-        </Button>
-        <div>
-          <h1 className="text-3xl font-heading font-bold">
-            {caseId ? 'Редактирование кейса' : 'Создание кейса'}
-          </h1>
-          <p className="text-muted-foreground">
-            {caseId ? `Редактирование: ${formData.title}` : 'Добавление нового кейса в портфолио'}
-          </p>
-        </div>
-      </div>
+<div className="flex items-center space-x-4">
+  <Button variant="ghost" onClick={onBack}>
+    <ArrowLeft className="h-4 w-4 mr-2" />
+    {language === 'ru' ? 'Назад к кейсам' : 'Back to cases'}
+  </Button>
+  <div>
+    <h1 className="text-3xl font-heading font-bold">
+      {caseId ? (language === 'ru' ? 'Редактирование кейса' : 'Edit case') : (language === 'ru' ? 'Создание кейса' : 'Create case')}
+    </h1>
+    <p className="text-muted-foreground">
+      {caseId ? `${language === 'ru' ? 'Редактирование' : 'Editing'}: ${formData.title}` : (language === 'ru' ? 'Добавление нового кейса в портфолио' : 'Adding a new case to the portfolio')}
+    </p>
+  </div>
+</div>
 
-      <Tabs defaultValue="content" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="content">Контент</TabsTrigger>
-          <TabsTrigger value="media">Медиа</TabsTrigger>
-          <TabsTrigger value="details">Детали</TabsTrigger>
-          <TabsTrigger value="seo">SEO</TabsTrigger>
-          <TabsTrigger value="settings">Настройки</TabsTrigger>
-        </TabsList>
+<Tabs defaultValue="content" className="space-y-4">
+  <TabsList>
+    <TabsTrigger value="content">{language === 'ru' ? 'Контент' : 'Content'}</TabsTrigger>
+    <TabsTrigger value="media">{language === 'ru' ? 'Медиа' : 'Media'}</TabsTrigger>
+    <TabsTrigger value="details">{language === 'ru' ? 'Детали' : 'Details'}</TabsTrigger>
+    <TabsTrigger value="seo">SEO</TabsTrigger>
+    <TabsTrigger value="settings">{language === 'ru' ? 'Настройки' : 'Settings'}</TabsTrigger>
+  </TabsList>
 
         <TabsContent value="content" className="space-y-4">
           <Card>
@@ -442,10 +444,10 @@ const CaseEditor = ({ caseId, onBack }: CaseEditorProps) => {
         <TabsContent value="media" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ImageIcon className="h-5 w-5" />
-                Изображения
-              </CardTitle>
+<CardTitle className="flex items-center gap-2">
+  <ImageIcon className="h-5 w-5" />
+  {language === 'ru' ? 'Изображения' : 'Images'}
+</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
@@ -467,22 +469,22 @@ const CaseEditor = ({ caseId, onBack }: CaseEditorProps) => {
                     disabled={uploadingMainImage}
                     className="flex items-center gap-2"
                   >
-                    <Upload className="h-4 w-4" />
-                    {uploadingMainImage ? 'Загрузка...' : 'Загрузить файл'}
+<Upload className="h-4 w-4" />
+{uploadingMainImage ? (language === 'ru' ? 'Загрузка...' : 'Uploading...') : (language === 'ru' ? 'Загрузить файл' : 'Upload file')}
                   </Button>
-                  <span className="text-sm text-muted-foreground self-center">
-                    JPEG, PNG, WebP
-                  </span>
+<span className="text-sm text-muted-foreground self-center">
+  JPEG, PNG, WebP
+</span>
                 </div>
 
                 {/* Manual URL input */}
                 <div className="space-y-2">
-                  <Label className="text-sm">или введите URL</Label>
-                  <Input
-                    value={formData.main_image}
-                    onChange={(e) => updateField('main_image', e.target.value)}
-                    placeholder="https://images.unsplash.com/..."
-                  />
+<Label className="text-sm">{language === 'ru' ? 'или введите URL' : 'or enter URL'}</Label>
+<Input
+  value={formData.main_image}
+  onChange={(e) => updateField('main_image', e.target.value)}
+  placeholder="https://images.unsplash.com/..."
+/>
                 </div>
 
                 {/* Preview */}

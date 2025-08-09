@@ -4,17 +4,32 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import OptimizedImage from './OptimizedImage';
+import { useLanguage } from '@/contexts/LanguageContext';
 
-const categoryNames: Record<string, string> = {
-  website: 'Веб-сайт',
-  ecommerce: 'Интернет-магазин',
-  mobile: 'Мобильное приложение',
-  landing: 'Лендинг',
-  corporate: 'Корпоративный сайт',
-  startup: 'Стартап',
-  redesign: 'Редизайн',
-  crm: 'CRM'
+const categoryNamesMap: Record<'ru' | 'en', Record<string, string>> = {
+  ru: {
+    website: 'Веб-сайт',
+    ecommerce: 'Интернет-магазин',
+    mobile: 'Мобильное приложение',
+    landing: 'Лендинг',
+    corporate: 'Корпоративный сайт',
+    startup: 'Стартап',
+    redesign: 'Редизайн',
+    crm: 'CRM'
+  },
+  en: {
+    website: 'Website',
+    ecommerce: 'E-commerce',
+    mobile: 'Mobile app',
+    landing: 'Landing page',
+    corporate: 'Corporate website',
+    startup: 'Startup',
+    redesign: 'Redesign',
+    crm: 'CRM'
+  }
 };
+
+const getCategoryName = (category: string, lang: 'ru' | 'en') => categoryNamesMap[lang]?.[category] || category;
 
 interface Case {
   id: string;
@@ -31,6 +46,7 @@ const CasesSection = () => {
   const [cases, setCases] = useState<Case[]>([]);
   const [loading, setLoading] = useState(true);
   const { getContent } = useSiteContent();
+  const { language } = useLanguage();
 
   useEffect(() => {
     fetchFeaturedCases();
@@ -74,18 +90,18 @@ const CasesSection = () => {
     );
   }
 
-  if (!loading && cases.length === 0) {
-    return (
-      <section className="section-padding relative overflow-hidden">
-        <div className="container-custom">
-          <div className="text-center py-16">
-            <h2 className="text-2xl font-heading font-bold mb-4">Кейсы скоро появятся</h2>
-            <p className="text-muted-foreground">Мы работаем над добавлением наших лучших проектов</p>
-          </div>
+if (!loading && cases.length === 0) {
+  return (
+    <section className="section-padding relative overflow-hidden">
+      <div className="container-custom">
+        <div className="text-center py-16">
+          <h2 className="text-2xl font-heading font-bold mb-4">{language === 'ru' ? 'Кейсы скоро появятся' : 'Cases coming soon'}</h2>
+          <p className="text-muted-foreground">{language === 'ru' ? 'Мы работаем над добавлением наших лучших проектов' : 'We are working on adding our best projects'}</p>
         </div>
-      </section>
-    );
-  }
+      </div>
+    </section>
+  );
+}
 
   return (
     <section className="section-padding relative overflow-hidden" style={{ backgroundColor: '#f8f9fa' }}>
@@ -126,19 +142,19 @@ const CasesSection = () => {
                       priority={index < 3}
                     />
                   ) : (
-                    <div className="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                      <span className="text-gray-500">Изображение не загружено</span>
-                    </div>
+<div className="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+  <span className="text-gray-500">{language === 'ru' ? 'Изображение не загружено' : 'Image not loaded'}</span>
+</div>
                   )}
                   <div className="absolute top-4 left-4">
                     <span className="px-3 py-1 bg-gradient-to-r from-primary to-accent text-primary-foreground text-xs font-bold rounded-full shadow-lg">
-                      {categoryNames[caseItem.category] || caseItem.category}
+{getCategoryName(caseItem.category, language)}
                     </span>
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
                     <div className="text-center text-white">
-                      <ExternalLink className="w-8 h-8 mx-auto mb-2" />
-                      <span className="text-sm font-medium">Посмотреть проект</span>
+<ExternalLink className="w-8 h-8 mx-auto mb-2" />
+<span className="text-sm font-medium">{language === 'ru' ? 'Посмотреть проект' : 'View project'}</span>
                     </div>
                   </div>
                 </div>
@@ -149,7 +165,7 @@ const CasesSection = () => {
                   </h3>
                   
                   <p className="text-gray-600 mb-6 leading-relaxed">
-                    {caseItem.short_description || caseItem.description || 'Описание проекта'}
+{caseItem.short_description || caseItem.description || (language === 'ru' ? 'Описание проекта' : 'Project description')}
                   </p>
                 </div>
               </Link>
@@ -157,10 +173,10 @@ const CasesSection = () => {
           </div>
           
           <div className="text-center mt-16">
-            <Link to="/cases" className="bg-card text-card-foreground px-8 py-4 rounded-xl font-medium border border-border text-lg hover:bg-secondary hover:border-primary/30 transition-all duration-300 inline-flex items-center space-x-3 hover:scale-105 shadow-lg">
-              <span>{getContent('cases', 'button') || 'Посмотреть все кейсы'}</span>
-              <ArrowRight className="w-5 h-5" />
-            </Link>
+<Link to="/cases" className="bg-card text-card-foreground px-8 py-4 rounded-xl font-medium border border-border text-lg hover:bg-secondary hover:border-primary/30 transition-all duration-300 inline-flex items-center space-x-3 hover:scale-105 shadow-lg">
+  <span>{getContent('cases', 'button') || (language === 'ru' ? 'Посмотреть все кейсы' : 'View all cases')}</span>
+  <ArrowRight className="w-5 h-5" />
+</Link>
           </div>
         </div>
       </div>

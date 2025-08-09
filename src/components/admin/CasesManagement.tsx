@@ -28,6 +28,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Case {
   id: string;
@@ -51,15 +52,71 @@ interface CasesManagementProps {
   onCaseCreate: () => void;
 }
 
-const categoryNames: Record<string, string> = {
-  website: 'Веб-сайт',
-  ecommerce: 'Интернет-магазин',
-  mobile: 'Мобильное приложение',
-  landing: 'Лендинг',
-  corporate: 'Корпоративный сайт',
-  startup: 'Стартап',
-  redesign: 'Редизайн'
+const i18n = {
+  ru: {
+    manageTitle: 'Управление кейсами',
+    manageDesc: 'Добавляйте, редактируйте и управляйте портфолио',
+    addCase: 'Добавить кейс',
+    active: 'Активен',
+    hidden: 'Скрыт',
+    onHome: 'На главной',
+    hiddenFromHome: 'Скрыт с главной',
+    featured: 'Избранное',
+    client: 'Клиент',
+    technologies: 'технологий',
+    link: 'Ссылка',
+    showOnHome: 'Показать на главной',
+    noCases: 'Кейсы не найдены',
+    addFirstCase: 'Добавить первый кейс',
+    deleteCase: 'Удалить кейс',
+    deleteDesc: 'Вы уверены, что хотите удалить кейс',
+    cancel: 'Отмена',
+    delete: 'Удалить'
+  },
+  en: {
+    manageTitle: 'Cases management',
+    manageDesc: 'Add, edit and manage your portfolio',
+    addCase: 'Add case',
+    active: 'Active',
+    hidden: 'Hidden',
+    onHome: 'On home',
+    hiddenFromHome: 'Hidden from home',
+    featured: 'Featured',
+    client: 'Client',
+    technologies: 'technologies',
+    link: 'Link',
+    showOnHome: 'Show on home',
+    noCases: 'No cases found',
+    addFirstCase: 'Add first case',
+    deleteCase: 'Delete case',
+    deleteDesc: 'Are you sure you want to delete the case',
+    cancel: 'Cancel',
+    delete: 'Delete'
+  }
+} as const;
+
+const categoryNamesMap: Record<'ru' | 'en', Record<string, string>> = {
+  ru: {
+    website: 'Веб-сайт',
+    ecommerce: 'Интернет-магазин',
+    mobile: 'Мобильное приложение',
+    landing: 'Лендинг',
+    corporate: 'Корпоративный сайт',
+    startup: 'Стартап',
+    redesign: 'Редизайн'
+  },
+  en: {
+    website: 'Website',
+    ecommerce: 'E-commerce',
+    mobile: 'Mobile app',
+    landing: 'Landing page',
+    corporate: 'Corporate website',
+    startup: 'Startup',
+    redesign: 'Redesign'
+  }
 };
+
+const getCategoryName = (category: string, lang: 'ru' | 'en') => categoryNamesMap[lang]?.[category] || category;
 
 const categoryColors: Record<string, string> = {
   website: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
@@ -77,6 +134,7 @@ const CasesManagement = ({ onCaseEdit, onCaseCreate }: CasesManagementProps) => 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [caseToDelete, setCaseToDelete] = useState<Case | null>(null);
   const { toast } = useToast();
+  const { language } = useLanguage();
 
   const fetchCases = async () => {
     const { data, error } = await supabase
@@ -212,15 +270,15 @@ const CasesManagement = ({ onCaseEdit, onCaseCreate }: CasesManagementProps) => 
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-heading font-bold">Управление кейсами</h1>
-          <p className="text-muted-foreground">
-            Добавляйте, редактируйте и управляйте портфолио
-          </p>
-        </div>
-        <Button onClick={onCaseCreate}>
-          <Plus className="h-4 w-4 mr-2" />
-          Добавить кейс
-        </Button>
+<h1 className="text-3xl font-heading font-bold">{i18n[language].manageTitle}</h1>
+<p className="text-muted-foreground">
+  {i18n[language].manageDesc}
+</p>
+</div>
+<Button onClick={onCaseCreate}>
+  <Plus className="h-4 w-4 mr-2" />
+  {i18n[language].addCase}
+</Button>
       </div>
 
       <div className="space-y-4">
@@ -245,49 +303,49 @@ const CasesManagement = ({ onCaseEdit, onCaseCreate }: CasesManagementProps) => 
                   
                   <div className="space-y-2 flex-1">
                     <div className="flex items-center gap-2">
-                      <CardTitle className="text-xl">{caseItem.title}</CardTitle>
-                      <div className="flex items-center gap-2">
-                        <Badge variant={caseItem.is_active ? 'default' : 'secondary'}>
-                          {caseItem.is_active ? 'Активен' : 'Скрыт'}
-                        </Badge>
-                        <Badge variant={caseItem.is_featured ? 'default' : 'outline'}>
-                          {caseItem.is_featured ? 'На главной' : 'Скрыт с главной'}
-                        </Badge>
-                        {caseItem.is_featured && (
-                          <Badge variant="outline" className="text-yellow-600 border-yellow-600">
-                            Избранное
-                          </Badge>
-                        )}
-                        <Badge className={categoryColors[caseItem.category] || 'bg-gray-100 text-gray-800'}>
-                          {categoryNames[caseItem.category] || caseItem.category}
-                        </Badge>
-                      </div>
+<CardTitle className="text-xl">{caseItem.title}</CardTitle>
+<div className="flex items-center gap-2">
+  <Badge variant={caseItem.is_active ? 'default' : 'secondary'}>
+    {caseItem.is_active ? i18n[language].active : i18n[language].hidden}
+  </Badge>
+  <Badge variant={caseItem.is_featured ? 'default' : 'outline'}>
+    {caseItem.is_featured ? i18n[language].onHome : i18n[language].hiddenFromHome}
+  </Badge>
+  {caseItem.is_featured && (
+    <Badge variant="outline" className="text-yellow-600 border-yellow-600">
+      {i18n[language].featured}
+    </Badge>
+  )}
+  <Badge className={categoryColors[caseItem.category] || 'bg-gray-100 text-gray-800'}>
+    {getCategoryName(caseItem.category, language)}
+  </Badge>
+</div>
                     </div>
                     <CardDescription>
                       Slug: /cases/{caseItem.slug}
                     </CardDescription>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        {new Date(caseItem.project_date).toLocaleDateString('ru-RU')}
-                      </div>
-                      <div>
-                        Клиент: {caseItem.client_name}
-                      </div>
-                      <div>
-                        {caseItem.technologies.length} технологий
-                      </div>
-                      {caseItem.project_url && (
-                        <a 
-                          href={caseItem.project_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-primary hover:underline"
-                        >
-                          <ExternalLink className="h-3 w-3" />
-                          Ссылка
-                        </a>
-                      )}
+<div className="flex items-center gap-1">
+  <Calendar className="h-4 w-4" />
+  {new Date(caseItem.project_date).toLocaleDateString(language === 'ru' ? 'ru-RU' : 'en-US')}
+</div>
+<div>
+  {i18n[language].client}: {caseItem.client_name}
+</div>
+<div>
+  {caseItem.technologies.length} {i18n[language].technologies}
+</div>
+{caseItem.project_url && (
+  <a 
+    href={caseItem.project_url}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex items-center gap-1 text-primary hover:underline"
+  >
+    <ExternalLink className="h-3 w-3" />
+    {i18n[language].link}
+  </a>
+)}
                     </div>
                   </div>
                 </div>
@@ -377,24 +435,24 @@ const CasesManagement = ({ onCaseEdit, onCaseCreate }: CasesManagementProps) => 
                       }
                     }}
                   />
-                  <span className="text-sm text-muted-foreground">Активен</span>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <Switch
-                    checked={caseItem.is_featured}
-                    onCheckedChange={async (checked) => {
-                      const { error } = await supabase
-                        .from('cases')
-                        .update({ is_featured: checked })
-                        .eq('id', caseItem.id);
-                      
-                      if (!error) {
-                        fetchCases();
-                      }
-                    }}
-                  />
-                  <span className="text-sm text-muted-foreground">Показать на главной</span>
+<span className="text-sm text-muted-foreground">{i18n[language].active}</span>
+</div>
+
+<div className="flex items-center gap-2">
+  <Switch
+    checked={caseItem.is_featured}
+    onCheckedChange={async (checked) => {
+      const { error } = await supabase
+        .from('cases')
+        .update({ is_featured: checked })
+        .eq('id', caseItem.id);
+      
+      if (!error) {
+        fetchCases();
+      }
+    }}
+  />
+  <span className="text-sm text-muted-foreground">{i18n[language].showOnHome}</span>
                 </div>
               </div>
               
@@ -406,9 +464,9 @@ const CasesManagement = ({ onCaseEdit, onCaseCreate }: CasesManagementProps) => 
                     </Badge>
                   ))}
                   {caseItem.technologies.length > 6 && (
-                    <Badge variant="outline" className="text-xs">
-                      +{caseItem.technologies.length - 6} еще
-                    </Badge>
+<Badge variant="outline" className="text-xs">
+  +{caseItem.technologies.length - 6} {language === 'ru' ? 'ещё' : 'more'}
+</Badge>
                   )}
                 </div>
               )}
@@ -418,36 +476,36 @@ const CasesManagement = ({ onCaseEdit, onCaseCreate }: CasesManagementProps) => 
       </div>
 
       {cases.length === 0 && (
-        <Card className="text-center py-12">
-          <CardContent>
-            <p className="text-muted-foreground mb-4">Кейсы не найдены</p>
-            <Button onClick={onCaseCreate}>
-              <Plus className="h-4 w-4 mr-2" />
-              Добавить первый кейс
-            </Button>
-          </CardContent>
-        </Card>
+<Card className="text-center py-12">
+  <CardContent>
+    <p className="text-muted-foreground mb-4">{i18n[language].noCases}</p>
+    <Button onClick={onCaseCreate}>
+      <Plus className="h-4 w-4 mr-2" />
+      {i18n[language].addFirstCase}
+    </Button>
+  </CardContent>
+</Card>
       )}
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Удалить кейс</AlertDialogTitle>
-            <AlertDialogDescription>
-              Вы уверены, что хотите удалить кейс "{caseToDelete?.title}"? 
-              Это действие нельзя отменить.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Отмена</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Удалить
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
+<AlertDialogContent>
+  <AlertDialogHeader>
+    <AlertDialogTitle>{i18n[language].deleteCase}</AlertDialogTitle>
+    <AlertDialogDescription>
+      {i18n[language].deleteDesc} "{caseToDelete?.title}"? 
+      
+    </AlertDialogDescription>
+  </AlertDialogHeader>
+  <AlertDialogFooter>
+    <AlertDialogCancel>{i18n[language].cancel}</AlertDialogCancel>
+    <AlertDialogAction 
+      onClick={handleDelete}
+      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+    >
+      {i18n[language].delete}
+    </AlertDialogAction>
+  </AlertDialogFooter>
+</AlertDialogContent>
       </AlertDialog>
     </div>
   );

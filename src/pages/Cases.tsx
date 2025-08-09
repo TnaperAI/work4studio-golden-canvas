@@ -17,6 +17,7 @@ import Footer from '@/components/Footer';
 import ContactFormModal from '@/components/ContactFormModal';
 import ImageGalleryModal from '@/components/ImageGalleryModal';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   Calendar,
   Clock,
@@ -63,16 +64,31 @@ interface PageSEO {
   og_image: string;
 }
 
-const categoryNames: Record<string, string> = {
-  website: 'Веб-сайт',
-  ecommerce: 'Интернет-магазин',
-  mobile: 'Мобильное приложение',
-  landing: 'Лендинг',
-  corporate: 'Корпоративный сайт',
-  startup: 'Стартап',
-  redesign: 'Редизайн',
-  crm: 'CRM'
+const categoryNamesMap: Record<'ru' | 'en', Record<string, string>> = {
+  ru: {
+    website: 'Веб-сайт',
+    ecommerce: 'Интернет-магазин',
+    mobile: 'Мобильное приложение',
+    landing: 'Лендинг',
+    corporate: 'Корпоративный сайт',
+    startup: 'Стартап',
+    redesign: 'Редизайн',
+    crm: 'CRM'
+  },
+  en: {
+    website: 'Website',
+    ecommerce: 'E-commerce',
+    mobile: 'Mobile app',
+    landing: 'Landing page',
+    corporate: 'Corporate website',
+    startup: 'Startup',
+    redesign: 'Redesign',
+    crm: 'CRM'
+  }
 };
+
+const getCategoryName = (category: string, lang: 'ru' | 'en') =>
+  categoryNamesMap[lang]?.[category] || category;
 
 const categoryColors: Record<string, string> = {
   website: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
@@ -85,7 +101,51 @@ const categoryColors: Record<string, string> = {
   crm: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-300'
 };
 
+const i18n: Record<'ru' | 'en', Record<string, string>> = {
+  ru: {
+    home: 'Главная',
+    cases: 'Кейсы',
+    backToCases: 'Вернуться к кейсам',
+    viewProject: 'Посмотреть проект',
+    about: 'О проекте',
+    gallery: 'Галерея',
+    category: 'Категория',
+    technologies: 'Технологии',
+    budget: 'Бюджет',
+    results: 'Результаты',
+    allProjects: 'Все проекты',
+    view: 'Смотреть',
+    notFoundInCategory: 'Проекты в этой категории не найдены',
+    featured: 'Избранное',
+    heroLine1: 'Наши',
+    heroLine2: 'работы',
+    heroSubtitle: 'Примеры успешных проектов, которые приносят реальные результаты нашим клиентам',
+    image: 'изображение'
+  },
+  en: {
+    home: 'Home',
+    cases: 'Cases',
+    backToCases: 'Back to cases',
+    viewProject: 'View project',
+    about: 'About the project',
+    gallery: 'Gallery',
+    category: 'Category',
+    technologies: 'Technologies',
+    budget: 'Budget',
+    results: 'Results',
+    allProjects: 'All projects',
+    view: 'View',
+    notFoundInCategory: 'No projects found in this category',
+    featured: 'Featured',
+    heroLine1: 'Our',
+    heroLine2: 'work',
+    heroSubtitle: 'Examples of successful projects that deliver real results for our clients',
+    image: 'image'
+  }
+};
+
 const Cases = () => {
+  const { language } = useLanguage();
   const { slug } = useParams();
   const [cases, setCases] = useState<Case[]>([]);
   const [selectedCase, setSelectedCase] = useState<Case | null>(null);
@@ -131,6 +191,7 @@ const Cases = () => {
         .from('page_seo')
         .select('*')
         .eq('page_slug', 'cases')
+        .eq('language', language)
         .maybeSingle();
 
       if (seoError) {
@@ -254,13 +315,13 @@ const Cases = () => {
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/">Главная</Link>
+                    <Link to="/">{i18n[language].home}</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/cases">Кейсы</Link>
+                    <Link to="/cases">{i18n[language].cases}</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
@@ -286,7 +347,7 @@ const Cases = () => {
                 className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors mb-8 text-lg"
               >
                 <ArrowLeft className="h-5 w-5 mr-3" />
-                Вернуться к кейсам
+                {i18n[language].backToCases}
               </Link>
               <div className="text-left">
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold mb-8 leading-tight">
@@ -301,7 +362,7 @@ const Cases = () => {
                   </div>
                   <div className="flex items-center gap-3 text-lg bg-card border border-border px-6 py-3 rounded-2xl">
                     <Calendar className="h-5 w-5 text-primary" />
-                    <span className="font-medium">{new Date(selectedCase.project_date).toLocaleDateString('ru-RU')}</span>
+                    <span className="font-medium">{new Date(selectedCase.project_date).toLocaleDateString(language === 'ru' ? 'ru-RU' : 'en-US')}</span>
                   </div>
                   <div className="flex items-center gap-3 text-lg bg-card border border-border px-6 py-3 rounded-2xl">
                     <Clock className="h-5 w-5 text-primary" />
@@ -315,7 +376,7 @@ const Cases = () => {
                       className="flex items-center gap-3 text-lg bg-gradient-to-r from-primary to-accent text-primary-foreground px-6 py-3 rounded-2xl hover:shadow-xl hover:scale-105 transition-all duration-300"
                     >
                       <ExternalLink className="h-5 w-5" />
-                      <span className="font-medium">Посмотреть проект</span>
+                      <span className="font-medium">{i18n[language].viewProject}</span>
                     </a>
                   )}
                 </div>
@@ -341,7 +402,7 @@ const Cases = () => {
               <div className="bg-card border border-border rounded-3xl p-8">
                 <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    О проекте
+                    {i18n[language].about}
                   </span>
                 </h2>
                 <p className="text-muted-foreground leading-relaxed text-lg">
@@ -354,7 +415,7 @@ const Cases = () => {
                 <div className="space-y-8">
                   <h2 className="text-3xl md:text-4xl font-heading font-bold">
                     <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                      Галерея
+                      {i18n[language].gallery}
                     </span>
                   </h2>
                    <div className="grid gap-6 md:grid-cols-2">
@@ -366,7 +427,7 @@ const Cases = () => {
                        >
                          <img 
                            src={image} 
-                           alt={`${selectedCase.title} - изображение ${index + 1}`}
+                           alt={`${selectedCase.title} - ${i18n[language].image} ${index + 1}`}
                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                          />
                        </div>
@@ -381,14 +442,14 @@ const Cases = () => {
               <div className="bg-card border border-border rounded-3xl p-8">
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-xl font-heading font-bold mb-4">Категория</h3>
+                    <h3 className="text-xl font-heading font-bold mb-4">{i18n[language].category}</h3>
                     <Badge className="bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold text-sm px-4 py-2">
-                      {categoryNames[selectedCase.category] || selectedCase.category}
+                      {getCategoryName(selectedCase.category, language)}
                     </Badge>
                   </div>
 
                   <div>
-                    <h3 className="text-xl font-heading font-bold mb-4">Технологии</h3>
+                    <h3 className="text-xl font-heading font-bold mb-4">{i18n[language].technologies}</h3>
                     <div className="flex flex-wrap gap-3">
                       {selectedCase.technologies.map((tech, index) => (
                         <Badge key={index} variant="outline" className="text-sm px-3 py-1">
@@ -398,10 +459,10 @@ const Cases = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <h3 className="text-xl font-heading font-bold mb-4">Бюджет</h3>
-                    <p className="text-muted-foreground text-lg font-medium">{selectedCase.budget_range}</p>
-                  </div>
+                    <div>
+                      <h3 className="text-xl font-heading font-bold mb-4">{i18n[language].budget}</h3>
+                      <p className="text-muted-foreground text-lg font-medium">{selectedCase.budget_range}</p>
+                    </div>
                 </div>
               </div>
 
@@ -411,7 +472,7 @@ const Cases = () => {
                   <h3 className="text-xl font-heading font-bold mb-6 flex items-center gap-3">
                     <TrendingUp className="h-6 w-6 text-green-600" />
                     <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                      Результаты
+                      {i18n[language].results}
                     </span>
                   </h3>
                   <div className="space-y-4">
@@ -459,12 +520,12 @@ const Cases = () => {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/">Главная</Link>
+                  <Link to="/">{i18n[language].home}</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Кейсы</BreadcrumbPage>
+                <BreadcrumbPage>{i18n[language].cases}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -483,15 +544,15 @@ const Cases = () => {
           <div className="max-w-6xl mx-auto text-center animate-on-scroll">
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-10 leading-tight">
               <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                Наши
+                {i18n[language].heroLine1}
               </span>
               <br />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
-                работы
+                {i18n[language].heroLine2}
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-16 max-w-4xl mx-auto leading-relaxed">
-              Примеры успешных проектов, которые приносят реальные результаты нашим клиентам
+              {i18n[language].heroSubtitle}
             </p>
           </div>
         </div>
@@ -511,7 +572,7 @@ const Cases = () => {
                     : 'bg-card border border-border text-muted-foreground hover:text-foreground hover:scale-105'
                 }`}
               >
-                Все проекты
+                {i18n[language].allProjects}
               </button>
               {categories.filter(category => category).map(category => (
                 <button
@@ -523,7 +584,7 @@ const Cases = () => {
                       : 'bg-card border border-border text-muted-foreground hover:text-foreground hover:scale-105'
                   }`}
                 >
-                  {categoryNames[category] || category}
+                  {getCategoryName(category, language)}
                 </button>
               ))}
             </div>
@@ -541,7 +602,7 @@ const Cases = () => {
               <section>
                 <h2 className="text-4xl md:text-5xl font-heading font-bold mb-12">
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    {selectedCategory === 'all' ? 'Все проекты' : `${categoryNames[selectedCategory] || selectedCategory}`}
+                    {selectedCategory === 'all' ? i18n[language].allProjects : getCategoryName(selectedCategory, language)}
                   </span>
                 </h2>
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -557,11 +618,11 @@ const Cases = () => {
                           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                           <div className="absolute top-3 left-3 flex gap-2">
                             <Badge className="bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold shadow-lg text-xs">
-                              {categoryNames[caseItem.category] || caseItem.category}
+                              {getCategoryName(caseItem.category, language)}
                             </Badge>
                             {caseItem.is_featured && (
                               <Badge variant="outline" className="text-yellow-600 border-yellow-600 bg-background/80 backdrop-blur-sm text-xs">
-                                Избранное
+                                {i18n[language].featured}
                               </Badge>
                             )}
                           </div>
@@ -577,7 +638,7 @@ const Cases = () => {
                             <span className="text-xs text-muted-foreground font-medium">{caseItem.client_name}</span>
                             <div className="flex items-center text-primary">
                               <Eye className="h-4 w-4 mr-1" />
-                              <span className="text-xs font-medium">Смотреть</span>
+                              <span className="text-xs font-medium">{i18n[language].view}</span>
                             </div>
                           </div>
                         </div>
@@ -588,7 +649,7 @@ const Cases = () => {
               </section>
             ) : (
               <div className="text-center py-12">
-                <p className="text-muted-foreground text-lg">Проекты в этой категории не найдены</p>
+                <p className="text-muted-foreground text-lg">{i18n[language].notFoundInCategory}</p>
               </div>
             )}
           </div>
