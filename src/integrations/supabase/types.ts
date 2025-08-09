@@ -14,6 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
+      case_translations: {
+        Row: {
+          canonical_url: string | null
+          case_id: string
+          created_at: string
+          description: string | null
+          h1_tag: string | null
+          id: string
+          language: string
+          meta_description: string | null
+          meta_keywords: string | null
+          meta_title: string | null
+          og_description: string | null
+          og_image: string | null
+          og_title: string | null
+          results: string[]
+          short_description: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          canonical_url?: string | null
+          case_id: string
+          created_at?: string
+          description?: string | null
+          h1_tag?: string | null
+          id?: string
+          language: string
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          results?: string[]
+          short_description?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          canonical_url?: string | null
+          case_id?: string
+          created_at?: string
+          description?: string | null
+          h1_tag?: string | null
+          id?: string
+          language?: string
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          results?: string[]
+          short_description?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_translations_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cases: {
         Row: {
           budget_range: string | null
