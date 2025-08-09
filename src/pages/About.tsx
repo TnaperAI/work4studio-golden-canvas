@@ -4,14 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { 
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator
-} from '@/components/ui/breadcrumb';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
@@ -19,20 +12,7 @@ import { TeamCarousel } from '@/components/TeamCarousel';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { 
-  Users, 
-  Target, 
-  Award, 
-  Clock,
-  Star,
-  Heart,
-  Zap,
-  Trophy,
-  CheckCircle,
-  ArrowRight,
-  Calendar
-} from 'lucide-react';
-
+import { Users, Target, Award, Clock, Star, Heart, Zap, Trophy, CheckCircle, ArrowRight, Calendar } from 'lucide-react';
 interface TeamMember {
   id: string;
   name: string;
@@ -44,7 +24,6 @@ interface TeamMember {
   is_active: boolean;
   sort_order: number;
 }
-
 interface CompanyInfo {
   mission: string;
   vision: string;
@@ -54,7 +33,6 @@ interface CompanyInfo {
   clients_served: string;
   description: string;
 }
-
 interface PageSEO {
   page_title: string;
   meta_title: string;
@@ -66,16 +44,18 @@ interface PageSEO {
   og_description: string;
   og_image: string;
 }
-
 const About = () => {
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
   const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
   const [loading, setLoading] = useState(true);
-  const { getContent } = useSiteContent();
-  const { language } = useLanguage();
+  const {
+    getContent
+  } = useSiteContent();
+  const {
+    language
+  } = useLanguage();
   useScrollAnimation();
-
   useEffect(() => {
     setLoading(true);
     fetchData();
@@ -113,7 +93,6 @@ const About = () => {
         }
         meta.content = content;
       };
-
       const updatePropertyTag = (property: string, content: string) => {
         if (!content) return;
         let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
@@ -145,31 +124,25 @@ const About = () => {
       updatePropertyTag('og:type', 'website');
     }
   }, [pageSEO]);
-
   const fetchData = async () => {
     try {
       // Fetch team members
-      const { data: teamData, error: teamError } = await supabase
-        .from('team_members')
-        .select('*')
-        .eq('is_active', true)
-        .order('sort_order');
+      const {
+        data: teamData,
+        error: teamError
+      } = await supabase.from('team_members').select('*').eq('is_active', true).order('sort_order');
 
       // Fetch company info
-      const { data: companyData, error: companyError } = await supabase
-        .from('company_info')
-        .select('*')
-        .eq('language', language)
-        .maybeSingle();
+      const {
+        data: companyData,
+        error: companyError
+      } = await supabase.from('company_info').select('*').eq('language', language).maybeSingle();
 
       // Fetch page SEO
-      const { data: seoData, error: seoError } = await supabase
-        .from('page_seo')
-        .select('*')
-        .eq('page_slug', 'about')
-        .eq('language', language)
-        .maybeSingle();
-
+      const {
+        data: seoData,
+        error: seoError
+      } = await supabase.from('page_seo').select('*').eq('page_slug', 'about').eq('language', language).maybeSingle();
       if (teamError) {
         console.error('Team error:', teamError);
       }
@@ -179,7 +152,6 @@ const About = () => {
       if (seoError) {
         console.error('SEO error:', seoError);
       }
-
       setTeam(teamData || []);
       setCompanyInfo(companyData);
       setPageSEO(seoData);
@@ -200,81 +172,76 @@ const About = () => {
     clients_served: '80+',
     description: 'Work4Studio — это команда профессионалов, специализирующихся на создании современных веб-сайтов и приложений. Мы объединяем креативность дизайна с передовыми технологиями разработки.'
   };
-
   const company = companyInfo || defaultCompany;
-
-  const defaultTeam = [
-    {
-      id: '1',
-      name: 'Алексей Петров',
-      position: 'Основатель & Lead Developer',
-      description: 'Эксперт в области веб-разработки с более чем 7-летним опытом. Специализируется на React, Node.js и архитектуре приложений.',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
-      skills: ['React', 'TypeScript', 'Node.js', 'PostgreSQL'],
-      experience: '7+ лет',
-      is_active: true,
-      sort_order: 1
-    },
-    {
-      id: '2', 
-      name: 'Мария Сидорова',
-      position: 'UI/UX Designer',
-      description: 'Создает интуитивные и красивые интерфейсы. Имеет степень в области дизайна и опыт работы с крупными брендами.',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face',
-      skills: ['Figma', 'Adobe Creative Suite', 'Prototyping', 'User Research'],
-      experience: '5+ лет',
-      is_active: true,
-      sort_order: 2
-    },
-    {
-      id: '3',
-      name: 'Дмитрий Козлов', 
-      position: 'Frontend Developer',
-      description: 'Специалист по frontend-разработке с фокусом на производительность и пользовательский опыт.',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
-      skills: ['React', 'Vue.js', 'CSS/SCSS', 'WebPack'],
-      experience: '4+ года',
-      is_active: true,
-      sort_order: 3
-    }
-  ];
-
+  const defaultTeam = [{
+    id: '1',
+    name: 'Алексей Петров',
+    position: 'Основатель & Lead Developer',
+    description: 'Эксперт в области веб-разработки с более чем 7-летним опытом. Специализируется на React, Node.js и архитектуре приложений.',
+    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
+    skills: ['React', 'TypeScript', 'Node.js', 'PostgreSQL'],
+    experience: '7+ лет',
+    is_active: true,
+    sort_order: 1
+  }, {
+    id: '2',
+    name: 'Мария Сидорова',
+    position: 'UI/UX Designer',
+    description: 'Создает интуитивные и красивые интерфейсы. Имеет степень в области дизайна и опыт работы с крупными брендами.',
+    image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face',
+    skills: ['Figma', 'Adobe Creative Suite', 'Prototyping', 'User Research'],
+    experience: '5+ лет',
+    is_active: true,
+    sort_order: 2
+  }, {
+    id: '3',
+    name: 'Дмитрий Козлов',
+    position: 'Frontend Developer',
+    description: 'Специалист по frontend-разработке с фокусом на производительность и пользовательский опыт.',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
+    skills: ['React', 'Vue.js', 'CSS/SCSS', 'WebPack'],
+    experience: '4+ года',
+    is_active: true,
+    sort_order: 3
+  }];
   const teamMembers = team.length > 0 ? team : defaultTeam;
-
-  const stats = [
-    { icon: Calendar, label: getContent('about', 'stats_founding_year_label') || (language === 'en' ? 'Founded' : 'Год основания'), value: company.founding_year },
-    { icon: Users, label: getContent('about', 'stats_team_label') || (language === 'en' ? 'Team' : 'Команда'), value: company.team_size },
-    { icon: Trophy, label: getContent('about', 'stats_projects_label') || (language === 'en' ? 'Projects Completed' : 'Проектов завершено'), value: company.projects_completed },
-    { icon: Star, label: getContent('about', 'stats_clients_label') || (language === 'en' ? 'Happy Clients' : 'Довольных клиентов'), value: company.clients_served }
-  ];
+  const stats = [{
+    icon: Calendar,
+    label: getContent('about', 'stats_founding_year_label') || (language === 'en' ? 'Founded' : 'Год основания'),
+    value: company.founding_year
+  }, {
+    icon: Users,
+    label: getContent('about', 'stats_team_label') || (language === 'en' ? 'Team' : 'Команда'),
+    value: company.team_size
+  }, {
+    icon: Trophy,
+    label: getContent('about', 'stats_projects_label') || (language === 'en' ? 'Projects Completed' : 'Проектов завершено'),
+    value: company.projects_completed
+  }, {
+    icon: Star,
+    label: getContent('about', 'stats_clients_label') || (language === 'en' ? 'Happy Clients' : 'Довольных клиентов'),
+    value: company.clients_served
+  }];
 
   // Получаем данные ценностей из базы данных или используем дефолтные
-  const values = [
-    {
-      icon: Target,
-      title: getContent('about', 'value_1_title') || 'Качество',
-      description: getContent('about', 'value_1_description') || 'Мы не идем на компромиссы в вопросах качества. Каждый проект проходит строгий контроль.'
-    },
-    {
-      icon: Zap,
-      title: getContent('about', 'value_2_title') || 'Инновации',
-      description: getContent('about', 'value_2_description') || 'Используем самые современные технологии и подходы в разработке.'
-    },
-    {
-      icon: Heart,
-      title: getContent('about', 'value_3_title') || 'Сервис',
-      description: getContent('about', 'value_3_description') || 'Ваш успех — наш приоритет. Строим долгосрочные отношения.'
-    },
-    {
-      icon: CheckCircle,
-      title: getContent('about', 'value_4_title') || 'Надежность',
-      description: getContent('about', 'value_4_description') || 'Соблюдаем сроки, держим слово и всегда доступны для поддержки.'
-    }
-  ];
-
-
-  return (
-    <div className="min-h-screen">{/* Убираем bg-background чтобы видеть фоновую анимацию */}
+  const values = [{
+    icon: Target,
+    title: getContent('about', 'value_1_title') || 'Качество',
+    description: getContent('about', 'value_1_description') || 'Мы не идем на компромиссы в вопросах качества. Каждый проект проходит строгий контроль.'
+  }, {
+    icon: Zap,
+    title: getContent('about', 'value_2_title') || 'Инновации',
+    description: getContent('about', 'value_2_description') || 'Используем самые современные технологии и подходы в разработке.'
+  }, {
+    icon: Heart,
+    title: getContent('about', 'value_3_title') || 'Сервис',
+    description: getContent('about', 'value_3_description') || 'Ваш успех — наш приоритет. Строим долгосрочные отношения.'
+  }, {
+    icon: CheckCircle,
+    title: getContent('about', 'value_4_title') || 'Надежность',
+    description: getContent('about', 'value_4_description') || 'Соблюдаем сроки, держим слово и всегда доступны для поддержки.'
+  }];
+  return <div className="min-h-screen">{/* Убираем bg-background чтобы видеть фоновую анимацию */}
       <Header />
       
       {/* Breadcrumb */}
@@ -307,8 +274,7 @@ const About = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-6xl mx-auto text-center animate-on-scroll">
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-10 leading-tight">
-              {getContent('about', 'hero_title_1') && getContent('about', 'hero_title_2') ? (
-                <>
+              {getContent('about', 'hero_title_1') && getContent('about', 'hero_title_2') ? <>
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                     {getContent('about', 'hero_title_1')}
                   </span>
@@ -316,13 +282,9 @@ const About = () => {
                   <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
                     {getContent('about', 'hero_title_2')}
                   </span>
-                </>
-              ) : pageSEO && pageSEO.h1_tag ? (
-                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
+                </> : pageSEO && pageSEO.h1_tag ? <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
                   {pageSEO.h1_tag}
-                </span>
-              ) : (
-                <>
+                </span> : <>
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                     {getContent('about', 'hero_title_1') || 'Наша'}
                   </span>
@@ -330,8 +292,7 @@ const About = () => {
                   <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
                     {getContent('about', 'hero_title_2') || 'компания'}
                   </span>
-                </>
-              )}
+                </>}
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-16 max-w-4xl mx-auto leading-relaxed">
               {company.description}
@@ -344,8 +305,7 @@ const About = () => {
         {/* Stats Section */}
         <section className="mb-20 animate-on-scroll">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-              <div key={index} className="bg-card border border-border rounded-3xl p-8 text-center hover:shadow-2xl hover:scale-105 transition-all duration-500 group">
+            {stats.map((stat, index) => <div key={index} className="bg-card border border-border rounded-3xl p-8 text-center hover:shadow-2xl hover:scale-105 transition-all duration-500 group">
                 <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <stat.icon className="h-10 w-10 text-primary" />
                 </div>
@@ -355,8 +315,7 @@ const About = () => {
                   </span>
                 </div>
                 <div className="text-muted-foreground font-medium text-lg">{stat.label}</div>
-              </div>
-            ))}
+              </div>)}
           </div>
         </section>
 
@@ -400,24 +359,20 @@ const About = () => {
                 {getContent('about', 'values_title') || 'Наши'}
               </span>
               <br />
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                ценности
-              </span>
+              
             </h2>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               {getContent('about', 'values_subtitle') || 'Принципы, которые направляют нашу работу и отношения с клиентами'}
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((value, index) => (
-              <div key={index} className="bg-card border border-border rounded-3xl p-8 hover:shadow-2xl hover:scale-105 transition-all duration-500 group text-center animate-on-scroll">
+            {values.map((value, index) => <div key={index} className="bg-card border border-border rounded-3xl p-8 hover:shadow-2xl hover:scale-105 transition-all duration-500 group text-center animate-on-scroll">
                 <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <value.icon className="h-10 w-10 text-primary" />
                 </div>
                 <h3 className="text-xl font-heading font-bold mb-4">{value.title}</h3>
                 <p className="text-muted-foreground leading-relaxed">{value.description}</p>
-              </div>
-            ))}
+              </div>)}
           </div>
         </section>
 
@@ -474,8 +429,6 @@ const About = () => {
 
       <Footer />
       <BackToTop />
-    </div>
-  );
+    </div>;
 };
-
 export default About;
