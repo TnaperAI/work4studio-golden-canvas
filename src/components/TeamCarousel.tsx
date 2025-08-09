@@ -1,4 +1,5 @@
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface TeamMember {
   id: string;
@@ -17,6 +18,26 @@ interface TeamGridProps {
 }
 
 export const TeamCarousel = ({ members }: TeamGridProps) => {
+  const { language } = useLanguage();
+
+  const localizeExperience = (exp: string) => {
+    if (!exp) return '';
+    if (language === 'en') {
+      const match = exp.match(/(\d+)\s*(\+?)/);
+      if (match) {
+        const n = parseInt(match[1], 10);
+        const plus = match[2] === '+' || /\+/.test(exp);
+        const suffix = n === 1 ? 'year' : 'years';
+        return `${n}${plus ? '+' : ''} ${suffix}`;
+      }
+      return exp
+        .replace(/\bлет\b/gi, 'years')
+        .replace(/\bгода\b/gi, 'years')
+        .replace(/\bгод\b/gi, 'year');
+    }
+    return exp;
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {members.map((member) => (
@@ -43,7 +64,7 @@ export const TeamCarousel = ({ members }: TeamGridProps) => {
           </div>
           <h3 className="text-xl font-heading font-bold mb-2">{member.name}</h3>
           <p className="text-primary font-medium mb-2">{member.position}</p>
-          <p className="text-sm text-muted-foreground mb-4">{member.experience}</p>
+          <p className="text-sm text-muted-foreground mb-4">{localizeExperience(member.experience)}</p>
           <p className="text-muted-foreground leading-relaxed mb-6">{member.description}</p>
           <div className="flex flex-wrap gap-2 justify-center">
             {member.skills.map((skill, skillIndex) => (
