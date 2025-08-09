@@ -370,7 +370,7 @@ const About = () => {
                 </div>
                 <h3 className="text-2xl md:text-3xl font-heading font-bold">
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    Наша миссия
+                    {getContent('about', 'mission_title') || (language === 'en' ? 'Our Mission' : 'Наша миссия')}
                   </span>
                 </h3>
               </div>
@@ -383,7 +383,7 @@ const About = () => {
                 </div>
                 <h3 className="text-2xl md:text-3xl font-heading font-bold">
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    Наше видение
+                    {getContent('about', 'vision_title') || (language === 'en' ? 'Our Vision' : 'Наше видение')}
                   </span>
                 </h3>
               </div>

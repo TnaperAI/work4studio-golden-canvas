@@ -175,6 +175,9 @@ const AboutManagement = ({ language = 'ru' }: { language: 'ru' | 'en' }) => {
       team_title_first: getContent('about', 'team_title_first', language),
       team_title_second: getContent('about', 'team_title_second', language),
       team_subtitle: getContent('about', 'team_subtitle', language),
+      // Mission & Vision titles
+      mission_title: getContent('about', 'mission_title', language),
+      vision_title: getContent('about', 'vision_title', language),
       // Breadcrumbs
       breadcrumb_home: getContent('about', 'breadcrumb_home', language),
       breadcrumb_about: getContent('about', 'breadcrumb_about', language),
@@ -616,6 +619,25 @@ const AboutManagement = ({ language = 'ru' }: { language: 'ru' | 'en' }) => {
                           onChange={(e) => updateValuesField('team_subtitle', e.target.value)}
                           rows={2}
                         />
+                      </div>
+
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label>Заголовок секции Миссия</Label>
+                          <Input
+                            value={valuesData.mission_title || ''}
+                            onChange={(e) => updateValuesField('mission_title', e.target.value)}
+                            placeholder="Наша миссия / Our Mission"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Заголовок секции Видение</Label>
+                          <Input
+                            value={valuesData.vision_title || ''}
+                            onChange={(e) => updateValuesField('vision_title', e.target.value)}
+                            placeholder="Наше видение / Our Vision"
+                          />
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
