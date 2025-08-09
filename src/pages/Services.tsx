@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Target, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -41,6 +42,7 @@ const Services = () => {
   const {
     getContent
   } = useSiteContent();
+  const { language } = useLanguage();
   useScrollAnimation();
   useEffect(() => {
     const fetchData = async () => {
@@ -146,12 +148,12 @@ const Services = () => {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/">Главная</Link>
+                  <Link to="/">{language === 'en' ? 'Home' : 'Главная'}</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Услуги</BreadcrumbPage>
+                <BreadcrumbPage>{language === 'en' ? 'Services' : 'Услуги'}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
