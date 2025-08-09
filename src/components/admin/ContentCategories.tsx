@@ -205,7 +205,7 @@ const ContentCategories = ({ onPageSelect, language = 'ru' }: ContentCategoriesP
             Назад к категориям
           </Button>
         </div>
-        <AboutManagement />
+        <AboutManagement language={language} />
       </div>
     );
   }

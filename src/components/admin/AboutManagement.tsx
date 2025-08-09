@@ -47,9 +47,10 @@ interface PageSEO {
   og_title: string;
   og_description: string;
   og_image: string;
+  language?: string;
 }
 
-const AboutManagement = () => {
+const AboutManagement = ({ language = 'ru' }: { language: 'ru' | 'en' }) => {
   const { toast } = useToast();
   const { getContent, updateContent } = useSiteContent();
   const [team, setTeam] = useState<TeamMember[]>([]);
@@ -106,7 +107,7 @@ const AboutManagement = () => {
       const { data: companyData, error: companyError } = await supabase
         .from('company_info')
         .select('*')
-        .eq('language', 'ru')
+        .eq('language', language)
         .maybeSingle();
 
       if (companyError) {
@@ -121,7 +122,7 @@ const AboutManagement = () => {
         .from('page_seo')
         .select('*')
         .eq('page_slug', 'about')
-        .eq('language', 'ru')
+        .eq('language', language)
         .maybeSingle();
 
       if (seoError) {
@@ -157,18 +158,18 @@ const AboutManagement = () => {
 
   const loadValuesData = () => {
     const values = {
-      hero_title_1: getContent('about', 'hero_title_1'),
-      hero_title_2: getContent('about', 'hero_title_2'),
-      values_title: getContent('about', 'values_title'),
-      values_subtitle: getContent('about', 'values_subtitle'),
-      value_1_title: getContent('about', 'value_1_title'),
-      value_1_description: getContent('about', 'value_1_description'),
-      value_2_title: getContent('about', 'value_2_title'),
-      value_2_description: getContent('about', 'value_2_description'),
-      value_3_title: getContent('about', 'value_3_title'),
-      value_3_description: getContent('about', 'value_3_description'),
-      value_4_title: getContent('about', 'value_4_title'),
-      value_4_description: getContent('about', 'value_4_description'),
+      hero_title_1: getContent('about', 'hero_title_1', language),
+      hero_title_2: getContent('about', 'hero_title_2', language),
+      values_title: getContent('about', 'values_title', language),
+      values_subtitle: getContent('about', 'values_subtitle', language),
+      value_1_title: getContent('about', 'value_1_title', language),
+      value_1_description: getContent('about', 'value_1_description', language),
+      value_2_title: getContent('about', 'value_2_title', language),
+      value_2_description: getContent('about', 'value_2_description', language),
+      value_3_title: getContent('about', 'value_3_title', language),
+      value_3_description: getContent('about', 'value_3_description', language),
+      value_4_title: getContent('about', 'value_4_title', language),
+      value_4_description: getContent('about', 'value_4_description', language),
     };
     setValuesData(values);
   };
@@ -177,7 +178,7 @@ const AboutManagement = () => {
     try {
       await Promise.all(
         Object.entries(valuesData).map(([key, value]) =>
-          updateContent('about', key, value)
+          updateContent('about', key, value, language)
         )
       );
 
@@ -202,10 +203,10 @@ const AboutManagement = () => {
     if (!companyInfo) return;
 
     try {
-      // Save company info - убедиться что обновляется русская запись
+      // Save company info for selected language
       const updatedCompanyInfo = {
         ...companyInfo,
-        language: 'ru'
+        language: language
       };
       
       const { error: companyError } = await supabase
@@ -216,8 +217,8 @@ const AboutManagement = () => {
 
       // Save hero title fields
       await Promise.all([
-        updateContent('about', 'hero_title_1', valuesData.hero_title_1 || ''),
-        updateContent('about', 'hero_title_2', valuesData.hero_title_2 || '')
+        updateContent('about', 'hero_title_1', valuesData.hero_title_1 || '', language),
+        updateContent('about', 'hero_title_2', valuesData.hero_title_2 || '', language)
       ]);
 
       toast({
@@ -277,12 +278,13 @@ const AboutManagement = () => {
     try {
       const seoData = {
         ...pageSEO,
-        page_slug: 'about'
+        page_slug: 'about',
+        language: language
       };
 
       const { error } = await supabase
         .from('page_seo')
-        .upsert(seoData, { onConflict: 'page_slug' });
+        .upsert(seoData, { onConflict: 'page_slug,language' });
 
       if (error) throw error;
 

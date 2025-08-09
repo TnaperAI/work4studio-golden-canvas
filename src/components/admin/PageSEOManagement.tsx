@@ -21,6 +21,7 @@ interface PageSEO {
   og_title: string;
   og_description: string;
   og_image: string;
+  language?: 'ru' | 'en';
 }
 
 interface ServicePage {
@@ -45,6 +46,7 @@ const PageSEOManagement = () => {
   const [servicePagesLoading, setServicePagesLoading] = useState(true);
   const [servicePages, setServicePages] = useState<ServicePage[]>([]);
   const [allPages, setAllPages] = useState(staticPages);
+  const [selectedLanguage, setSelectedLanguage] = useState<'ru' | 'en'>('ru');
 
   useEffect(() => {
     fetchServicePages();
@@ -78,7 +80,7 @@ const PageSEOManagement = () => {
 
   useEffect(() => {
     fetchPageSEO();
-  }, [selectedPage]);
+  }, [selectedPage, selectedLanguage]);
 
   const fetchPageSEO = async () => {
     setLoading(true);
@@ -120,6 +122,7 @@ const PageSEOManagement = () => {
           .from('page_seo')
           .select('*')
           .eq('page_slug', selectedPage)
+          .eq('language', selectedLanguage)
           .maybeSingle();
 
         data = pageData;
@@ -180,9 +183,10 @@ const PageSEOManagement = () => {
         if (error) throw error;
       } else {
         // Сохраняем SEO данные обычной страницы в таблицу page_seo
-        const seoData = {
+        const seoData: any = {
           ...pageSEO,
-          page_slug: selectedPage
+          page_slug: selectedPage,
+          language: selectedLanguage
         };
 
         // Убираем id если он пустой для корректного создания записи
@@ -192,7 +196,7 @@ const PageSEOManagement = () => {
 
         const { error } = await supabase
           .from('page_seo')
-          .upsert(seoData, { onConflict: 'page_slug' });
+          .upsert(seoData, { onConflict: 'page_slug,language' });
 
         if (error) throw error;
       }
@@ -236,7 +240,7 @@ const PageSEOManagement = () => {
           <CardTitle>Выберите страницу для редактирования</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <div className="space-y-2">
               <Label>Страница</Label>
               <Select value={selectedPage} onValueChange={setSelectedPage} disabled={servicePagesLoading}>
@@ -249,6 +253,18 @@ const PageSEOManagement = () => {
                       {page.name}
                     </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Язык</Label>
+              <Select value={selectedLanguage} onValueChange={(v) => setSelectedLanguage(v as 'ru' | 'en')}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Выберите язык" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ru">Русский</SelectItem>
+                  <SelectItem value="en">English</SelectItem>
                 </SelectContent>
               </Select>
             </div>
