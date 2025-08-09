@@ -47,6 +47,21 @@ interface CaseEditorProps {
   onBack: () => void;
 }
 
+interface CaseTranslationData {
+  title: string;
+  short_description: string;
+  description: string;
+  results: string[];
+  meta_title: string;
+  meta_description: string;
+  meta_keywords: string;
+  h1_tag: string;
+  canonical_url: string;
+  og_title: string;
+  og_description: string;
+  og_image: string;
+}
+
 const buildCategoryOptions = (lang: 'ru' | 'en') => [
   { value: 'website', label: lang === 'ru' ? 'Веб-сайт' : 'Website' },
   { value: 'ecommerce', label: lang === 'ru' ? 'Интернет-магазин' : 'E-commerce' },
@@ -67,8 +82,24 @@ const { toast } = useToast();
   const [newTechnology, setNewTechnology] = useState('');
   const [newResult, setNewResult] = useState('');
   const [newGalleryImage, setNewGalleryImage] = useState('');
-  const [uploadingMainImage, setUploadingMainImage] = useState(false);
+const [uploadingMainImage, setUploadingMainImage] = useState(false);
   const [uploadingGalleryImage, setUploadingGalleryImage] = useState(false);
+
+  const [enData, setEnData] = useState<CaseTranslationData>({
+    title: '',
+    short_description: '',
+    description: '',
+    results: [],
+    meta_title: '',
+    meta_description: '',
+    meta_keywords: '',
+    h1_tag: '',
+    canonical_url: '',
+    og_title: '',
+    og_description: '',
+    og_image: ''
+  });
+  const [newResultEn, setNewResultEn] = useState('');
   
   const [formData, setFormData] = useState<CaseData>({
     title: '',
@@ -126,11 +157,36 @@ const { toast } = useToast();
         ...data,
         project_date: data.project_date || new Date().toISOString().split('T')[0]
       });
+      await fetchEnTranslation(data.id);
     }
     setLoading(false);
   };
+const fetchEnTranslation = async (id: string) => {
+    const { data: t, error: tErr } = await supabase
+      .from('case_translations')
+      .select('title, short_description, description, results, meta_title, meta_description, meta_keywords, h1_tag, canonical_url, og_title, og_description, og_image')
+      .eq('case_id', id)
+      .eq('language', 'en')
+      .maybeSingle();
+    if (!tErr && t) {
+      setEnData({
+        title: t.title || '',
+        short_description: t.short_description || '',
+        description: t.description || '',
+        results: t.results || [],
+        meta_title: t.meta_title || '',
+        meta_description: t.meta_description || '',
+        meta_keywords: t.meta_keywords || '',
+        h1_tag: t.h1_tag || '',
+        canonical_url: t.canonical_url || '',
+        og_title: t.og_title || '',
+        og_description: t.og_description || '',
+        og_image: t.og_image || ''
+      });
+    }
+  };
 
-  const generateSlug = (title: string) => {
+const generateSlug = (title: string) => {
     return title
       .toLowerCase()
       .replace(/[а-яё]/g, (match) => {
@@ -148,7 +204,7 @@ const { toast } = useToast();
       .replace(/^-|-$/g, '');
   };
 
-  const handleSave = async () => {
+const handleSave = async () => {
     if (!formData.title || !formData.slug) {
       toast({
         title: 'Ошибка',
@@ -160,35 +216,65 @@ const { toast } = useToast();
 
     setSaving(true);
 
-    let error;
-    if (caseId) {
-      const { error: updateError } = await supabase
-        .from('cases')
-        .update(formData)
-        .eq('id', caseId);
-      error = updateError;
-    } else {
-      const { error: insertError } = await supabase
-        .from('cases')
-        .insert(formData);
-      error = insertError;
-    }
+    try {
+      let savedId = caseId as string | undefined;
+      if (caseId) {
+        const { error: updateError } = await supabase
+          .from('cases')
+          .update(formData)
+          .eq('id', caseId);
+        if (updateError) throw updateError;
+      } else {
+        const { data: inserted, error: insertError } = await supabase
+          .from('cases')
+          .insert(formData)
+          .select('id')
+          .maybeSingle();
+        if (insertError) throw insertError;
+        savedId = inserted?.id;
+      }
 
-    if (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось сохранить кейс',
-        variant: 'destructive',
-      });
-    } else {
+      // Upsert EN translation if any fields provided
+      const hasEn = !!(
+        enData.title || enData.short_description || enData.description ||
+        enData.meta_title || enData.meta_description || enData.meta_keywords ||
+        enData.h1_tag || enData.canonical_url || enData.og_title ||
+        enData.og_description || enData.og_image || (enData.results && enData.results.length > 0)
+      );
+
+      if (savedId && hasEn) {
+        const { error: trError } = await supabase
+          .from('case_translations')
+          .upsert({
+            case_id: savedId,
+            language: 'en',
+            title: enData.title || formData.title,
+            short_description: enData.short_description || null,
+            description: enData.description || null,
+            results: enData.results || [],
+            meta_title: enData.meta_title || null,
+            meta_description: enData.meta_description || null,
+            meta_keywords: enData.meta_keywords || null,
+            h1_tag: enData.h1_tag || null,
+            canonical_url: enData.canonical_url || null,
+            og_title: enData.og_title || null,
+            og_description: enData.og_description || null,
+            og_image: enData.og_image || null,
+          }, { onConflict: 'case_id,language' });
+        if (trError) throw trError;
+      }
+
       toast({
         title: 'Успешно',
         description: caseId ? 'Кейс обновлен' : 'Кейс создан',
       });
       onBack();
+    } catch (e) {
+      console.error(e);
+      toast({ title: 'Ошибка', description: 'Не удалось сохранить кейс', variant: 'destructive' });
+    } finally {
+      setSaving(false);
     }
-
-    setSaving(false);
   };
 
   const addTechnology = () => {
@@ -325,6 +411,9 @@ const { toast } = useToast();
       setFormData(prev => ({ ...prev, slug: generateSlug(value) }));
     }
   };
+const updateEnField = (field: keyof CaseTranslationData, value: any) => {
+    setEnData(prev => ({ ...prev, [field]: value }));
+  };
 
   if (loading) {
     return (
@@ -436,6 +525,48 @@ const { toast } = useToast();
                   value={formData.project_url}
                   onChange={(e) => updateField('project_url', e.target.value)}
                   placeholder="https://example.com"
+                />
+              </div>
+            </CardContent>
+</Card>
+
+          {/* English content */}
+          <Card>
+            <CardHeader>
+              <CardTitle>{language === 'ru' ? 'Английская версия (EN)' : 'English version (EN)'}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>{language === 'ru' ? 'Название (EN)' : 'Title (EN)'} *</Label>
+                  <Input
+                    value={enData.title}
+                    onChange={(e) => updateEnField('title', e.target.value)}
+                    placeholder={language === 'ru' ? 'Корпоративный сайт (EN)' : 'Corporate website (EN)'}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Slug *</Label>
+                  <Input disabled value={formData.slug} />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>{language === 'ru' ? 'Краткое описание (EN)' : 'Short description (EN)'}</Label>
+                <Input
+                  value={enData.short_description}
+                  onChange={(e) => updateEnField('short_description', e.target.value)}
+                  placeholder={language === 'ru' ? 'Краткое описание на английском' : 'Short description in English'}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>{language === 'ru' ? 'Полное описание (EN)' : 'Full description (EN)'}</Label>
+                <Textarea
+                  value={enData.description}
+                  onChange={(e) => updateEnField('description', e.target.value)}
+                  placeholder={language === 'ru' ? 'Описание проекта на английском' : 'Project description in English'}
+                  rows={4}
                 />
               </div>
             </CardContent>
@@ -721,6 +852,83 @@ const { toast } = useToast();
                     value={formData.og_description}
                     onChange={(e) => updateField('og_description', e.target.value)}
                     placeholder="Описание для соцсетей"
+                    rows={3}
+                  />
+                </div>
+              </div>
+            </CardContent>
+</Card>
+
+          {/* English SEO */}
+          <Card>
+            <CardHeader>
+              <CardTitle>{language === 'ru' ? 'SEO настройки (EN)' : 'SEO settings (EN)'}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>H1 (EN)</Label>
+                  <Input
+                    value={enData.h1_tag}
+                    onChange={(e) => updateEnField('h1_tag', e.target.value)}
+                    placeholder="Main H1 for the page"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Meta Title (EN)</Label>
+                  <Input
+                    value={enData.meta_title}
+                    onChange={(e) => updateEnField('meta_title', e.target.value)}
+                    placeholder="SEO title (EN)"
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <Label>Meta Description (EN)</Label>
+                  <Textarea
+                    value={enData.meta_description}
+                    onChange={(e) => updateEnField('meta_description', e.target.value)}
+                    placeholder="SEO description (EN)"
+                    rows={3}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Keywords (EN)</Label>
+                  <Input
+                    value={enData.meta_keywords}
+                    onChange={(e) => updateEnField('meta_keywords', e.target.value)}
+                    placeholder="keyword1, keyword2, keyword3"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Canonical URL (EN)</Label>
+                  <Input
+                    value={enData.canonical_url}
+                    onChange={(e) => updateEnField('canonical_url', e.target.value)}
+                    placeholder="https://site.com/en/cases/case-slug"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>OG Title (EN)</Label>
+                  <Input
+                    value={enData.og_title}
+                    onChange={(e) => updateEnField('og_title', e.target.value)}
+                    placeholder="OpenGraph title (EN)"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>OG Image (EN)</Label>
+                  <Input
+                    value={enData.og_image}
+                    onChange={(e) => updateEnField('og_image', e.target.value)}
+                    placeholder="URL"
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <Label>OG Description (EN)</Label>
+                  <Textarea
+                    value={enData.og_description}
+                    onChange={(e) => updateEnField('og_description', e.target.value)}
+                    placeholder="OpenGraph description (EN)"
                     rows={3}
                   />
                 </div>
