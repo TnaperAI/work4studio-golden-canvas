@@ -183,6 +183,7 @@ const ContentCategories = ({ onPageSelect, language = 'ru' }: ContentCategoriesP
           <ServicesManagement 
             onServiceEdit={handleServiceEdit}
             onServiceCreate={handleServiceCreate}
+            language={language}
           />
         </ErrorBoundary>
       </div>

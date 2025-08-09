@@ -42,14 +42,16 @@ interface Service {
 interface ServicesManagementProps {
   onServiceEdit: (serviceId: string) => void;
   onServiceCreate: () => void;
+  language?: 'ru' | 'en';
 }
 
-const ServicesManagement = ({ onServiceEdit, onServiceCreate }: ServicesManagementProps) => {
+const ServicesManagement = ({ onServiceEdit, onServiceCreate, language = 'ru' }: ServicesManagementProps) => {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [serviceToDelete, setServiceToDelete] = useState<Service | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [tMap, setTMap] = useState<Record<string, any>>({});
   const { toast } = useToast();
 
   console.log('ServicesManagement rendered, loading:', loading, 'error:', error);
@@ -74,8 +76,38 @@ const ServicesManagement = ({ onServiceEdit, onServiceCreate }: ServicesManageme
           variant: 'destructive',
         });
       } else {
-        console.log('Services loaded successfully:', data);
-        setServices(data || []);
+        let base = data || [];
+        if (language === 'en' && base.length > 0) {
+          const ids = base.map((s) => s.id);
+          const { data: tr, error: tErr } = await (supabase as any)
+            .from('service_translations')
+            .select('*')
+            .eq('language', 'en')
+            .in('service_id', ids);
+          if (tErr) {
+            console.warn('Translations load error:', tErr);
+            setTMap({});
+            setServices(base);
+          } else {
+            const map: Record<string, any> = {};
+            (tr || []).forEach((row: any) => { map[row.service_id] = row; });
+            setTMap(map);
+            const merged = base.map((s) => {
+              const t = map[s.id];
+              return {
+                ...s,
+                title: t?.title ?? s.title,
+                short_description: t?.short_description ?? s.short_description,
+                description: t?.description ?? s.description,
+                features: t?.features ?? s.features,
+              } as Service;
+            });
+            setServices(merged);
+          }
+        } else {
+          console.log('Services loaded successfully:', base);
+          setServices(base);
+        }
       }
     } catch (err) {
       console.error('Unexpected error:', err);
@@ -91,7 +123,7 @@ const ServicesManagement = ({ onServiceEdit, onServiceCreate }: ServicesManageme
 
   useEffect(() => {
     fetchServices();
-  }, []);
+  }, [language]);
 
   const handleToggleActive = async (service: Service) => {
     const { error } = await supabase
