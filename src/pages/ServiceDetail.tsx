@@ -175,7 +175,7 @@ const ServiceDetail = () => {
         <Header />
         <div className="container mx-auto px-4 py-32 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Загружаем услугу...</p>
+          <p className="text-muted-foreground">{language === "en" ? "Loading service..." : "Загружаем услугу..."}</p>
         </div>
         <Footer />
       </div>
@@ -187,12 +187,12 @@ const ServiceDetail = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container mx-auto px-4 py-32 text-center">
-          <h1 className="text-4xl font-bold mb-4 text-foreground">Услуга не найдена</h1>
-          <p className="text-muted-foreground mb-8">Услуга с адресом "{service}" не существует</p>
+          <h1 className="text-4xl font-bold mb-4 text-foreground">{language === "en" ? "Service not found" : "Услуга не найдена"}</h1>
+          <p className="text-muted-foreground mb-8">{language === "en" ? `Service with address "${service}" does not exist` : `Услуга с адресом "${service}" не существует`}</p>
           <Link to="/services">
             <Button>
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Вернуться к услугам
+              {language === "en" ? "Back to services" : "Вернуться к услугам"}
             </Button>
           </Link>
         </div>
@@ -212,13 +212,13 @@ const ServiceDetail = () => {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/">Главная</Link>
+                  <Link to="/">{language === "en" ? "Home" : "Главная"}</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/services">Услуги</Link>
+                  <Link to="/services">{language === "en" ? "Services" : "Услуги"}</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
@@ -238,7 +238,7 @@ const ServiceDetail = () => {
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors group"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-            <span className="text-sm font-medium">Назад к услугам</span>
+            <span className="text-sm font-medium">{language === "en" ? "Back to services" : "Назад к услугам"}</span>
           </Link>
         </div>
       </section>
@@ -267,7 +267,7 @@ const ServiceDetail = () => {
                   onClick={() => setShowContactForm(true)}
                   className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
-                  Заказать {serviceData.title?.toLowerCase()}
+                  {language === "en" ? `Order ${serviceData.title}` : `Заказать ${serviceData.title?.toLowerCase()}`}
                 </Button>
               </div>
             </div>
@@ -278,16 +278,18 @@ const ServiceDetail = () => {
                 <CardContent className="p-6">
                   <div className="text-center mb-6">
                     <div className="text-3xl font-bold text-foreground mb-2">
-                      от {serviceData.price_from?.toLocaleString() || 'Цена не указана'}$
+                      {serviceData.price_from
+                        ? `${language === "en" ? "from" : "от"} ${serviceData.price_from.toLocaleString()}$`
+                        : (language === "en" ? "Price not set" : "Цена не указана")}
                     </div>
-                    <div className="text-muted-foreground">Стоимость работ</div>
+                    <div className="text-muted-foreground">{language === "en" ? "Estimated cost" : "Стоимость работ"}</div>
                   </div>
                   
                   <Button 
                     className="w-full mb-4"
                     onClick={() => setShowContactForm(true)}
                   >
-                    Обсудить проект
+                    {language === "en" ? "Discuss project" : "Обсудить проект"}
                   </Button>
                   
                   <div className="space-y-3 text-sm text-muted-foreground">
@@ -310,7 +312,7 @@ const ServiceDetail = () => {
         <section className="py-16 bg-secondary">
           <div className="container mx-auto px-4 max-w-7xl">
             <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
-              Что входит в работу
+              {language === "en" ? "What's included" : "Что входит в работу"}
             </h2>
             
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -334,7 +336,7 @@ const ServiceDetail = () => {
         <section className="py-16 bg-background">
           <div className="container mx-auto px-4 max-w-6xl">
             <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
-              Частые вопросы
+              {language === "en" ? "Frequently asked questions" : "Частые вопросы"}
             </h2>
             
             <div className="grid gap-6 md:grid-cols-2">
