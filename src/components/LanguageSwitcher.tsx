@@ -24,10 +24,10 @@ const LanguageSwitcher = () => {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm" className="flex items-center gap-2">
           <Globe className="h-4 w-4" />
-          <span className="hidden sm:inline">
-            {currentLanguage?.name}
+          <span className="lg:hidden">
+            {currentLanguage?.code?.toUpperCase()}
           </span>
-          <span className="sm:hidden">
+          <span className="hidden lg:inline">
             {currentLanguage?.name}
           </span>
         </Button>
