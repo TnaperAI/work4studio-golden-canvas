@@ -47,20 +47,21 @@ interface CaseEditorProps {
   onBack: () => void;
 }
 
-const categoryOptions = [
-  { value: 'website', label: language === 'ru' ? 'Веб-сайт' : 'Website' },
-  { value: 'ecommerce', label: language === 'ru' ? 'Интернет-магазин' : 'E-commerce' },
-  { value: 'mobile', label: language === 'ru' ? 'Мобильное приложение' : 'Mobile app' },
-  { value: 'landing', label: language === 'ru' ? 'Лендинг' : 'Landing page' },
-  { value: 'corporate', label: language === 'ru' ? 'Корпоративный сайт' : 'Corporate website' },
-  { value: 'startup', label: language === 'ru' ? 'Стартап' : 'Startup' },
-  { value: 'redesign', label: language === 'ru' ? 'Редизайн' : 'Redesign' },
+const buildCategoryOptions = (lang: 'ru' | 'en') => [
+  { value: 'website', label: lang === 'ru' ? 'Веб-сайт' : 'Website' },
+  { value: 'ecommerce', label: lang === 'ru' ? 'Интернет-магазин' : 'E-commerce' },
+  { value: 'mobile', label: lang === 'ru' ? 'Мобильное приложение' : 'Mobile app' },
+  { value: 'landing', label: lang === 'ru' ? 'Лендинг' : 'Landing page' },
+  { value: 'corporate', label: lang === 'ru' ? 'Корпоративный сайт' : 'Corporate website' },
+  { value: 'startup', label: lang === 'ru' ? 'Стартап' : 'Startup' },
+  { value: 'redesign', label: lang === 'ru' ? 'Редизайн' : 'Redesign' },
   { value: 'crm', label: 'CRM' }
 ];
 
 const CaseEditor = ({ caseId, onBack }: CaseEditorProps) => {
-  const { toast } = useToast();
+const { toast } = useToast();
   const { language } = useLanguage();
+  const categoryOptions = buildCategoryOptions(language);
   const [loading, setLoading] = useState(!!caseId);
   const [saving, setSaving] = useState(false);
   const [newTechnology, setNewTechnology] = useState('');
