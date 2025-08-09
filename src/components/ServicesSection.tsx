@@ -1,12 +1,11 @@
 import { Globe, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSiteContent } from '@/hooks/useSiteContent';
-
 const ServicesSection = () => {
-  const { getContent } = useSiteContent();
-
-  return (
-    <section className="section-padding relative overflow-hidden">
+  const {
+    getContent
+  } = useSiteContent();
+  return <section className="section-padding relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 to-transparent"></div>
       <div className="absolute top-10 right-10 w-64 h-64 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-3xl"></div>
@@ -17,7 +16,7 @@ const ServicesSection = () => {
             <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
               {getContent('services', 'title') || 'Наши'}
             </span>{' '}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">услуги</span>
+            
           </h2>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
             {getContent('services', 'subtitle') || 'Полный цикл работы с вашим веб-проектом от идеи до запуска'}
@@ -46,12 +45,10 @@ const ServicesSection = () => {
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-2xl mx-auto">
-                  {(getContent('services', 'features') || 'Адаптивная вёрстка,SEO-ready,CMS на выбор,Интеграции').split(',').map((feature, idx) => (
-                    <div key={idx} className="flex items-center text-xs sm:text-sm bg-gradient-to-r from-secondary/80 to-muted/50 rounded-xl px-3 py-2 md:px-4 md:py-3 border border-border/50 hover:border-primary/30 transition-colors group/feature">
+                  {(getContent('services', 'features') || 'Адаптивная вёрстка,SEO-ready,CMS на выбор,Интеграции').split(',').map((feature, idx) => <div key={idx} className="flex items-center text-xs sm:text-sm bg-gradient-to-r from-secondary/80 to-muted/50 rounded-xl px-3 py-2 md:px-4 md:py-3 border border-border/50 hover:border-primary/30 transition-colors group/feature">
                       <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-gradient-to-r from-primary to-accent rounded-full mr-2 md:mr-3 flex-shrink-0 group-hover/feature:scale-125 transition-transform"></div>
                       <span className="font-medium text-center flex-1">{feature.trim()}</span>
-                    </div>
-                  ))}
+                    </div>)}
                 </div>
 
                 <Link to="/services" className="bg-transparent text-foreground px-8 py-4 rounded-xl font-medium border border-border text-lg hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/10 hover:border-primary/50 transition-all duration-300 inline-flex items-center space-x-3 group/button">
@@ -63,8 +60,6 @@ const ServicesSection = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default ServicesSection;
