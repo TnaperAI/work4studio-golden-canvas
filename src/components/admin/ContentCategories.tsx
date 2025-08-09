@@ -161,6 +161,7 @@ const ContentCategories = ({ onPageSelect, language = 'ru' }: ContentCategoriesP
         <ServiceEditor 
           serviceId={selectedServiceId || undefined}
           onBack={handleBackFromServiceEditor}
+          language={language}
         />
       );
     }

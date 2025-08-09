@@ -37,9 +37,10 @@ interface Service {
 interface ServiceEditorProps {
   serviceId?: string;
   onBack: () => void;
+  language?: 'ru' | 'en';
 }
 
-const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
+const ServiceEditor = ({ serviceId, onBack, language = 'ru' }: ServiceEditorProps) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(!!serviceId);
   const [saving, setSaving] = useState(false);
@@ -76,34 +77,96 @@ const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
     } else {
       setLoading(false);
     }
-  }, [serviceId]);
+  }, [serviceId, language]);
 
   const fetchService = async () => {
     if (!serviceId) return;
 
-    const { data, error } = await supabase
+    // Load base service for non-translatable fields
+    const { data: base, error: baseError } = await supabase
       .from('services')
       .select('*')
       .eq('id', serviceId)
       .maybeSingle();
 
-    if (error) {
+    if (baseError) {
       toast({
         title: 'Ошибка',
         description: 'Не удалось загрузить услугу',
         variant: 'destructive',
       });
-    } else if (data) {
+      setLoading(false);
+      return;
+    }
+
+    if (!base) {
+      setLoading(false);
+      return;
+    }
+
+    if (language === 'ru') {
       setFormData({
-        ...data,
-        price_from: data.price_from || '',
-        price_to: data.price_to || '',
-        faq: Array.isArray(data.faq) ? data.faq.map((item: any) => ({
+        ...base,
+        price_from: base.price_from || '',
+        price_to: base.price_to || '',
+        faq: Array.isArray(base.faq) ? base.faq.map((item: any) => ({
           question: item.question || '',
           answer: item.answer || ''
         })) : []
       });
+      setLoading(false);
+      return;
     }
+
+    // EN: try to load translation and merge with base
+    const { data: t, error: tError } = await supabase
+      .from('service_translations')
+      .select('*')
+      .eq('service_id', serviceId)
+      .eq('language', 'en')
+      .maybeSingle();
+
+    if (tError) {
+      // We still can show base content as fallback
+      console.warn('Translation load error:', tError);
+    }
+
+    const merged = {
+      ...base,
+      // Translatable fields from translation or fallback to base
+      title: t?.title || base.title || '',
+      description: t?.description || base.description || '',
+      short_description: t?.short_description || base.short_description || '',
+      features: (t?.features as string[] | null) || (base.features as string[] | null) || [],
+      advantages: (t?.advantages as string[] | null) || (base.advantages as string[] | null) || [],
+      faq: Array.isArray(t?.faq)
+        ? (t!.faq as any[]).map((item: any) => ({
+            question: item.question || '',
+            answer: item.answer || ''
+          }))
+        : Array.isArray(base.faq)
+        ? (base.faq as any[]).map((item: any) => ({
+            question: item.question || '',
+            answer: item.answer || ''
+          }))
+        : [],
+      meta_title: t?.meta_title || base.meta_title || '',
+      meta_description: t?.meta_description || base.meta_description || '',
+      meta_keywords: t?.meta_keywords || base.meta_keywords || '',
+      h1_tag: t?.h1_tag || base.h1_tag || '',
+      canonical_url: t?.canonical_url || base.canonical_url || '',
+      og_title: t?.og_title || base.og_title || '',
+      og_description: t?.og_description || base.og_description || '',
+      og_image: t?.og_image || base.og_image || '',
+      // Non-translatables
+      price_from: base.price_from || '',
+      price_to: base.price_to || '',
+      is_active: base.is_active,
+      sort_order: base.sort_order,
+      slug: base.slug,
+    } as Service;
+
+    setFormData(merged);
     setLoading(false);
   };
 
@@ -126,7 +189,8 @@ const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
   };
 
   const handleSave = async () => {
-    if (!formData.title || !formData.slug) {
+    // Require slug only in RU (global slug)
+    if (!formData.title || (language === 'ru' && !formData.slug)) {
       toast({
         title: 'Ошибка',
         description: 'Заполните обязательные поля',
@@ -135,43 +199,117 @@ const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
       return;
     }
 
-    setSaving(true);
-
-    const dataToSave = {
-      ...formData,
-      price_from: formData.price_from ? Number(formData.price_from) : null,
-      price_to: formData.price_to ? Number(formData.price_to) : null,
-    };
-
-    let error;
-    if (serviceId) {
-      const { error: updateError } = await supabase
-        .from('services')
-        .update(dataToSave)
-        .eq('id', serviceId);
-      error = updateError;
-    } else {
-      const { error: insertError } = await supabase
-        .from('services')
-        .insert([dataToSave]);
-      error = insertError;
-    }
-
-    if (error) {
+    if (!serviceId && language === 'en') {
       toast({
-        title: 'Ошибка',
-        description: 'Не удалось сохранить услугу',
+        title: 'Только после создания RU',
+        description: 'Сначала создайте услугу в RU, затем добавьте перевод EN',
         variant: 'destructive',
       });
-    } else {
-      toast({
-        title: 'Успешно',
-        description: serviceId ? 'Услуга обновлена' : 'Услуга создана',
-      });
-      onBack();
+      return;
     }
 
-    setSaving(false);
+    setSaving(true);
+
+    try {
+      if (serviceId) {
+        if (language === 'ru') {
+          // Update base service including all content fields
+          const dataToSave = {
+            ...formData,
+            price_from: formData.price_from ? Number(formData.price_from) : null,
+            price_to: formData.price_to ? Number(formData.price_to) : null,
+          } as any;
+
+          const { error } = await supabase
+            .from('services')
+            .update(dataToSave)
+            .eq('id', serviceId);
+
+          if (error) throw error;
+        } else {
+          // Update non-translatable fields in base (optional but useful)
+          const baseUpdate = {
+            price_from: formData.price_from ? Number(formData.price_from) : null,
+            price_to: formData.price_to ? Number(formData.price_to) : null,
+            is_active: formData.is_active,
+            sort_order: formData.sort_order,
+          } as any;
+          const { error: baseErr } = await supabase
+            .from('services')
+            .update(baseUpdate)
+            .eq('id', serviceId);
+          if (baseErr) console.warn('Base update (EN) warning:', baseErr.message);
+
+          // Upsert translation for EN
+          const { data: existing } = await supabase
+            .from('service_translations')
+            .select('id')
+            .eq('service_id', serviceId)
+            .eq('language', 'en')
+            .maybeSingle();
+
+          const translationPayload: any = {
+            service_id: serviceId,
+            language: 'en',
+            title: formData.title,
+            short_description: formData.short_description,
+            description: formData.description,
+            features: formData.features,
+            advantages: formData.advantages,
+            faq: formData.faq,
+            meta_title: formData.meta_title,
+            meta_description: formData.meta_description,
+            meta_keywords: formData.meta_keywords,
+            h1_tag: formData.h1_tag,
+            canonical_url: formData.canonical_url,
+            og_title: formData.og_title,
+            og_description: formData.og_description,
+            og_image: formData.og_image,
+          };
+
+          if (existing) {
+            const { error: updErr } = await supabase
+              .from('service_translations')
+              .update(translationPayload)
+              .eq('id', existing.id);
+            if (updErr) throw updErr;
+          } else {
+            const { error: insErr } = await supabase
+              .from('service_translations')
+              .insert([translationPayload]);
+            if (insErr) throw insErr;
+          }
+        }
+      } else {
+        // Create base service (RU only)
+        const dataToSave = {
+          ...formData,
+          price_from: formData.price_from ? Number(formData.price_from) : null,
+          price_to: formData.price_to ? Number(formData.price_to) : null,
+        } as any;
+
+        const { error } = await supabase
+          .from('services')
+          .insert([dataToSave]);
+
+        if (error) throw error;
+      }
+
+      toast({
+        title: 'Успешно',
+        description: serviceId ? 'Изменения сохранены' : 'Услуга создана',
+      });
+      onBack();
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось сохранить изменения',
+        variant: 'destructive',
+      });
+    } finally {
+      setSaving(false);
+    }
   };
 
   const addFeature = () => {
@@ -229,8 +367,8 @@ const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
   const updateField = (field: keyof Service, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
-    // Auto-generate slug from title
-    if (field === 'title' && !serviceId) {
+    // Auto-generate slug from title (only for RU and new items)
+    if (field === 'title' && !serviceId && language === 'ru') {
       setFormData(prev => ({ ...prev, slug: generateSlug(value) }));
     }
   };
@@ -288,6 +426,7 @@ const ServiceEditor = ({ serviceId, onBack }: ServiceEditorProps) => {
                     value={formData.slug}
                     onChange={(e) => updateField('slug', e.target.value)}
                     placeholder="corporate"
+                    disabled={language === 'en'}
                   />
                 </div>
               </div>
