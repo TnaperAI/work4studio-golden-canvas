@@ -17,6 +17,7 @@ import ContactFormModal from '@/components/ContactFormModal';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ServiceData {
   id: string;
@@ -45,6 +46,7 @@ const ServiceDetail = () => {
   const [showContactForm, setShowContactForm] = useState(false);
   const [serviceData, setServiceData] = useState<ServiceData | null>(null);
   const [loading, setLoading] = useState(true);
+  const { language } = useLanguage();
 
   useEffect(() => {
     const fetchService = async () => {
@@ -53,7 +55,7 @@ const ServiceDetail = () => {
         return;
       }
 
-      const { data, error } = await supabase
+      const { data: base, error } = await supabase
         .from('services')
         .select('*')
         .eq('slug', service)
@@ -63,20 +65,55 @@ const ServiceDetail = () => {
       if (error) {
         console.error('Error fetching service:', error);
         setServiceData(null);
-      } else if (data) {
+      } else if (base) {
+        let merged: any = base;
+
+        if (language === 'en') {
+          const { data: t, error: tErr } = await supabase
+            .from('service_translations')
+            .select('*')
+            .eq('service_id', base.id)
+            .eq('language', 'en')
+            .maybeSingle();
+
+          if (tErr) {
+            console.warn('Translation load error:', tErr);
+          } else if (t) {
+            merged = {
+              ...base,
+              title: t.title ?? base.title,
+              short_description: t.short_description ?? base.short_description,
+              description: t.description ?? base.description,
+              features: t.features ?? base.features,
+              advantages: t.advantages ?? base.advantages,
+              faq: Array.isArray(t.faq) ? t.faq : base.faq,
+              meta_title: t.meta_title ?? base.meta_title,
+              meta_description: t.meta_description ?? base.meta_description,
+              meta_keywords: t.meta_keywords ?? base.meta_keywords,
+              h1_tag: t.h1_tag ?? base.h1_tag,
+              canonical_url: t.canonical_url ?? base.canonical_url,
+              og_title: t.og_title ?? base.og_title,
+              og_description: t.og_description ?? base.og_description,
+              og_image: t.og_image ?? base.og_image,
+            };
+          }
+        }
+
         setServiceData({
-          ...data,
-          faq: Array.isArray(data.faq) ? data.faq.map((item: any) => ({
-            question: item.question || '',
-            answer: item.answer || ''
-          })) : []
+          ...merged,
+          faq: Array.isArray((merged as any).faq)
+            ? (merged as any).faq.map((item: any) => ({
+                question: item.question || '',
+                answer: item.answer || '',
+              }))
+            : [],
         });
       }
       setLoading(false);
     };
 
     fetchService();
-  }, [service]);
+  }, [service, language]);
 
   // Обновляем SEO теги когда загружается услуга
   useEffect(() => {

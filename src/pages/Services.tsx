@@ -50,25 +50,58 @@ const Services = () => {
         console.log('🔄 Starting to fetch services...');
 
         // Fetch services
-        const {
-          data,
-          error
-        } = await supabase.from('services').select('*').eq('is_active', true).order('sort_order', {
-          ascending: true
-        });
+        const { data: baseServices, error } = await supabase
+          .from('services')
+          .select('*')
+          .eq('is_active', true)
+          .order('sort_order', { ascending: true });
+
         if (error) {
           console.error('Error fetching services:', error);
           setServices([]);
         } else {
-          console.log('✅ Successfully loaded services:', data);
-          setServices(data || []);
+          let merged = baseServices || [];
+
+          // Merge EN translations if needed
+          if (language === 'en' && merged.length > 0) {
+            const ids = merged.map((s) => s.id);
+            const { data: tr, error: tErr } = await supabase
+              .from('service_translations')
+              .select('service_id, title, short_description, description, features')
+              .eq('language', 'en')
+              .in('service_id', ids);
+
+            if (tErr) {
+              console.warn('Translations load error:', tErr);
+            } else if (tr && tr.length) {
+              const map: Record<string, any> = {};
+              tr.forEach((row: any) => { map[row.service_id] = row; });
+              merged = merged.map((s) => {
+                const t = map[s.id];
+                return t ? {
+                  ...s,
+                  title: t.title ?? s.title,
+                  short_description: t.short_description ?? s.short_description,
+                  description: t.description ?? s.description,
+                  features: t.features ?? s.features,
+                } : s;
+              });
+            }
+          }
+
+          console.log('✅ Successfully loaded services (merged if EN):', merged);
+          setServices(merged);
         }
 
-        // Fetch SEO data
-        const {
-          data: seoData,
-          error: seoError
-        } = await supabase.from('page_seo').select('*').eq('page_slug', 'services').maybeSingle();
+        // Fetch SEO data (limit to avoid multiple rows error)
+        const { data: seoData, error: seoError } = await supabase
+          .from('page_seo')
+          .select('*')
+          .eq('page_slug', 'services')
+          .order('updated_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
         if (seoError) {
           console.error('SEO error:', seoError);
         } else {
@@ -82,7 +115,7 @@ const Services = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [language]);
 
   // Обновляем SEO теги когда загружаются данные
   useEffect(() => {
