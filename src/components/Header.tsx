@@ -40,11 +40,9 @@ const Header = () => {
             </div>
           </Link>
 
-          {/* Centered mobile language switcher */}
-          <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-center lg:hidden pointer-events-none">
-            <div className="pointer-events-auto">
-              <LanguageSwitcher />
-            </div>
+          {/* Middle mobile/tablet language switcher between logo and burger */}
+          <div className="lg:hidden flex-1 flex items-center justify-center">
+            <LanguageSwitcher />
           </div>
 
           {/* Desktop Navigation */}
