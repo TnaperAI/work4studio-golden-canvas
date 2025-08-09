@@ -3,6 +3,7 @@ import { Mail } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import telegramLogo from '@/assets/telegram-logo.svg';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Service {
   id: string;
@@ -19,14 +20,23 @@ interface LegalDocument {
 const Footer = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [legalDocuments, setLegalDocuments] = useState<LegalDocument[]>([]);
+  const { language } = useLanguage();
 
-  const navigation = [
-    { name: 'Главная', href: '/' },
-    { name: 'Услуги', href: '/services' },
-    { name: 'Кейсы', href: '/cases' },
-    { name: 'О нас', href: '/about' },
-    { name: 'Контакты', href: '/contact' },
-  ];
+  const navigation = language === 'en'
+    ? [
+      { name: 'Home', href: '/' },
+      { name: 'Services', href: '/services' },
+      { name: 'Cases', href: '/cases' },
+      { name: 'About', href: '/about' },
+      { name: 'Contact', href: '/contact' },
+    ]
+    : [
+      { name: 'Главная', href: '/' },
+      { name: 'Услуги', href: '/services' },
+      { name: 'Кейсы', href: '/cases' },
+      { name: 'О нас', href: '/about' },
+      { name: 'Контакты', href: '/contact' },
+    ];
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -69,7 +79,9 @@ const Footer = () => {
             </span>
           </div>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-lg leading-relaxed">
-              Разработка сайтов нового поколения — от идеи до запуска за 3 дня. Никакой бюрократии, только результат.
+              {language === 'en'
+                ? 'Next-generation websites — from idea to launch in 3 days. No bureaucracy, just results.'
+                : 'Разработка сайтов нового поколения — от идеи до запуска за 3 дня. Никакой бюрократии, только результат.'}
             </p>
             <div className="flex space-x-4">
               <a
@@ -77,7 +89,7 @@ const Footer = () => {
                 className="inline-flex items-center px-6 py-3 bg-card border border-border rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
                 <Mail className="w-5 h-5 mr-3 text-primary" />
-                <span className="font-medium text-card-foreground">Написать нам</span>
+                <span className="font-medium text-card-foreground">{language === 'en' ? 'Email us' : 'Написать нам'}</span>
               </a>
               <a
                 href="https://t.me/work4studio"
@@ -94,7 +106,7 @@ const Footer = () => {
           {/* Navigation */}
           <div>
             <h4 className="text-xl font-heading font-bold mb-6 text-foreground">
-              Навигация
+              {language === 'en' ? 'Navigation' : 'Навигация'}
             </h4>
             <ul className="space-y-4">
               {navigation.map((item) => (
@@ -114,7 +126,7 @@ const Footer = () => {
           {/* Services Quick Links */}
           <div>
             <h4 className="text-xl font-heading font-bold mb-6 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-              Услуги
+              {language === 'en' ? 'Services' : 'Услуги'}
             </h4>
             <ul className="space-y-4">
               {services.map((service) => (
@@ -136,7 +148,7 @@ const Footer = () => {
         <div className="border-t border-gradient-to-r from-transparent via-border to-transparent pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-muted-foreground text-lg">
-              © 2024 Work4Studio. Все права защищены.
+              © 2024 Work4Studio. {language === 'en' ? 'All rights reserved.' : 'Все права защищены.'}
             </p>
             <div className="flex items-center space-x-6">
               {legalDocuments.map((doc) => (
@@ -145,12 +157,14 @@ const Footer = () => {
                   to={`/legal/${doc.type}`} 
                   className="text-sm text-muted-foreground hover:text-primary transition-colors underline"
                 >
-                  {doc.title}
+                  {language === 'en' 
+                    ? (doc.type === 'terms_of_service' ? 'Terms of Service' : doc.type === 'privacy_policy' ? 'Privacy Policy' : doc.title)
+                    : doc.title}
                 </Link>
               ))}
             </div>
             <div className="flex items-center space-x-3">
-              <span className="text-sm text-muted-foreground">Разработано</span>
+              <span className="text-sm text-muted-foreground">{language === 'en' ? 'Built by' : 'Разработано'}</span>
               <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
                 <span className="font-logo font-bold text-lg bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                   Work<span className="text-primary">4</span>Studio
