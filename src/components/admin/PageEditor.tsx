@@ -7,21 +7,21 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { ArrowLeft } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 
 interface PageEditorProps {
   pageSlug: string;
   onBack: () => void;
+  language?: 'ru' | 'en';
 }
 
 
-const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
+const PageEditor = ({ pageSlug, onBack, language = 'ru' }: PageEditorProps) => {
   const { content, getContent, updateContent } = useSiteContent();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
 
-  // Language for editing
-  const [selectedLanguage, setSelectedLanguage] = useState<'ru' | 'en'>('ru');
+  const currentLanguage = language;
 
   // Content states for different sections
   const [contentFields, setContentFields] = useState<Record<string, string>>({});
@@ -38,7 +38,7 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
       if (pageSlug === 'home') {
         // For home page, load hero, stats, services, advantages and cases sections
         content.forEach(c => {
-          if (c.language !== selectedLanguage) return;
+          if (c.language !== currentLanguage) return;
           if (c.section === 'hero') {
             pageContent[c.key] = c.value;
           } else if (c.section === 'stats') {
@@ -53,14 +53,14 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
         });
       } else if (pageSlug === 'contact') {
         content
-          .filter(c => c.section === 'contact' && c.language === selectedLanguage)
+          .filter(c => c.section === 'contact' && c.language === currentLanguage)
           .forEach(c => {
             pageContent[c.key] = c.value;
           });
       } else {
         // For other pages, use page slug as section
         content
-          .filter(c => c.section === pageSlug && c.language === selectedLanguage)
+          .filter(c => c.section === pageSlug && c.language === currentLanguage)
           .forEach(c => {
             pageContent[c.key] = c.value;
           });
@@ -68,7 +68,7 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
 
       setContentFields(pageContent);
     }
-  }, [content, pageSlug, selectedLanguage]);
+  }, [content, pageSlug, language]);
 
 
   const handleContentSave = async () => {
@@ -79,39 +79,39 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
           // Save hero section fields
           ...Object.entries(contentFields)
             .filter(([key]) => !key.startsWith('stats_') && !key.startsWith('services_') && !key.startsWith('advantages_') && !key.startsWith('cases_'))
-            .map(([key, value]) => updateContent('hero', key, value, selectedLanguage)),
+            .map(([key, value]) => updateContent('hero', key, value, currentLanguage)),
           
           // Save stats section fields
           ...Object.entries(contentFields)
             .filter(([key]) => key.startsWith('stats_'))
-            .map(([key, value]) => updateContent('stats', key.replace('stats_', ''), value, selectedLanguage)),
+            .map(([key, value]) => updateContent('stats', key.replace('stats_', ''), value, currentLanguage)),
             
           // Save services section fields
           ...Object.entries(contentFields)
             .filter(([key]) => key.startsWith('services_'))
-            .map(([key, value]) => updateContent('services', key.replace('services_', ''), value, selectedLanguage)),
+            .map(([key, value]) => updateContent('services', key.replace('services_', ''), value, currentLanguage)),
             
           // Save advantages section fields
           ...Object.entries(contentFields)
             .filter(([key]) => key.startsWith('advantages_') || key.startsWith('advantage_'))
-            .map(([key, value]) => updateContent('advantages', key.replace(/^advantages?_/, ''), value, selectedLanguage)),
+            .map(([key, value]) => updateContent('advantages', key.replace(/^advantages?_/, ''), value, currentLanguage)),
             
           // Save cases section fields
           ...Object.entries(contentFields)
             .filter(([key]) => key.startsWith('cases_'))
-            .map(([key, value]) => updateContent('cases', key.replace('cases_', ''), value, selectedLanguage))
+            .map(([key, value]) => updateContent('cases', key.replace('cases_', ''), value, currentLanguage))
         ]);
       } else if (pageSlug === 'contact') {
         await Promise.all(
           Object.entries(contentFields).map(([key, value]) =>
-            updateContent('contact', key, value, selectedLanguage)
+            updateContent('contact', key, value, currentLanguage)
           )
         );
       } else {
         // For other pages, use page slug as section
         await Promise.all(
           Object.entries(contentFields).map(([key, value]) =>
-            updateContent(pageSlug, key, value, selectedLanguage)
+            updateContent(pageSlug, key, value, currentLanguage)
           )
         );
       }
@@ -156,18 +156,6 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
             <p className="text-muted-foreground">
               Управление контентом страницы /{pageSlug}
             </p>
-          </div>
-          <div className="ml-auto w-40">
-            <Label>Язык</Label>
-            <Select value={selectedLanguage} onValueChange={(v) => setSelectedLanguage(v as 'ru' | 'en')}>
-              <SelectTrigger>
-                <SelectValue placeholder="Выберите язык" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ru">Русский</SelectItem>
-                <SelectItem value="en">English</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </div>
 

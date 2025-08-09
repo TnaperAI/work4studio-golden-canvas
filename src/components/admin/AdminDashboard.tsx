@@ -14,6 +14,7 @@ type AdminView = 'dashboard' | 'content' | 'content-ru' | 'content-en' | 'page-e
 const AdminDashboard = () => {
   const [currentView, setCurrentView] = useState<AdminView>('dashboard');
   const [selectedPageSlug, setSelectedPageSlug] = useState<string>('');
+  const [selectedLanguage, setSelectedLanguage] = useState<'ru' | 'en'>('ru');
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -51,6 +52,8 @@ const AdminDashboard = () => {
   }, []);
 
   const handlePageSelect = (pageSlug: string) => {
+    const hash = window.location.hash.replace('#', '');
+    setSelectedLanguage(hash === 'content-en' ? 'en' : 'ru');
     setSelectedPageSlug(pageSlug);
     setCurrentView('page-editor');
   };
@@ -69,6 +72,7 @@ const AdminDashboard = () => {
       <PageEditor 
         pageSlug={selectedPageSlug} 
         onBack={handleBackToContent}
+        language={selectedLanguage}
       />
     );
   }
