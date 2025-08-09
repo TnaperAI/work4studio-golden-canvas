@@ -6,23 +6,23 @@ const Advantages = () => {
   const advantages = [
     {
       icon: Clock,
-      title: getContent('advantages', 'item1_title') || 'Быстрое создание от 3 дней',
-      description: getContent('advantages', 'item1_description') || 'Современная методология разработки позволяет запускать проекты в кратчайшие сроки без потери качества.'
+      title: getContent('advantages', '1_title') || 'Быстрое создание от 3 дней',
+      description: getContent('advantages', '1_description') || 'Современная методология разработки позволяет запускать проекты в кратчайшие сроки без потери качества.'
     },
     {
       icon: Code,
-      title: getContent('advantages', 'item2_title') || 'Открытый код и доступ к данным',
-      description: getContent('advantages', 'item2_description') || 'Полный доступ к исходному коду вашего сайта. Никаких ограничений и зависимостей от платформ.'
+      title: getContent('advantages', '2_title') || 'Открытый код и доступ к данным',
+      description: getContent('advantages', '2_description') || 'Полный доступ к исходному коду вашего сайта. Никаких ограничений и зависимостей от платформ.'
     },
     {
       icon: HeadphonesIcon,
-      title: getContent('advantages', 'item3_title') || 'Техническая поддержка команды',
-      description: getContent('advantages', 'item3_description') || 'Круглосуточная поддержка от нашей команды экспертов. Решаем любые технические вопросы.'
+      title: getContent('advantages', '3_title') || 'Техническая поддержка команды',
+      description: getContent('advantages', '3_description') || 'Круглосуточная поддержка от нашей команды экспертов. Решаем любые технические вопросы.'
     },
     {
       icon: Users,
-      title: getContent('advantages', 'item4_title') || 'Прямой контакт без посредников',
-      description: getContent('advantages', 'item4_description') || 'Работаете напрямую с командой разработчиков. Никаких менеджеров и потери времени на коммуникации.'
+      title: getContent('advantages', '4_title') || 'Прямой контакт без посредников',
+      description: getContent('advantages', '4_description') || 'Работаете напрямую с командой разработчиков. Никаких менеджеров и потери времени на коммуникации.'
     }
   ];
 
