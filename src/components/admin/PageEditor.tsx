@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { ArrowLeft } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface PageEditorProps {
   pageSlug: string;
@@ -18,6 +19,9 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
   const { content, getContent, updateContent } = useSiteContent();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
+
+  // Language for editing
+  const [selectedLanguage, setSelectedLanguage] = useState<'ru' | 'en'>('ru');
 
   // Content states for different sections
   const [contentFields, setContentFields] = useState<Record<string, string>>({});
@@ -34,6 +38,7 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
       if (pageSlug === 'home') {
         // For home page, load hero, stats, services, advantages and cases sections
         content.forEach(c => {
+          if (c.language !== selectedLanguage) return;
           if (c.section === 'hero') {
             pageContent[c.key] = c.value;
           } else if (c.section === 'stats') {
@@ -46,10 +51,16 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
             pageContent[`cases_${c.key}`] = c.value;
           }
         });
+      } else if (pageSlug === 'contact') {
+        content
+          .filter(c => c.section === 'contact' && c.language === selectedLanguage)
+          .forEach(c => {
+            pageContent[c.key] = c.value;
+          });
       } else {
         // For other pages, use page slug as section
         content
-          .filter(c => c.section === pageSlug)
+          .filter(c => c.section === pageSlug && c.language === selectedLanguage)
           .forEach(c => {
             pageContent[c.key] = c.value;
           });
@@ -57,7 +68,7 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
 
       setContentFields(pageContent);
     }
-  }, [content, pageSlug]);
+  }, [content, pageSlug, selectedLanguage]);
 
 
   const handleContentSave = async () => {
@@ -68,33 +79,39 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
           // Save hero section fields
           ...Object.entries(contentFields)
             .filter(([key]) => !key.startsWith('stats_') && !key.startsWith('services_') && !key.startsWith('advantages_') && !key.startsWith('cases_'))
-            .map(([key, value]) => updateContent('hero', key, value)),
+            .map(([key, value]) => updateContent('hero', key, value, selectedLanguage)),
           
           // Save stats section fields
           ...Object.entries(contentFields)
             .filter(([key]) => key.startsWith('stats_'))
-            .map(([key, value]) => updateContent('stats', key.replace('stats_', ''), value)),
+            .map(([key, value]) => updateContent('stats', key.replace('stats_', ''), value, selectedLanguage)),
             
           // Save services section fields
           ...Object.entries(contentFields)
             .filter(([key]) => key.startsWith('services_'))
-            .map(([key, value]) => updateContent('services', key.replace('services_', ''), value)),
+            .map(([key, value]) => updateContent('services', key.replace('services_', ''), value, selectedLanguage)),
             
           // Save advantages section fields
           ...Object.entries(contentFields)
             .filter(([key]) => key.startsWith('advantages_') || key.startsWith('advantage_'))
-            .map(([key, value]) => updateContent('advantages', key.replace(/^advantages?_/, ''), value)),
+            .map(([key, value]) => updateContent('advantages', key.replace(/^advantages?_/, ''), value, selectedLanguage)),
             
           // Save cases section fields
           ...Object.entries(contentFields)
             .filter(([key]) => key.startsWith('cases_'))
-            .map(([key, value]) => updateContent('cases', key.replace('cases_', ''), value))
+            .map(([key, value]) => updateContent('cases', key.replace('cases_', ''), value, selectedLanguage))
         ]);
+      } else if (pageSlug === 'contact') {
+        await Promise.all(
+          Object.entries(contentFields).map(([key, value]) =>
+            updateContent('contact', key, value, selectedLanguage)
+          )
+        );
       } else {
         // For other pages, use page slug as section
         await Promise.all(
           Object.entries(contentFields).map(([key, value]) =>
-            updateContent(pageSlug, key, value)
+            updateContent(pageSlug, key, value, selectedLanguage)
           )
         );
       }
@@ -128,19 +145,31 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
   return (
     <div className="space-y-6">
       <div className="flex items-center space-x-4">
-        <Button variant="ghost" onClick={onBack}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Назад к списку
-        </Button>
-        <div>
-          <h1 className="text-3xl font-heading font-bold">
-            Редактирование страницы: {pageSlug}
-          </h1>
-          <p className="text-muted-foreground">
-            Управление контентом страницы /{pageSlug}
-          </p>
+          <Button variant="ghost" onClick={onBack}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Назад к списку
+          </Button>
+          <div>
+            <h1 className="text-3xl font-heading font-bold">
+              Редактирование страницы: {pageSlug}
+            </h1>
+            <p className="text-muted-foreground">
+              Управление контентом страницы /{pageSlug}
+            </p>
+          </div>
+          <div className="ml-auto w-40">
+            <Label>Язык</Label>
+            <Select value={selectedLanguage} onValueChange={(v) => setSelectedLanguage(v as 'ru' | 'en')}>
+              <SelectTrigger>
+                <SelectValue placeholder="Выберите язык" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ru">Русский</SelectItem>
+                <SelectItem value="en">English</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-      </div>
 
       <div className="space-y-4">
           <Card>
@@ -576,22 +605,135 @@ const PageEditor = ({ pageSlug, onBack }: PageEditorProps) => {
 
               {pageSlug === 'contact' && (
                 <>
-                  <div className="space-y-2">
-                    <Label>Заголовок страницы</Label>
-                    <Input
-                      value={contentFields.title || ''}
-                      onChange={(e) => updateContentField('title', e.target.value)}
-                      placeholder="Контакты"
-                    />
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Breadcrumb: Главная</Label>
+                      <Input value={contentFields.breadcrumb_home || ''} onChange={(e) => updateContentField('breadcrumb_home', e.target.value)} placeholder="Главная / Home" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Breadcrumb: Контакты</Label>
+                      <Input value={contentFields.breadcrumb_contact || ''} onChange={(e) => updateContentField('breadcrumb_contact', e.target.value)} placeholder="Контакты / Contacts" />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label>Описание</Label>
-                    <Textarea
-                      value={contentFields.description || ''}
-                      onChange={(e) => updateContentField('description', e.target.value)}
-                      placeholder="Свяжитесь с нами"
-                      rows={3}
-                    />
+
+                  <div className="mt-6">
+                    <h3 className="text-lg font-semibold mb-4">Hero блок</h3>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label>Заголовок, часть 1</Label>
+                        <Input value={contentFields.hero_title_1 || ''} onChange={(e) => updateContentField('hero_title_1', e.target.value)} placeholder="Обсудим ваш / Let's discuss your" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Заголовок, часть 2</Label>
+                        <Input value={contentFields.hero_title_2 || ''} onChange={(e) => updateContentField('hero_title_2', e.target.value)} placeholder="проект / project" />
+                      </div>
+                    </div>
+                    <div className="space-y-2 mt-4">
+                      <Label>Подзаголовок</Label>
+                      <Textarea rows={2} value={contentFields.hero_subtitle || ''} onChange={(e) => updateContentField('hero_subtitle', e.target.value)} placeholder="Описание под заголовком" />
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2 mt-4">
+                      <div className="space-y-2">
+                        <Label>Преимущество 1</Label>
+                        <Input value={contentFields.hero_benefit_1 || ''} onChange={(e) => updateContentField('hero_benefit_1', e.target.value)} placeholder="Бесплатная консультация / Free consultation" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Преимущество 2</Label>
+                        <Input value={contentFields.hero_benefit_2 || ''} onChange={(e) => updateContentField('hero_benefit_2', e.target.value)} placeholder="Ответим в течение часа / Reply within an hour" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8">
+                    <h3 className="text-lg font-semibold mb-4">Форма</h3>
+                    <div className="space-y-2">
+                      <Label>Заголовок формы</Label>
+                      <Input value={contentFields.form_title || ''} onChange={(e) => updateContentField('form_title', e.target.value)} placeholder="Отправить заявку / Send request" />
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2 mt-2">
+                      <div className="space-y-2">
+                        <Label>Метка поля Имя</Label>
+                        <Input value={contentFields.form_label_name || ''} onChange={(e) => updateContentField('form_label_name', e.target.value)} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Плейсхолдер поля Имя</Label>
+                        <Input value={contentFields.form_placeholder_name || ''} onChange={(e) => updateContentField('form_placeholder_name', e.target.value)} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Метка поля Email</Label>
+                        <Input value={contentFields.form_label_email || ''} onChange={(e) => updateContentField('form_label_email', e.target.value)} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Плейсхолдер Email</Label>
+                        <Input value={contentFields.form_placeholder_email || ''} onChange={(e) => updateContentField('form_placeholder_email', e.target.value)} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Метка поля Сообщение</Label>
+                        <Input value={contentFields.form_label_message || ''} onChange={(e) => updateContentField('form_label_message', e.target.value)} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Плейсхолдер Сообщение</Label>
+                        <Input value={contentFields.form_placeholder_message || ''} onChange={(e) => updateContentField('form_placeholder_message', e.target.value)} />
+                      </div>
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2 mt-2">
+                      <div className="space-y-2">
+                        <Label>Текст «Отправляем...»</Label>
+                        <Input value={contentFields.form_sending_text || ''} onChange={(e) => updateContentField('form_sending_text', e.target.value)} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Текст кнопки</Label>
+                        <Input value={contentFields.form_button_text || ''} onChange={(e) => updateContentField('form_button_text', e.target.value)} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8">
+                    <h3 className="text-lg font-semibold mb-4">Контактная информация</h3>
+                    <div className="space-y-2">
+                      <Label>Заголовок блока</Label>
+                      <Input value={contentFields.info_title || ''} onChange={(e) => updateContentField('info_title', e.target.value)} />
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2 mt-2">
+                      <div className="space-y-2">
+                        <Label>Метка Email</Label>
+                        <Input value={contentFields.info_email_label || ''} onChange={(e) => updateContentField('info_email_label', e.target.value)} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Email</Label>
+                        <Input value={contentFields.info_email || ''} onChange={(e) => updateContentField('info_email', e.target.value)} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Метка Telegram</Label>
+                        <Input value={contentFields.info_telegram_label || ''} onChange={(e) => updateContentField('info_telegram_label', e.target.value)} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Подпись Telegram</Label>
+                        <Input value={contentFields.info_telegram_caption || ''} onChange={(e) => updateContentField('info_telegram_caption', e.target.value)} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Метка «Время работы»</Label>
+                        <Input value={contentFields.info_hours_label || ''} onChange={(e) => updateContentField('info_hours_label', e.target.value)} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Время работы</Label>
+                        <Input value={contentFields.info_hours_value || ''} onChange={(e) => updateContentField('info_hours_value', e.target.value)} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8">
+                    <h3 className="text-lg font-semibold mb-4">Почему выбирают нас</h3>
+                    <div className="space-y-2">
+                      <Label>Заголовок секции</Label>
+                      <Input value={contentFields.why_title || ''} onChange={(e) => updateContentField('why_title', e.target.value)} />
+                    </div>
+                    <div className="grid gap-4">
+                      <Input value={contentFields.why_point_1 || ''} onChange={(e) => updateContentField('why_point_1', e.target.value)} placeholder="Пункт 1" />
+                      <Input value={contentFields.why_point_2 || ''} onChange={(e) => updateContentField('why_point_2', e.target.value)} placeholder="Пункт 2" />
+                      <Input value={contentFields.why_point_3 || ''} onChange={(e) => updateContentField('why_point_3', e.target.value)} placeholder="Пункт 3" />
+                      <Input value={contentFields.why_point_4 || ''} onChange={(e) => updateContentField('why_point_4', e.target.value)} placeholder="Пункт 4" />
+                    </div>
                   </div>
                 </>
               )}

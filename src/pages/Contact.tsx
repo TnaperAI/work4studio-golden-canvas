@@ -11,9 +11,11 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { Mail, Phone, MapPin, Clock, Send, MessageCircle, Star, CheckCircle } from 'lucide-react';
+import { Mail, Phone, Clock, Send, Star, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ConsentCheckbox from '@/components/ConsentCheckbox';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useSiteContent } from '@/hooks/useSiteContent';
 interface PageSEO {
   page_title: string;
   meta_title: string;
@@ -35,17 +37,19 @@ const Contact = () => {
   const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+  const { language } = useLanguage();
+  const { getContent } = useSiteContent();
   useScrollAnimation();
   useEffect(() => {
     const fetchSEO = async () => {
       try {
-        const {
-          data: seoData,
-          error
-        } = await supabase.from('page_seo').select('*').eq('page_slug', 'contact').maybeSingle();
+        const { data: seoData, error } = await supabase
+          .from('page_seo')
+          .select('*')
+          .eq('page_slug', 'contact')
+          .eq('language', language)
+          .maybeSingle();
         if (error) {
           console.error('SEO error:', error);
         } else {
@@ -56,7 +60,7 @@ const Contact = () => {
       }
     };
     fetchSEO();
-  }, []);
+  }, [language]);
 
   // Обновляем SEO теги когда загружаются данные
   useEffect(() => {
@@ -175,12 +179,12 @@ const Contact = () => {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/">Главная</Link>
+                  <Link to="/">{getContent('contact', 'breadcrumb_home') || (language === 'en' ? 'Home' : 'Главная')}</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Контакты</BreadcrumbPage>
+                <BreadcrumbPage>{getContent('contact', 'breadcrumb_contact') || (language === 'en' ? 'Contacts' : 'Контакты')}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -199,24 +203,26 @@ const Contact = () => {
           <div className="max-w-6xl mx-auto text-center animate-on-scroll">
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-10 leading-tight">
               <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                Обсудим ваш
+                {getContent('contact', 'hero_title_1') || (language === 'en' ? "Let's discuss your" : 'Обсудим ваш')}
               </span>
               <br />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
-                проект
+                {getContent('contact', 'hero_title_2') || (language === 'en' ? 'project' : 'проект')}
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-16 max-w-4xl mx-auto leading-relaxed">
-              Расскажите о своих задачах — поможем найти оптимальное решение и запустим проект в кратчайшие сроки
+              {getContent('contact', 'hero_subtitle') || (language === 'en' 
+                ? 'Tell us about your tasks — we will find the optimal solution and launch the project quickly'
+                : 'Расскажите о своих задачах — поможем найти оптимальное решение и запустим проект в кратчайшие сроки')}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-8 mb-8">
               <div className="flex items-center text-lg text-muted-foreground bg-card border border-border px-6 py-3 rounded-2xl">
                 <CheckCircle className="h-6 w-6 mr-3 text-primary" />
-                Бесплатная консультация
+                {getContent('contact', 'hero_benefit_1') || (language === 'en' ? 'Free consultation' : 'Бесплатная консультация')}
               </div>
               <div className="flex items-center text-lg text-muted-foreground bg-card border border-border px-6 py-3 rounded-2xl">
                 <Star className="h-6 w-6 mr-3 text-primary" />
-                Ответим в течение часа
+                {getContent('contact', 'hero_benefit_2') || (language === 'en' ? 'Reply within an hour' : 'Ответим в течение часа')}
               </div>
             </div>
           </div>
@@ -235,21 +241,21 @@ const Contact = () => {
               <div className="bg-card border border-border rounded-3xl p-8 md:p-12">
                 <h2 className="text-3xl md:text-4xl font-heading font-bold mb-8">
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    Отправить заявку
+                    {getContent('contact', 'form_title') || (language === 'en' ? 'Send request' : 'Отправить заявку')}
                   </span>
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-lg font-medium">Имя</Label>
-                    <Input id="name" name="name" type="text" placeholder="Ваше имя" value={formData.name} onChange={handleInputChange} required className="h-14 text-lg bg-background border border-border rounded-2xl" />
+                    <Label htmlFor="name" className="text-lg font-medium">{getContent('contact','form_label_name') || (language === 'en' ? 'Name' : 'Имя')}</Label>
+                    <Input id="name" name="name" type="text" placeholder={getContent('contact','form_placeholder_name') || (language === 'en' ? 'Your name' : 'Ваше имя')} value={formData.name} onChange={handleInputChange} required className="h-14 text-lg bg-background border border-border rounded-2xl" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-lg font-medium">Email</Label>
-                    <Input id="email" name="email" type="email" placeholder="your@email.com" value={formData.email} onChange={handleInputChange} required className="h-14 text-lg bg-background border border-border rounded-2xl" />
+                    <Label htmlFor="email" className="text-lg font-medium">{getContent('contact','form_label_email') || 'Email'}</Label>
+                    <Input id="email" name="email" type="email" placeholder={getContent('contact','form_placeholder_email') || 'your@email.com'} value={formData.email} onChange={handleInputChange} required className="h-14 text-lg bg-background border border-border rounded-2xl" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="message" className="text-lg font-medium">Сообщение</Label>
-                    <Textarea id="message" name="message" placeholder="Расскажите о своем проекте..." value={formData.message} onChange={handleInputChange} required rows={6} className="text-lg bg-background border border-border rounded-2xl" />
+                    <Label htmlFor="message" className="text-lg font-medium">{getContent('contact','form_label_message') || (language === 'en' ? 'Message' : 'Сообщение')}</Label>
+                    <Textarea id="message" name="message" placeholder={getContent('contact','form_placeholder_message') || (language === 'en' ? 'Tell us about your project...' : 'Расскажите о своем проекте...')} value={formData.message} onChange={handleInputChange} required rows={6} className="text-lg bg-background border border-border rounded-2xl" />
                   </div>
                   
                   <ConsentCheckbox isAgreed={isAgreed} onChange={setIsAgreed} />
@@ -257,10 +263,10 @@ const Contact = () => {
                   <Button type="submit" disabled={isSubmitting} className="w-full h-16 bg-gradient-to-r from-primary to-accent text-primary-foreground text-xl font-medium hover:shadow-2xl hover:scale-105 transition-all duration-300">
                     {isSubmitting ? <div className="flex items-center gap-3">
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        Отправляем...
+                        {getContent('contact','form_sending_text') || (language === 'en' ? 'Sending...' : 'Отправляем...')}
                       </div> : <>
                         <Send className="h-6 w-6 mr-3" />
-                        Отправить заявку
+                        {getContent('contact','form_button_text') || (language === 'en' ? 'Send request' : 'Отправить заявку')}
                       </>}
                   </Button>
                 </form>
@@ -272,7 +278,7 @@ const Contact = () => {
               <div className="bg-card border border-border rounded-3xl p-8 md:p-12">
                 <h3 className="text-2xl md:text-3xl font-heading font-bold mb-8">
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    Контактная информация
+                    {getContent('contact','info_title') || (language === 'en' ? 'Contact information' : 'Контактная информация')}
                   </span>
                 </h3>
                 <div className="space-y-6">
@@ -281,8 +287,8 @@ const Contact = () => {
                       <Mail className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-lg mb-2">Email</h4>
-                      <p className="text-muted-foreground">info@work4studio.com</p>
+                      <h4 className="font-semibold text-lg mb-2">{getContent('contact','info_email_label') || 'Email'}</h4>
+                      <p className="text-muted-foreground">{getContent('contact','info_email') || 'info@work4studio.com'}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -292,8 +298,8 @@ const Contact = () => {
                       </svg>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-lg mb-2">Telegram</h4>
-                      <p className="text-muted-foreground">@work4studio</p>
+                      <h4 className="font-semibold text-lg mb-2">{getContent('contact','info_telegram_label') || 'Telegram'}</h4>
+                      <p className="text-muted-foreground">{getContent('contact','info_telegram_caption') || (language === 'en' ? 'Write directly' : 'Написать напрямую')}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -301,8 +307,8 @@ const Contact = () => {
                       <Clock className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-lg mb-2">Время работы</h4>
-                      <p className="text-muted-foreground">Пн-Пт: 10:00 - 19:00</p>
+                      <h4 className="font-semibold text-lg mb-2">{getContent('contact','info_hours_label') || (language === 'en' ? 'Working hours' : 'Время работы')}</h4>
+                      <p className="text-muted-foreground">{getContent('contact','info_hours_value') || (language === 'en' ? 'Mon-Fri: 10:00 - 19:00' : 'Пн-Пт: 10:00 - 19:00')}</p>
                     </div>
                   </div>
                 </div>
@@ -312,25 +318,25 @@ const Contact = () => {
               <div className="bg-card border border-border rounded-3xl p-8 md:p-12">
                 <h3 className="text-2xl md:text-3xl font-heading font-bold mb-8">
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    Почему выбирают нас
+                    {getContent('contact','why_title') || (language === 'en' ? 'Why choose us' : 'Почему выбирают нас')}
                   </span>
                 </h3>
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-muted-foreground">Бесплатная консультация и оценка проекта</span>
+                    <span className="text-muted-foreground">{getContent('contact','why_point_1') || (language === 'en' ? 'Free consultation and project estimate' : 'Бесплатная консультация и оценка проекта')}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-muted-foreground">Быстрая разработка от 3 дней</span>
+                    <span className="text-muted-foreground">{getContent('contact','why_point_2') || (language === 'en' ? 'Rapid development from 3 days' : 'Быстрая разработка от 3 дней')}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-muted-foreground">Гарантия качества и поддержка</span>
+                    <span className="text-muted-foreground">{getContent('contact','why_point_3') || (language === 'en' ? 'Quality guarantee and support' : 'Гарантия качества и поддержка')}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-muted-foreground">Современные технологии и подходы</span>
+                    <span className="text-muted-foreground">{getContent('contact','why_point_4') || (language === 'en' ? 'Modern technologies and approaches' : 'Современные технологии и подходы')}</span>
                   </div>
                 </div>
               </div>

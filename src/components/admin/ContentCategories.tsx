@@ -67,7 +67,7 @@ const ContentCategories = ({ onPageSelect, language = 'ru' }: ContentCategoriesP
       pages: [
         { slug: 'home', title: 'Главная страница', h1: 'Управление контентом главной страницы' },
         { slug: 'services', title: 'Страница услуг (/services)', h1: 'Управление контентом страницы услуг' },
-        { slug: 'contact', title: 'Контакты', h1: 'Связаться с нами' },
+        { slug: 'contact', title: 'Контакты', h1: 'Страница контактов (RU/EN)' },
         { slug: 'about', title: 'О нас', h1: 'О компании' }
       ]
     },
