@@ -24,24 +24,25 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-border shadow-sm">
       <nav className="container-custom relative z-10">
-        <div className="flex items-center justify-between h-20">
+        <div className="relative flex items-center justify-between h-20">
           {/* Logo */}
-          <div className="flex items-center gap-3">
-            <Link to="/" className="group flex items-center hover:scale-105 transition-transform duration-300">
+          <Link to="/" className="group flex items-center hover:scale-105 transition-transform duration-300">
+            <div className="relative">
+              {/* Background glow */}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-accent/30 blur-lg group-hover:blur-xl transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
+              
+              {/* Logo text */}
               <div className="relative">
-                {/* Background glow */}
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-accent/30 blur-lg group-hover:blur-xl transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
-                
-                {/* Logo text */}
-                <div className="relative">
-                  <span className="font-logo font-bold text-2xl md:text-3xl bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent group-hover:from-accent group-hover:via-primary group-hover:to-accent transition-all duration-500">
-                    Work<span className="text-primary group-hover:text-accent transition-colors duration-500">4</span>Studio
-                  </span>
-                </div>
+                <span className="font-logo font-bold text-2xl md:text-3xl bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent group-hover:from-accent group-hover:via-primary group-hover:to-accent transition-all duration-500">
+                  Work<span className="text-primary group-hover:text-accent transition-colors duration-500">4</span>Studio
+                </span>
               </div>
-            </Link>
-            {/* Mobile/Tablet language switcher */}
-            <div className="lg:hidden">
+            </div>
+          </Link>
+
+          {/* Centered mobile language switcher */}
+          <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-center lg:hidden pointer-events-none">
+            <div className="pointer-events-auto">
               <LanguageSwitcher />
             </div>
           </div>
