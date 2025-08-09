@@ -379,11 +379,10 @@ const About = () => {
         {/* Team */}
         <section className="mb-20">
           <div className="text-center mb-16 animate-on-scroll">
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 whitespace-nowrap">
               <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                 {getContent('about', 'team_title_first') || 'Наша'}
-              </span>
-              <br />
+              </span>{' '}
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 {getContent('about', 'team_title_second') || 'команда'}
               </span>
