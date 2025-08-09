@@ -10,7 +10,6 @@ import BackToTop from '@/components/BackToTop';
 import ContactFormModal from '@/components/ContactFormModal';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { supabase } from '@/integrations/supabase/client';
-
 interface Service {
   id: string;
   title: string;
@@ -23,7 +22,6 @@ interface Service {
   is_active: boolean;
   sort_order: number;
 }
-
 interface PageSEO {
   page_title: string;
   meta_title: string;
@@ -35,27 +33,27 @@ interface PageSEO {
   og_description: string;
   og_image: string;
 }
-
 const Services = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [services, setServices] = useState<Service[]>([]);
   const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
   const [loading, setLoading] = useState(true);
-  const { getContent } = useSiteContent();
+  const {
+    getContent
+  } = useSiteContent();
   useScrollAnimation();
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         console.log('🔄 Starting to fetch services...');
-        
-        // Fetch services
-        const { data, error } = await supabase
-          .from('services')
-          .select('*')
-          .eq('is_active', true)
-          .order('sort_order', { ascending: true });
 
+        // Fetch services
+        const {
+          data,
+          error
+        } = await supabase.from('services').select('*').eq('is_active', true).order('sort_order', {
+          ascending: true
+        });
         if (error) {
           console.error('Error fetching services:', error);
           setServices([]);
@@ -65,12 +63,10 @@ const Services = () => {
         }
 
         // Fetch SEO data
-        const { data: seoData, error: seoError } = await supabase
-          .from('page_seo')
-          .select('*')
-          .eq('page_slug', 'services')
-          .maybeSingle();
-
+        const {
+          data: seoData,
+          error: seoError
+        } = await supabase.from('page_seo').select('*').eq('page_slug', 'services').maybeSingle();
         if (seoError) {
           console.error('SEO error:', seoError);
         } else {
@@ -83,7 +79,6 @@ const Services = () => {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
@@ -106,7 +101,6 @@ const Services = () => {
         }
         meta.content = content;
       };
-
       const updatePropertyTag = (property: string, content: string) => {
         if (!content) return;
         let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
@@ -138,14 +132,11 @@ const Services = () => {
       updatePropertyTag('og:type', 'website');
     }
   }, [pageSEO]);
-
   const formatPrice = (from: number | null, to: number | null) => {
     if (!from) return 'Цена не указана';
     return `${from.toLocaleString()}$`;
   };
-
-  return (
-    <div className="min-h-screen">
+  return <div className="min-h-screen">
       <Header />
       
       {/* Breadcrumb */}
@@ -210,7 +201,7 @@ const Services = () => {
               <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                 {getContent('services', 'grid_title') || 'Выберите формат'}
               </span>{' '}
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">для своего бизнеса</span>
+              
             </h2>
             <p className="text-muted-foreground text-xl md:text-2xl max-w-4xl mx-auto leading-relaxed">
               {getContent('services', 'grid_subtitle') || 'Дизайн, код и запуск — всё, что нужно для старта онлайн. Выбираем формат под ваши цели.'}
@@ -218,15 +209,12 @@ const Services = () => {
           </div>
           
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
-            {loading && (
-              <div className="col-span-full flex items-center justify-center h-64">
+            {loading && <div className="col-span-full flex items-center justify-center h-64">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                 <p className="ml-4 text-foreground">Загружаем...</p>
-              </div>
-            )}
+              </div>}
             
-            {services && services.length > 0 && services.map((service, index) => (
-              <div key={service.id} className="bg-card border border-border p-6 rounded-2xl hover:bg-secondary/80 transition-all">
+            {services && services.length > 0 && services.map((service, index) => <div key={service.id} className="bg-card border border-border p-6 rounded-2xl hover:bg-secondary/80 transition-all">
                 <h3 className="text-xl font-bold text-foreground mb-3">
                   {service.title}
                 </h3>
@@ -243,17 +231,14 @@ const Services = () => {
                     </Button>
                   </Link>
                 </div>
-              </div>
-            ))}
+              </div>)}
             
-            {!loading && (!services || services.length === 0) && (
-              <div className="col-span-full text-center py-16">
+            {!loading && (!services || services.length === 0) && <div className="col-span-full text-center py-16">
                 <p className="text-foreground text-xl">Услуги не найдены</p>
                 <p className="text-muted-foreground text-sm mt-2">
                   Данные: {JSON.stringify(services?.length || 'нет')}
                 </p>
-              </div>
-            )}
+              </div>}
           </div>
         </div>
       </section>
@@ -273,11 +258,7 @@ const Services = () => {
               <p className="text-muted-foreground mb-10 text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto">
                 {getContent('services', 'cta_subtitle') || 'Расскажите о своих задачах — поможем выбрать оптимальное решение и запустим проект в кратчайшие сроки'}
               </p>
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-base md:text-xl px-6 py-4 md:px-10 md:py-6 hover:shadow-2xl hover:scale-105 transition-all duration-300"
-                onClick={() => setIsContactModalOpen(true)}
-              >
+              <Button size="lg" className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-base md:text-xl px-6 py-4 md:px-10 md:py-6 hover:shadow-2xl hover:scale-105 transition-all duration-300" onClick={() => setIsContactModalOpen(true)}>
                 {getContent('services', 'cta_button') || 'Получить консультацию'}
               </Button>
             </div>
@@ -288,13 +269,7 @@ const Services = () => {
       <Footer />
       <BackToTop />
       
-      <ContactFormModal 
-        isOpen={isContactModalOpen} 
-        onClose={() => setIsContactModalOpen(false)} 
-        source="services_page"
-      />
-    </div>
-  );
+      <ContactFormModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} source="services_page" />
+    </div>;
 };
-
 export default Services;
