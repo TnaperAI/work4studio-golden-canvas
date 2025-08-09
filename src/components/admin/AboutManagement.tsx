@@ -160,6 +160,7 @@ const AboutManagement = ({ language = 'ru' }: { language: 'ru' | 'en' }) => {
     const values = {
       hero_title_1: getContent('about', 'hero_title_1', language),
       hero_title_2: getContent('about', 'hero_title_2', language),
+      // Values section
       values_title: getContent('about', 'values_title', language),
       values_subtitle: getContent('about', 'values_subtitle', language),
       value_1_title: getContent('about', 'value_1_title', language),
@@ -170,6 +171,23 @@ const AboutManagement = ({ language = 'ru' }: { language: 'ru' | 'en' }) => {
       value_3_description: getContent('about', 'value_3_description', language),
       value_4_title: getContent('about', 'value_4_title', language),
       value_4_description: getContent('about', 'value_4_description', language),
+      // Team section headings
+      team_title_first: getContent('about', 'team_title_first', language),
+      team_title_second: getContent('about', 'team_title_second', language),
+      team_subtitle: getContent('about', 'team_subtitle', language),
+      // Breadcrumbs
+      breadcrumb_home: getContent('about', 'breadcrumb_home', language),
+      breadcrumb_about: getContent('about', 'breadcrumb_about', language),
+      // Stats labels
+      stats_founding_year_label: getContent('about', 'stats_founding_year_label', language),
+      stats_team_label: getContent('about', 'stats_team_label', language),
+      stats_projects_label: getContent('about', 'stats_projects_label', language),
+      stats_clients_label: getContent('about', 'stats_clients_label', language),
+      // CTA section
+      cta_title_first: getContent('about', 'cta_title_first', language),
+      cta_title_second: getContent('about', 'cta_title_second', language),
+      cta_subtitle: getContent('about', 'cta_subtitle', language),
+      cta_button_text: getContent('about', 'cta_button_text', language),
     };
     setValuesData(values);
   };
@@ -547,9 +565,153 @@ const AboutManagement = ({ language = 'ru' }: { language: 'ru' | 'en' }) => {
                     </div>
                   </div>
 
-                  <Button onClick={saveCompanyInfo}>
-                    Сохранить информацию о компании
-                  </Button>
+                  {/* Тексты разделов: хлебные крошки, заголовки, метки статистики, CTA */}
+                  <Card className="mt-6">
+                    <CardHeader>
+                      <CardTitle>Хлебные крошки и заголовки секций</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label>Хлебные крошки — Главная</Label>
+                          <Input
+                            value={valuesData.breadcrumb_home || ''}
+                            onChange={(e) => updateValuesField('breadcrumb_home', e.target.value)}
+                            placeholder="Главная / Home"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Хлебные крошки — О нас</Label>
+                          <Input
+                            value={valuesData.breadcrumb_about || ''}
+                            onChange={(e) => updateValuesField('breadcrumb_about', e.target.value)}
+                            placeholder="О нас / About"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label>Заголовок секции Команда (часть 1)</Label>
+                          <Input
+                            value={valuesData.team_title_first || ''}
+                            onChange={(e) => updateValuesField('team_title_first', e.target.value)}
+                            placeholder="Наша / Our"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Заголовок секции Команда (часть 2)</Label>
+                          <Input
+                            value={valuesData.team_title_second || ''}
+                            onChange={(e) => updateValuesField('team_title_second', e.target.value)}
+                            placeholder="команда / Team"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Подзаголовок секции Команда</Label>
+                        <Textarea
+                          value={valuesData.team_subtitle || ''}
+                          onChange={(e) => updateValuesField('team_subtitle', e.target.value)}
+                          rows={2}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Метки статистики</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                        <div className="space-y-2">
+                          <Label>Метка: Год основания</Label>
+                          <Input
+                            value={valuesData.stats_founding_year_label || ''}
+                            onChange={(e) => updateValuesField('stats_founding_year_label', e.target.value)}
+                            placeholder="Год основания / Founded"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Метка: Команда</Label>
+                          <Input
+                            value={valuesData.stats_team_label || ''}
+                            onChange={(e) => updateValuesField('stats_team_label', e.target.value)}
+                            placeholder="Команда / Team"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Метка: Проектов завершено</Label>
+                          <Input
+                            value={valuesData.stats_projects_label || ''}
+                            onChange={(e) => updateValuesField('stats_projects_label', e.target.value)}
+                            placeholder="Проектов завершено / Projects Completed"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Метка: Довольных клиентов</Label>
+                          <Input
+                            value={valuesData.stats_clients_label || ''}
+                            onChange={(e) => updateValuesField('stats_clients_label', e.target.value)}
+                            placeholder="Довольных клиентов / Happy Clients"
+                          />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>CTA блок</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label>CTA Заголовок (часть 1)</Label>
+                          <Input
+                            value={valuesData.cta_title_first || ''}
+                            onChange={(e) => updateValuesField('cta_title_first', e.target.value)}
+                            placeholder="Готовы начать / Ready to start"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>CTA Заголовок (часть 2)</Label>
+                          <Input
+                            value={valuesData.cta_title_second || ''}
+                            onChange={(e) => updateValuesField('cta_title_second', e.target.value)}
+                            placeholder="проект? / the project?"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>CTA Подзаголовок</Label>
+                        <Textarea
+                          value={valuesData.cta_subtitle || ''}
+                          onChange={(e) => updateValuesField('cta_subtitle', e.target.value)}
+                          rows={3}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>CTA Текст кнопки</Label>
+                        <Input
+                          value={valuesData.cta_button_text || ''}
+                          onChange={(e) => updateValuesField('cta_button_text', e.target.value)}
+                          placeholder="Связаться с нами / Contact us"
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <div className="flex flex-wrap gap-3">
+                    <Button variant="secondary" onClick={saveValuesData}>
+                      Сохранить тексты разделов
+                    </Button>
+                    <Button onClick={saveCompanyInfo}>
+                      Сохранить информацию о компании
+                    </Button>
+                  </div>
                 </>
               )}
             </CardContent>

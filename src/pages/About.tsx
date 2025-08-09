@@ -242,10 +242,10 @@ const About = () => {
   const teamMembers = team.length > 0 ? team : defaultTeam;
 
   const stats = [
-    { icon: Calendar, label: 'Год основания', value: company.founding_year },
-    { icon: Users, label: 'Команда', value: company.team_size },
-    { icon: Trophy, label: 'Проектов завершено', value: company.projects_completed },
-    { icon: Star, label: 'Довольных клиентов', value: company.clients_served }
+    { icon: Calendar, label: getContent('about', 'stats_founding_year_label') || (language === 'en' ? 'Founded' : 'Год основания'), value: company.founding_year },
+    { icon: Users, label: getContent('about', 'stats_team_label') || (language === 'en' ? 'Team' : 'Команда'), value: company.team_size },
+    { icon: Trophy, label: getContent('about', 'stats_projects_label') || (language === 'en' ? 'Projects Completed' : 'Проектов завершено'), value: company.projects_completed },
+    { icon: Star, label: getContent('about', 'stats_clients_label') || (language === 'en' ? 'Happy Clients' : 'Довольных клиентов'), value: company.clients_served }
   ];
 
   // Получаем данные ценностей из базы данных или используем дефолтные
