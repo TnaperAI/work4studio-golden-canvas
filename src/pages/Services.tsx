@@ -258,7 +258,9 @@ const Services = () => {
                 </p>
                 <div className="flex items-center justify-between">
                   <span className="text-primary font-semibold">
-                    {service.price_from ? `от ${service.price_from.toLocaleString()}$` : 'Цена не указана'}
+                    {service.price_from
+                      ? `${language === 'en' ? 'from' : 'от'} ${service.price_from.toLocaleString()}$`
+                      : (language === 'en' ? 'Price not set' : 'Цена не указана')}
                   </span>
                   <Link to={`/services/${service.slug}`}>
                     <Button size="sm" className="bg-primary hover:bg-primary/80">
