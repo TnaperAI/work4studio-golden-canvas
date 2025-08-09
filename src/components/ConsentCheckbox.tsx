@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface LegalDocument {
   id: string;
@@ -15,7 +16,7 @@ interface ConsentCheckboxProps {
 
 const ConsentCheckbox = ({ isAgreed, onChange, className = "" }: ConsentCheckboxProps) => {
   const [legalDocuments, setLegalDocuments] = useState<LegalDocument[]>([]);
-
+  const { language } = useLanguage();
   useEffect(() => {
     const fetchLegalDocuments = async () => {
       const { data } = await supabase
@@ -45,23 +46,47 @@ const ConsentCheckbox = ({ isAgreed, onChange, className = "" }: ConsentCheckbox
         required
       />
       <label htmlFor="agreement" className="text-sm text-muted-foreground leading-relaxed">
-        Я соглашаюсь с условиями{' '}
-        <a 
-          href="/legal/terms_of_service" 
-          target="_blank"
-          className="text-primary hover:underline"
-        >
-          {termsDoc?.title || 'Публичной оферты'}
-        </a>{' '}
-        и{' '}
-        <a 
-          href="/legal/privacy_policy" 
-          target="_blank"
-          className="text-primary hover:underline"
-        >
-          {privacyDoc?.title || 'Политики конфиденциальности'}
-        </a>{' '}
-        и даю согласие на обработку моих персональных данных.
+        {language === 'en' ? (
+          <>
+            I agree to the{' '}
+            <a 
+              href="/legal/terms_of_service" 
+              target="_blank"
+              className="text-primary hover:underline"
+            >
+              Terms of Service
+            </a>{' '}
+            and{' '}
+            <a 
+              href="/legal/privacy_policy" 
+              target="_blank"
+              className="text-primary hover:underline"
+            >
+              Privacy Policy
+            </a>{' '}
+            and consent to the processing of my personal data.
+          </>
+        ) : (
+          <>
+            Я соглашаюсь с условиями{' '}
+            <a 
+              href="/legal/terms_of_service" 
+              target="_blank"
+              className="text-primary hover:underline"
+            >
+              {termsDoc?.title || 'Публичной оферты'}
+            </a>{' '}
+            и{' '}
+            <a 
+              href="/legal/privacy_policy" 
+              target="_blank"
+              className="text-primary hover:underline"
+            >
+              {privacyDoc?.title || 'Политики конфиденциальности'}
+            </a>{' '}
+            и даю согласие на обработку моих персональных данных.
+          </>
+        )}
       </label>
     </div>
   );
