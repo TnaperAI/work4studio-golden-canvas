@@ -50,7 +50,7 @@ const CasesSection = () => {
 
   useEffect(() => {
     fetchFeaturedCases();
-  }, []);
+  }, [language]);
 
   const fetchFeaturedCases = async () => {
     try {
@@ -68,8 +68,22 @@ const CasesSection = () => {
       if (error) {
         console.error('❌ Error fetching featured cases:', error);
       } else {
-        console.log('✅ Successfully loaded cases:', data);
-        setCases(data || []);
+        let items = data || [];
+        if (language === 'en' && items.length) {
+          const ids = items.map(c => c.id);
+          const { data: tr } = await (supabase as any)
+            .from('case_translations')
+            .select('case_id,title,short_description,description')
+            .eq('language', 'en')
+            .in('case_id', ids);
+          const map = new Map((tr || []).map((t: any) => [t.case_id, t]));
+          items = items.map((c: any) => {
+            const t: any = map.get(c.id);
+            return t ? { ...c, title: t.title || c.title, short_description: t.short_description || c.short_description, description: t.description || c.description } : c;
+          });
+        }
+        console.log('✅ Successfully loaded cases:', items);
+        setCases(items);
       }
     } catch (error) {
       console.error('💥 Exception fetching featured cases:', error);

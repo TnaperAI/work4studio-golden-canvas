@@ -150,7 +150,21 @@ const CasesManagement = ({ onCaseEdit, onCaseCreate }: CasesManagementProps) => 
         variant: 'destructive',
       });
     } else {
-      setCases(data || []);
+      let items = data || [];
+      if (language === 'en' && items.length) {
+        const ids = items.map(c => c.id);
+        const { data: tr } = await (supabase as any)
+          .from('case_translations')
+          .select('case_id,title,short_description')
+          .eq('language', 'en')
+          .in('case_id', ids);
+        const map = new Map((tr || []).map((t: any) => [t.case_id, t]));
+        items = items.map((c: any) => {
+          const t: any = map.get(c.id);
+          return t ? { ...c, title: (t as any).title || c.title, short_description: (t as any).short_description || c.short_description } : c;
+        });
+      }
+      setCases(items);
     }
     setLoading(false);
   };
@@ -275,10 +289,23 @@ const CasesManagement = ({ onCaseEdit, onCaseCreate }: CasesManagementProps) => 
   {i18n[language].manageDesc}
 </p>
 </div>
-<Button onClick={onCaseCreate}>
-  <Plus className="h-4 w-4 mr-2" />
-  {i18n[language].addCase}
-</Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={async () => {
+            const { data, error } = await supabase.functions.invoke('translate-cases');
+            if (error) {
+              toast({ title: 'Ошибка', description: 'Автоперевод не запущен', variant: 'destructive' });
+            } else {
+              toast({ title: 'Готово', description: 'Автоперевод EN запущен' });
+              fetchCases();
+            }
+          }}>
+            EN Auto
+          </Button>
+          <Button onClick={onCaseCreate}>
+            <Plus className="h-4 w-4 mr-2" />
+            {i18n[language].addCase}
+          </Button>
+        </div>
       </div>
 
       <div className="space-y-4">

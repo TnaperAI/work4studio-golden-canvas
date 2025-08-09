@@ -161,14 +161,14 @@ const Cases = () => {
   useScrollAnimation();
 
   useEffect(() => {
-    // Очищаем состояние при изменении slug
+    // Очищаем состояние при изменении slug или языка
     if (!slug) {
       setSelectedCase(null);
       setLoading(true);
       setCases([]);
     }
     fetchCasesAndSEO();
-  }, [slug]);
+  }, [slug, language]);
 
   const fetchCasesAndSEO = async () => {
     try {
@@ -183,7 +183,35 @@ const Cases = () => {
       if (error) {
         console.error('Error fetching cases:', error);
       } else {
-        setCases(data || []);
+        let items = data || [];
+        if (language === 'en' && items.length) {
+          const ids = items.map(c => c.id);
+          const { data: tr } = await (supabase as any)
+            .from('case_translations')
+            .select('case_id,title,short_description,description,results,h1_tag,meta_title,meta_description,og_title,og_description,og_image,canonical_url')
+            .eq('language', 'en')
+            .in('case_id', ids);
+          const map = new Map((tr || []).map((t: any) => [t.case_id, t]));
+          items = items.map((c: any) => {
+            const t: any = map.get(c.id);
+            if (!t) return c;
+            return {
+              ...c,
+              title: t.title || c.title,
+              short_description: t.short_description || c.short_description,
+              description: t.description || c.description,
+              results: t.results || c.results,
+              h1_tag: t.h1_tag || c.h1_tag,
+              meta_title: t.meta_title || c.meta_title,
+              meta_description: t.meta_description || c.meta_description,
+              og_title: t.og_title || c.og_title,
+              og_description: t.og_description || c.og_description,
+              og_image: t.og_image || c.og_image,
+              canonical_url: t.canonical_url || c.canonical_url,
+            };
+          });
+        }
+        setCases(items);
       }
 
       // Fetch SEO data
