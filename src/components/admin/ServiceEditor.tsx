@@ -104,12 +104,14 @@ const ServiceEditor = ({ serviceId, onBack, language = 'ru' }: ServiceEditorProp
       return;
     }
 
+    const baseServ: any = base as any;
+
     if (language === 'ru') {
       setFormData({
-        ...base,
-        price_from: base.price_from || '',
-        price_to: base.price_to || '',
-        faq: Array.isArray(base.faq) ? base.faq.map((item: any) => ({
+        ...baseServ,
+        price_from: baseServ.price_from || '',
+        price_to: baseServ.price_to || '',
+        faq: Array.isArray(baseServ.faq) ? baseServ.faq.map((item: any) => ({
           question: item.question || '',
           answer: item.answer || ''
         })) : []
@@ -119,7 +121,7 @@ const ServiceEditor = ({ serviceId, onBack, language = 'ru' }: ServiceEditorProp
     }
 
     // EN: try to load translation and merge with base
-    const { data: t, error: tError } = await supabase
+    const { data: t, error: tError } = await (supabase as any)
       .from('service_translations')
       .select('*')
       .eq('service_id', serviceId)
@@ -132,38 +134,38 @@ const ServiceEditor = ({ serviceId, onBack, language = 'ru' }: ServiceEditorProp
     }
 
     const merged = {
-      ...base,
+      ...baseServ,
       // Translatable fields from translation or fallback to base
-      title: t?.title || base.title || '',
-      description: t?.description || base.description || '',
-      short_description: t?.short_description || base.short_description || '',
-      features: (t?.features as string[] | null) || (base.features as string[] | null) || [],
-      advantages: (t?.advantages as string[] | null) || (base.advantages as string[] | null) || [],
+      title: t?.title || baseServ.title || '',
+      description: t?.description || baseServ.description || '',
+      short_description: t?.short_description || baseServ.short_description || '',
+      features: (t?.features as string[] | null) || (baseServ.features as string[] | null) || [],
+      advantages: (t?.advantages as string[] | null) || (baseServ.advantages as string[] | null) || [],
       faq: Array.isArray(t?.faq)
         ? (t!.faq as any[]).map((item: any) => ({
             question: item.question || '',
             answer: item.answer || ''
           }))
-        : Array.isArray(base.faq)
-        ? (base.faq as any[]).map((item: any) => ({
+        : Array.isArray(baseServ.faq)
+        ? (baseServ.faq as any[]).map((item: any) => ({
             question: item.question || '',
             answer: item.answer || ''
           }))
         : [],
-      meta_title: t?.meta_title || base.meta_title || '',
-      meta_description: t?.meta_description || base.meta_description || '',
-      meta_keywords: t?.meta_keywords || base.meta_keywords || '',
-      h1_tag: t?.h1_tag || base.h1_tag || '',
-      canonical_url: t?.canonical_url || base.canonical_url || '',
-      og_title: t?.og_title || base.og_title || '',
-      og_description: t?.og_description || base.og_description || '',
-      og_image: t?.og_image || base.og_image || '',
+      meta_title: t?.meta_title || baseServ.meta_title || '',
+      meta_description: t?.meta_description || baseServ.meta_description || '',
+      meta_keywords: t?.meta_keywords || baseServ.meta_keywords || '',
+      h1_tag: t?.h1_tag || baseServ.h1_tag || '',
+      canonical_url: t?.canonical_url || baseServ.canonical_url || '',
+      og_title: t?.og_title || baseServ.og_title || '',
+      og_description: t?.og_description || baseServ.og_description || '',
+      og_image: t?.og_image || baseServ.og_image || '',
       // Non-translatables
-      price_from: base.price_from || '',
-      price_to: base.price_to || '',
-      is_active: base.is_active,
-      sort_order: base.sort_order,
-      slug: base.slug,
+      price_from: baseServ.price_from || '',
+      price_to: baseServ.price_to || '',
+      is_active: baseServ.is_active,
+      sort_order: baseServ.sort_order,
+      slug: baseServ.slug,
     } as Service;
 
     setFormData(merged);
@@ -241,7 +243,7 @@ const ServiceEditor = ({ serviceId, onBack, language = 'ru' }: ServiceEditorProp
           if (baseErr) console.warn('Base update (EN) warning:', baseErr.message);
 
           // Upsert translation for EN
-          const { data: existing } = await supabase
+          const { data: existing } = await (supabase as any)
             .from('service_translations')
             .select('id')
             .eq('service_id', serviceId)
@@ -268,13 +270,13 @@ const ServiceEditor = ({ serviceId, onBack, language = 'ru' }: ServiceEditorProp
           };
 
           if (existing) {
-            const { error: updErr } = await supabase
+            const { error: updErr } = await (supabase as any)
               .from('service_translations')
               .update(translationPayload)
               .eq('id', existing.id);
             if (updErr) throw updErr;
           } else {
-            const { error: insErr } = await supabase
+            const { error: insErr } = await (supabase as any)
               .from('service_translations')
               .insert([translationPayload]);
             if (insErr) throw insErr;

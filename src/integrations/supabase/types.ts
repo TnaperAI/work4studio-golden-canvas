@@ -455,6 +455,80 @@ export type Database = {
         }
         Relationships: []
       }
+      service_translations: {
+        Row: {
+          advantages: string[]
+          canonical_url: string | null
+          created_at: string
+          description: string | null
+          faq: Json
+          features: string[]
+          h1_tag: string | null
+          id: string
+          language: string
+          meta_description: string | null
+          meta_keywords: string | null
+          meta_title: string | null
+          og_description: string | null
+          og_image: string | null
+          og_title: string | null
+          service_id: string
+          short_description: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          advantages?: string[]
+          canonical_url?: string | null
+          created_at?: string
+          description?: string | null
+          faq?: Json
+          features?: string[]
+          h1_tag?: string | null
+          id?: string
+          language: string
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          service_id: string
+          short_description?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          advantages?: string[]
+          canonical_url?: string | null
+          created_at?: string
+          description?: string | null
+          faq?: Json
+          features?: string[]
+          h1_tag?: string | null
+          id?: string
+          language?: string
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          service_id?: string
+          short_description?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_translations_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       services: {
         Row: {
           advantages: string[] | null
