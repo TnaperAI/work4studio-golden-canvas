@@ -26,19 +26,25 @@ const Header = () => {
       <nav className="container-custom relative z-10">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="group flex items-center hover:scale-105 transition-transform duration-300">
-            <div className="relative">
-              {/* Background glow */}
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-accent/30 blur-lg group-hover:blur-xl transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
-              
-              {/* Logo text */}
+          <div className="flex items-center gap-3">
+            <Link to="/" className="group flex items-center hover:scale-105 transition-transform duration-300">
               <div className="relative">
-                <span className="font-logo font-bold text-2xl md:text-3xl bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent group-hover:from-accent group-hover:via-primary group-hover:to-accent transition-all duration-500">
-                  Work<span className="text-primary group-hover:text-accent transition-colors duration-500">4</span>Studio
-                </span>
+                {/* Background glow */}
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-accent/30 blur-lg group-hover:blur-xl transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
+                
+                {/* Logo text */}
+                <div className="relative">
+                  <span className="font-logo font-bold text-2xl md:text-3xl bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent group-hover:from-accent group-hover:via-primary group-hover:to-accent transition-all duration-500">
+                    Work<span className="text-primary group-hover:text-accent transition-colors duration-500">4</span>Studio
+                  </span>
+                </div>
               </div>
+            </Link>
+            {/* Mobile/Tablet language switcher */}
+            <div className="lg:hidden">
+              <LanguageSwitcher />
             </div>
-          </Link>
+          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
@@ -97,9 +103,6 @@ const Header = () => {
                 </Link>
               ))}
               <div className="pt-4 space-y-4">
-                <div className="flex justify-center">
-                  <LanguageSwitcher />
-                </div>
                 <button 
                   className="bg-gradient-to-r from-primary to-accent text-primary-foreground px-6 py-3 rounded-xl font-semibold text-lg w-full hover:shadow-xl transition-all duration-300 shadow-lg"
                   onClick={() => {
