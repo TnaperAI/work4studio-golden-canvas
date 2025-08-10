@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { FileText, Edit, Save, X, Plus, Trash2 } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
@@ -364,53 +365,80 @@ const LegalDocumentsManagement = () => {
             </CardHeader>
             <CardContent>
               {editingDocument?.id === document.id ? (
-                <div className="space-y-6">
-                  <div className="grid gap-2">
-                    <Label htmlFor={`ru-title-${document.id}`}>Заголовок (RU)</Label>
-                    <Input
-                      id={`ru-title-${document.id}`}
-                      value={editingDocument.title}
-                      onChange={(e) => setEditingDocument(prev => 
-                        prev ? { ...prev, title: e.target.value } : null
-                      )}
-                    />
-                  </div>
+                <Tabs defaultValue="ru" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="ru">Русский</TabsTrigger>
+                    <TabsTrigger value="en">English</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="ru" className="space-y-6 mt-6">
+                    <div className="grid gap-2">
+                      <Label htmlFor={`ru-title-${document.id}`}>Заголовок (RU)</Label>
+                      <Input
+                        id={`ru-title-${document.id}`}
+                        value={editingDocument.title}
+                        onChange={(e) => setEditingDocument(prev => 
+                          prev ? { ...prev, title: e.target.value } : null
+                        )}
+                      />
+                    </div>
 
-                  <div>
-                    <Label htmlFor={`ru-content-${document.id}`}>Содержимое (RU)</Label>
-                    <Textarea
-                      id={`ru-content-${document.id}`}
-                      value={editingDocument.content}
-                      onChange={(e) => setEditingDocument(prev => 
-                        prev ? { ...prev, content: e.target.value } : null
-                      )}
-                      className="min-h-[300px]"
-                    />
+                    <div>
+                      <Label htmlFor={`ru-content-${document.id}`}>Содержимое (RU)</Label>
+                      <Textarea
+                        id={`ru-content-${document.id}`}
+                        value={editingDocument.content}
+                        onChange={(e) => setEditingDocument(prev => 
+                          prev ? { ...prev, content: e.target.value } : null
+                        )}
+                        className="min-h-[300px]"
+                      />
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="en" className="space-y-6 mt-6">
+                    <div className="grid gap-2">
+                      <Label htmlFor={`en-title-${document.id}`}>Заголовок (EN)</Label>
+                      <Input
+                        id={`en-title-${document.id}`}
+                        value={editingTranslation?.title ?? ''}
+                        onChange={(e) => setEditingTranslation(prev => ({ ...(prev || { title: '', content: '' }), title: e.target.value }))}
+                        placeholder="English title..."
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor={`en-content-${document.id}`}>Содержимое (EN)</Label>
+                      <Textarea
+                        id={`en-content-${document.id}`}
+                        value={editingTranslation?.content ?? ''}
+                        onChange={(e) => setEditingTranslation(prev => ({ ...(prev || { title: '', content: '' }), content: e.target.value }))}
+                        className="min-h-[300px]"
+                        placeholder="English content..."
+                      />
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              ) : (
+                <div className="space-y-4">
+                  <div className="prose max-w-none">
+                    <div className="whitespace-pre-wrap text-sm bg-muted p-4 rounded-lg max-h-[300px] overflow-y-auto">
+                      {document.content}
+                    </div>
                   </div>
                   
-                  <div className="grid gap-2">
-                    <Label htmlFor={`en-title-${document.id}`}>Заголовок (EN)</Label>
-                    <Input
-                      id={`en-title-${document.id}`}
-                      value={editingTranslation?.title ?? ''}
-                      onChange={(e) => setEditingTranslation(prev => ({ ...(prev || { title: '', content: '' }), title: e.target.value }))}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor={`en-content-${document.id}`}>Содержимое (EN)</Label>
-                    <Textarea
-                      id={`en-content-${document.id}`}
-                      value={editingTranslation?.content ?? ''}
-                      onChange={(e) => setEditingTranslation(prev => ({ ...(prev || { title: '', content: '' }), content: e.target.value }))}
-                      className="min-h-[300px]"
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className="prose max-w-none">
-                  <div className="whitespace-pre-wrap text-sm bg-muted p-4 rounded-lg max-h-[300px] overflow-y-auto">
-                    {document.content}
-                  </div>
+                  {translations[document.id] && (
+                    <div className="border-t pt-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge variant="outline">EN перевод</Badge>
+                        <span className="text-sm text-muted-foreground">
+                          {translations[document.id].title}
+                        </span>
+                      </div>
+                      <div className="text-sm bg-muted/50 p-3 rounded-lg max-h-[200px] overflow-y-auto">
+                        {translations[document.id].content.substring(0, 200)}...
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>
