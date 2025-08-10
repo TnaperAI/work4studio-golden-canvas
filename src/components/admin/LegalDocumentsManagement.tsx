@@ -23,6 +23,8 @@ interface LegalDocument {
 const LegalDocumentsManagement = () => {
   const [documents, setDocuments] = useState<LegalDocument[]>([]);
   const [editingDocument, setEditingDocument] = useState<LegalDocument | null>(null);
+  const [editingTranslation, setEditingTranslation] = useState<{ title: string; content: string } | null>(null);
+  const [translations, setTranslations] = useState<Record<string, { title: string; content: string }>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -46,6 +48,17 @@ const LegalDocumentsManagement = () => {
 
       if (error) throw error;
       setDocuments(data || []);
+
+      const { data: tr } = await supabase
+        .from('legal_document_translations')
+        .select('document_id, title, content')
+        .eq('language', 'en');
+
+      const map: Record<string, { title: string; content: string }> = {};
+      (tr || []).forEach((row: any) => {
+        map[row.document_id] = { title: row.title, content: row.content };
+      });
+      setTranslations(map);
     } catch (error: any) {
       toast({
         title: 'Ошибка',
@@ -73,6 +86,36 @@ const LegalDocumentsManagement = () => {
 
       if (error) throw error;
 
+      // Save EN translation
+      if (editingTranslation) {
+        const { data: existing } = await supabase
+          .from('legal_document_translations')
+          .select('id')
+          .eq('document_id', editingDocument.id)
+          .eq('language', 'en')
+          .limit(1);
+
+        if (existing && existing.length > 0) {
+          await supabase
+            .from('legal_document_translations')
+            .update({
+              title: editingTranslation.title,
+              content: editingTranslation.content,
+            })
+            .eq('document_id', editingDocument.id)
+            .eq('language', 'en');
+        } else {
+          await supabase
+            .from('legal_document_translations')
+            .insert([{
+              document_id: editingDocument.id,
+              language: 'en',
+              title: editingTranslation.title,
+              content: editingTranslation.content,
+            }]);
+        }
+      }
+
       toast({
         title: 'Успешно',
         description: 'Документ обновлен',
@@ -80,6 +123,7 @@ const LegalDocumentsManagement = () => {
 
       await fetchDocuments();
       setEditingDocument(null);
+      setEditingTranslation(null);
     } catch (error: any) {
       toast({
         title: 'Ошибка',
@@ -275,7 +319,7 @@ const LegalDocumentsManagement = () => {
                       <Button 
                         size="sm" 
                         variant="outline" 
-                        onClick={() => setEditingDocument(null)}
+                        onClick={() => { setEditingDocument(null); setEditingTranslation(null); }}
                       >
                         <X className="h-4 w-4" />
                       </Button>
@@ -285,7 +329,10 @@ const LegalDocumentsManagement = () => {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => setEditingDocument(document)}
+                        onClick={() => {
+                          setEditingDocument(document);
+                          setEditingTranslation(translations[document.id] ?? { title: '', content: '' });
+                        }}
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -315,15 +362,46 @@ const LegalDocumentsManagement = () => {
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
-              {editingDocument?.id === document.id ? (
-                <Textarea
-                  value={editingDocument.content}
-                  onChange={(e) => setEditingDocument(prev => 
-                    prev ? { ...prev, content: e.target.value } : null
-                  )}
-                  className="min-h-[300px]"
-                />
+                  <div className="grid gap-2">
+                    <Label htmlFor={`ru-title-${document.id}`}>Заголовок (RU)</Label>
+                    <Input
+                      id={`ru-title-${document.id}`}
+                      value={editingDocument?.title ?? ''}
+                      onChange={(e) => setEditingDocument(prev => 
+                        prev ? { ...prev, title: e.target.value } : null
+                      )}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor={`ru-content-${document.id}`}>Содержимое (RU)</Label>
+                    <Textarea
+                      id={`ru-content-${document.id}`}
+                      value={editingDocument.content}
+                      onChange={(e) => setEditingDocument(prev => 
+                        prev ? { ...prev, content: e.target.value } : null
+                      )}
+                      className="min-h-[300px]"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor={`en-title-${document.id}`}>Заголовок (EN)</Label>
+                    <Input
+                      id={`en-title-${document.id}`}
+                      value={editingTranslation?.title ?? ''}
+                      onChange={(e) => setEditingTranslation(prev => ({ ...(prev || { title: '', content: '' }), title: e.target.value }))}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor={`en-content-${document.id}`}>Содержимое (EN)</Label>
+                    <Textarea
+                      id={`en-content-${document.id}`}
+                      value={editingTranslation?.content ?? ''}
+                      onChange={(e) => setEditingTranslation(prev => ({ ...(prev || { title: '', content: '' }), content: e.target.value }))}
+                      className="min-h-[300px]"
+                    />
+                  </div>
+                </div>
               ) : (
                 <div className="prose max-w-none">
                   <div className="whitespace-pre-wrap text-sm bg-muted p-4 rounded-lg max-h-[300px] overflow-y-auto">

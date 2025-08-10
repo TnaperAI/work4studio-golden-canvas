@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useParams } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-
+import { useLanguage } from '@/contexts/LanguageContext';
 interface LegalDocument {
   id: string;
   type: string;
@@ -16,13 +16,16 @@ const PrivacyPolicy = () => {
   const { type } = useParams();
   const [document, setDocument] = useState<LegalDocument | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [translation, setTranslation] = useState<{ title: string; content: string } | null>(null);
+  const { language } = useLanguage();
   useEffect(() => {
     fetchDocument();
-  }, [type]);
+  }, [type, language]);
 
   const fetchDocument = async () => {
     try {
+      setIsLoading(true);
+      setTranslation(null);
       const documentType = type || 'privacy_policy';
       const { data, error } = await supabase
         .from('legal_documents')
@@ -32,6 +35,19 @@ const PrivacyPolicy = () => {
 
       if (error) throw error;
       setDocument(data);
+
+      if (language === 'en') {
+        const { data: tr } = await supabase
+          .from('legal_document_translations')
+          .select('title, content')
+          .eq('document_id', data.id)
+          .eq('language', 'en')
+          .limit(1);
+
+        if (tr && tr.length > 0) {
+          setTranslation({ title: tr[0].title, content: tr[0].content });
+        }
+      }
     } catch (error) {
       console.error('Error fetching legal document:', error);
     } finally {
@@ -75,7 +91,7 @@ const PrivacyPolicy = () => {
           <div className="space-y-8">
             <div className="text-center space-y-4">
               <h1 className="text-4xl md:text-5xl font-heading font-bold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                {document.title}
+                {translation?.title ?? document.title}
               </h1>
               <p className="text-muted-foreground text-lg">
                 Последнее обновление: {new Date(document.last_updated).toLocaleDateString('ru-RU', {
@@ -90,7 +106,7 @@ const PrivacyPolicy = () => {
               <div className="prose prose-lg max-w-none text-card-foreground">
                 <div 
                   className="whitespace-pre-wrap leading-relaxed text-lg"
-                  dangerouslySetInnerHTML={{ __html: document.content.replace(/\n/g, '<br />') }}
+                  dangerouslySetInnerHTML={{ __html: (translation?.content ?? document.content).replace(/\n/g, '<br />') }}
                 />
               </div>
             </div>

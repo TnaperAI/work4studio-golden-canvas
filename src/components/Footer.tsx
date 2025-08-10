@@ -72,14 +72,32 @@ const Footer = () => {
     };
 
     const fetchLegalDocuments = async () => {
-      const { data } = await supabase
+      const { data: base } = await supabase
         .from('legal_documents')
         .select('id, title, type')
         .in('type', ['privacy_policy', 'terms_of_service']);
 
-      if (data) {
-        setLegalDocuments(data);
+      let merged = base || [];
+
+      if (language === 'en' && merged.length > 0) {
+        const ids = merged.map((d) => d.id);
+        const { data: tr } = await (supabase as any)
+          .from('legal_document_translations')
+          .select('document_id, title')
+          .eq('language', 'en')
+          .in('document_id', ids);
+
+        if (tr && tr.length) {
+          const map: Record<string, any> = {};
+          tr.forEach((row: any) => { map[row.document_id] = row; });
+          merged = merged.map((d) => ({
+            ...d,
+            title: map[d.id]?.title ?? d.title,
+          }));
+        }
       }
+
+      setLegalDocuments(merged);
     };
 
     fetchServices();
@@ -176,9 +194,7 @@ const Footer = () => {
                   to={`/legal/${doc.type}`} 
                   className="text-sm text-muted-foreground hover:text-primary transition-colors underline"
                 >
-                  {language === 'en' 
-                    ? (doc.type === 'terms_of_service' ? 'Terms of Service' : doc.type === 'privacy_policy' ? 'Privacy Policy' : doc.title)
-                    : doc.title}
+                  {doc.title}
                 </Link>
               ))}
             </div>
