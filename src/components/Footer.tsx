@@ -40,16 +40,35 @@ const Footer = () => {
 
   useEffect(() => {
     const fetchServices = async () => {
-      const { data } = await supabase
+      const { data: base } = await supabase
         .from('services')
         .select('id, title, slug')
         .eq('is_active', true)
         .order('sort_order', { ascending: true })
         .limit(4);
 
-      if (data) {
-        setServices(data);
+      let merged = base || [];
+
+      // Merge EN translations for titles if needed
+      if (language === 'en' && merged.length > 0) {
+        const ids = merged.map((s) => s.id);
+        const { data: tr } = await (supabase as any)
+          .from('service_translations')
+          .select('service_id, title')
+          .eq('language', 'en')
+          .in('service_id', ids);
+
+        if (tr && tr.length) {
+          const map: Record<string, any> = {};
+          tr.forEach((row: any) => { map[row.service_id] = row; });
+          merged = merged.map((s) => ({
+            ...s,
+            title: map[s.id]?.title ?? s.title,
+          }));
+        }
       }
+
+      setServices(merged);
     };
 
     const fetchLegalDocuments = async () => {
@@ -65,7 +84,7 @@ const Footer = () => {
 
     fetchServices();
     fetchLegalDocuments();
-  }, []);
+  }, [language]);
 
   return (
     <footer className="bg-background border-t border-border">
