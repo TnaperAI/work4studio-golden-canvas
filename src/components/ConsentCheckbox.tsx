@@ -72,7 +72,7 @@ const ConsentCheckbox = ({ isAgreed, onChange, className = "" }: ConsentCheckbox
               target="_blank"
               className="text-primary hover:underline"
             >
-              Terms of Service
+              {termsDoc?.title || 'Terms of Service'}
             </a>{' '}
             and{' '}
             <a 
@@ -80,7 +80,7 @@ const ConsentCheckbox = ({ isAgreed, onChange, className = "" }: ConsentCheckbox
               target="_blank"
               className="text-primary hover:underline"
             >
-              Privacy Policy
+              {privacyDoc?.title || 'Privacy Policy'}
             </a>{' '}
             and consent to the processing of my personal data.
           </>

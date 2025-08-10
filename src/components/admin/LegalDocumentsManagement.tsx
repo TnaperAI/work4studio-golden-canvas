@@ -362,11 +362,14 @@ const LegalDocumentsManagement = () => {
                 </div>
               </div>
             </CardHeader>
+            <CardContent>
+              {editingDocument?.id === document.id ? (
+                <div className="space-y-6">
                   <div className="grid gap-2">
                     <Label htmlFor={`ru-title-${document.id}`}>Заголовок (RU)</Label>
                     <Input
                       id={`ru-title-${document.id}`}
-                      value={editingDocument?.title ?? ''}
+                      value={editingDocument.title}
                       onChange={(e) => setEditingDocument(prev => 
                         prev ? { ...prev, title: e.target.value } : null
                       )}
@@ -384,6 +387,7 @@ const LegalDocumentsManagement = () => {
                       className="min-h-[300px]"
                     />
                   </div>
+                  
                   <div className="grid gap-2">
                     <Label htmlFor={`en-title-${document.id}`}>Заголовок (EN)</Label>
                     <Input
