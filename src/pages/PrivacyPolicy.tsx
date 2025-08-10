@@ -94,7 +94,7 @@ const PrivacyPolicy = () => {
                 {translation?.title ?? document.title}
               </h1>
               <p className="text-muted-foreground text-lg">
-                Последнее обновление: {new Date(document.last_updated).toLocaleDateString('ru-RU', {
+                {language === 'en' ? 'Last updated:' : 'Последнее обновление:'} {new Date(document.last_updated).toLocaleDateString(language === 'en' ? 'en-US' : 'ru-RU', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
