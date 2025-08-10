@@ -37,7 +37,7 @@ const PrivacyPolicy = () => {
       setDocument(data);
 
       if (language === 'en') {
-        const { data: tr } = await supabase
+        const { data: tr } = await (supabase as any)
           .from('legal_document_translations')
           .select('title, content')
           .eq('document_id', data.id)

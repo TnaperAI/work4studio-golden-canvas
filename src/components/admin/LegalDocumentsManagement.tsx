@@ -49,7 +49,7 @@ const LegalDocumentsManagement = () => {
       if (error) throw error;
       setDocuments(data || []);
 
-      const { data: tr } = await supabase
+      const { data: tr } = await (supabase as any)
         .from('legal_document_translations')
         .select('document_id, title, content')
         .eq('language', 'en');
@@ -88,7 +88,7 @@ const LegalDocumentsManagement = () => {
 
       // Save EN translation
       if (editingTranslation) {
-        const { data: existing } = await supabase
+        const { data: existing } = await (supabase as any)
           .from('legal_document_translations')
           .select('id')
           .eq('document_id', editingDocument.id)
@@ -96,7 +96,7 @@ const LegalDocumentsManagement = () => {
           .limit(1);
 
         if (existing && existing.length > 0) {
-          await supabase
+          await (supabase as any)
             .from('legal_document_translations')
             .update({
               title: editingTranslation.title,
@@ -105,7 +105,7 @@ const LegalDocumentsManagement = () => {
             .eq('document_id', editingDocument.id)
             .eq('language', 'en');
         } else {
-          await supabase
+          await (supabase as any)
             .from('legal_document_translations')
             .insert([{
               document_id: editingDocument.id,
