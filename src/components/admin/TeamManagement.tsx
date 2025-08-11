@@ -20,7 +20,9 @@ import {
   Clock,
   ChevronUp,
   ChevronDown,
-  Globe
+  Globe,
+  Upload,
+  Image as ImageIcon
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
@@ -54,6 +56,7 @@ const TeamManagement = () => {
   const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [activeLanguage, setActiveLanguage] = useState<'ru' | 'en'>('ru');
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [formData, setFormData] = useState({
     ru: {
       name: '',
@@ -293,6 +296,43 @@ const TeamManagement = () => {
     }
   };
 
+  const handleImageUpload = async (file: File) => {
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `team/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('team-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from('team-images')
+        .getPublicUrl(filePath);
+
+      setFormData(prev => ({ ...prev, image: data.publicUrl }));
+      
+      toast({
+        title: 'Изображение загружено',
+        description: 'Фотография успешно загружена'
+      });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: 'Ошибка загрузки',
+        description: 'Не удалось загрузить изображение',
+        variant: 'destructive'
+      });
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const getDisplayName = (member: TeamMember) => {
     const memberTranslations = translations[member.id] || [];
     const currentTranslation = memberTranslations.find(t => t.language === language);
@@ -452,14 +492,62 @@ const TeamManagement = () => {
               <div className="space-y-4 border-t pt-4">
                 <h3 className="text-lg font-medium">Общая информация</h3>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="image">URL изображения</Label>
-                  <Input
-                    id="image"
-                    value={formData.image}
-                    onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                    placeholder="https://example.com/image.jpg"
-                  />
+                <div className="space-y-4">
+                  <Label>Фотография</Label>
+                  
+                  {formData.image && (
+                    <div className="flex items-center gap-4 p-4 border border-border rounded-lg bg-muted/50">
+                      <img 
+                        src={formData.image} 
+                        alt="Preview" 
+                        className="w-16 h-16 rounded-lg object-cover"
+                      />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">Текущее изображение</p>
+                        <p className="text-xs text-muted-foreground">Загрузите новое изображение для замены</p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setFormData(prev => ({ ...prev, image: '' }))}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  )}
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Загрузить файл</Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleImageUpload(file);
+                          }}
+                          disabled={uploadingImage}
+                          className="cursor-pointer"
+                        />
+                        {uploadingImage && (
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="image-url">или введите URL</Label>
+                      <Input
+                        id="image-url"
+                        value={formData.image}
+                        onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
+                        placeholder="https://example.com/image.jpg"
+                        disabled={uploadingImage}
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
