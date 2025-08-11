@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useAdminLanguage } from '@/contexts/AdminLanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   FileText, 
@@ -31,7 +30,6 @@ interface ContentItem {
 }
 
 const ContentDashboard = () => {
-  const { language } = useAdminLanguage();
   const [contentItems, setContentItems] = useState<ContentItem[]>([]);
   const [stats, setStats] = useState({
     totalItems: 0,
@@ -175,10 +173,7 @@ const ContentDashboard = () => {
     return <Badge variant="outline"><Clock className="h-3 w-3 mr-1" />Пустой</Badge>;
   };
 
-  const filteredItems = contentItems.filter(item => {
-    if (language === 'ru') return true;
-    return item.hasEnglish || !item.hasRussian; // Show items that have EN or are completely empty
-  });
+  const filteredItems = contentItems; // Show all items since we removed language filtering
 
   const groupedItems = {
     pages: filteredItems.filter(item => item.type === 'page'),
@@ -195,11 +190,11 @@ const ContentDashboard = () => {
             Управление контентом
           </h1>
           <p className="text-muted-foreground">
-            Редактирование контента на {language === 'ru' ? 'русском' : 'английском'} языке
+            Редактирование всего контента сайта
           </p>
         </div>
         <Badge variant="outline" className="text-sm">
-          Активный язык: {language === 'ru' ? 'Русский' : 'English'}
+          Весь контент
         </Badge>
       </div>
 
