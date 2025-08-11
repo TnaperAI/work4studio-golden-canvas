@@ -5,7 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Save, Eye, Globe, CheckCircle, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useAdminLanguage } from '@/contexts/AdminLanguageContext';
 import PageContentEditor from './PageContentEditor';
 
 interface UniversalContentEditorProps {
@@ -21,13 +20,8 @@ const UniversalContentEditor = ({ type, id, slug, onBack }: UniversalContentEdit
   const [hasEnglishContent, setHasEnglishContent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
-  const { language } = useAdminLanguage();
   const { toast } = useToast();
 
-  useEffect(() => {
-    // Set active tab based on admin language context
-    setActiveTab(language);
-  }, [language]);
 
   const getEditorTitle = () => {
     const titles = {

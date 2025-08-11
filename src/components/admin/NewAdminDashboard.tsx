@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { AdminLanguageProvider } from '@/contexts/AdminLanguageContext';
 import NewAdminLayout from './NewAdminLayout';
 import Dashboard from './Dashboard';
 import ContentDashboard from './ContentDashboard';
@@ -147,11 +146,9 @@ const NewAdminDashboard = () => {
   };
 
   return (
-    <AdminLanguageProvider>
-      <NewAdminLayout>
-        {renderCurrentView()}
-      </NewAdminLayout>
-    </AdminLanguageProvider>
+    <NewAdminLayout>
+      {renderCurrentView()}
+    </NewAdminLayout>
   );
 };
 

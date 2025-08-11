@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { useAdminLanguage } from '@/contexts/AdminLanguageContext';
 import { 
   Home, 
   Settings, 
@@ -14,10 +12,7 @@ import {
   X,
   Scale,
   Globe,
-  Search,
-  Briefcase,
-  Image,
-  Languages
+  Search
 } from 'lucide-react';
 
 interface NewAdminLayoutProps {
@@ -28,7 +23,6 @@ const NewAdminLayout = ({ children }: NewAdminLayoutProps) => {
   const { signOut } = useAuth();
   const { role } = useUserRole();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { language, toggleLanguage } = useAdminLanguage();
 
   const navigation = [
     { name: 'Дашборд', href: '#dashboard', icon: Home },
@@ -117,7 +111,7 @@ const NewAdminLayout = ({ children }: NewAdminLayoutProps) => {
       {/* Main content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="h-16 bg-card border-b flex items-center justify-between px-6">
+        <header className="h-16 bg-card border-b flex items-center px-6">
           <div className="flex items-center">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -126,22 +120,6 @@ const NewAdminLayout = ({ children }: NewAdminLayoutProps) => {
               <Menu size={24} />
             </button>
             <h2 className="text-lg font-semibold">Work4Studio CMS</h2>
-          </div>
-          
-          {/* Language switcher */}
-          <div className="flex items-center gap-4">
-            <Button
-              onClick={toggleLanguage}
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <Languages className="h-4 w-4" />
-              <span className="font-medium">{language.toUpperCase()}</span>
-              <Badge variant="secondary" className="text-xs">
-                {language === 'ru' ? 'Русский' : 'English'}
-              </Badge>
-            </Button>
           </div>
         </header>
 
