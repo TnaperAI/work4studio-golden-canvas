@@ -33,8 +33,6 @@ const NewAdminLayout = ({ children }: NewAdminLayoutProps) => {
   const navigation = [
     { name: 'Дашборд', href: '#dashboard', icon: Home },
     { name: 'Основные страницы', href: '#pages', icon: FileText },
-    { name: 'Услуги', href: '#services', icon: Briefcase },
-    { name: 'Кейсы', href: '#cases', icon: Image },
     { name: 'Заявки', href: '#submissions', icon: Users },
     { name: 'SEO настройки', href: '#seo', icon: Globe },
     { name: 'Правовые документы', href: '#legal', icon: Scale },

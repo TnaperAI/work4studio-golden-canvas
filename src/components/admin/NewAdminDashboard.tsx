@@ -13,8 +13,6 @@ import UniversalContentEditor from './UniversalContentEditor';
 type AdminView = 
   | 'dashboard' 
   | 'pages' 
-  | 'services' 
-  | 'cases' 
   | 'submissions' 
   | 'legal' 
   | 'seo' 
@@ -76,12 +74,6 @@ const NewAdminDashboard = () => {
         case 'pages':
           setCurrentView('pages');
           break;
-        case 'services':
-          setCurrentView('services');
-          break;
-        case 'cases':
-          setCurrentView('cases');
-          break;
         case 'submissions':
           setCurrentView('submissions');
           break;
@@ -137,8 +129,6 @@ const NewAdminDashboard = () => {
 
     switch (currentView) {
       case 'pages':
-      case 'services':
-      case 'cases':
         return <ContentDashboard />;
       case 'submissions':
         return <ContactSubmissionsManagement />;
