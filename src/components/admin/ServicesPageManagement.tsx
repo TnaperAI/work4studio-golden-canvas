@@ -252,30 +252,6 @@ const ServicesPageManagement = ({ language: propLanguage }: ServicesPageManageme
           );
         })}
       </div>
-
-      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border-blue-200 dark:border-blue-800">
-        <CardContent className="p-8 text-center">
-          <div className="flex flex-col items-center space-y-4">
-            <div className="p-4 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white">
-              <Grid3X3 className="h-8 w-8" />
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-2">Управление отдельными услугами</h3>
-              <p className="text-muted-foreground mb-6">
-                Для добавления, редактирования и управления отдельными услугами используйте специальный раздел
-              </p>
-              <Button 
-                variant="outline" 
-                onClick={() => window.location.hash = 'page-editor-services-edit'}
-                className="flex items-center gap-2"
-              >
-                <List className="h-4 w-4" />
-                Управление услугами
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
