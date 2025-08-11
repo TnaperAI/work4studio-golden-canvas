@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Save, Eye, Globe, CheckCircle, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAdminLanguage } from '@/contexts/AdminLanguageContext';
-// Import will be added after creating the components
+import PageContentEditor from './PageContentEditor';
 
 interface UniversalContentEditorProps {
   type: 'page' | 'service' | 'case' | 'legal';
@@ -50,15 +50,54 @@ const UniversalContentEditor = ({ type, id, slug, onBack }: UniversalContentEdit
   };
 
   const renderContentEditor = () => {
-    return (
-      <div className="p-6 border border-dashed border-muted-foreground/25 rounded-lg">
-        <p className="text-muted-foreground text-center">
-          Редактор контента для {type} (язык: {activeTab})
-          <br />
-          <span className="text-sm">Компонент в разработке</span>
-        </p>
-      </div>
-    );
+    const commonProps = {
+      language: activeTab,
+      onContentChange: (hasContent: boolean) => {
+        if (activeTab === 'ru') {
+          setHasRussianContent(hasContent);
+        } else {
+          setHasEnglishContent(hasContent);
+        }
+      },
+      onTitleChange: setTitle
+    };
+
+    switch (type) {
+      case 'page':
+        return <PageContentEditor slug={slug!} {...commonProps} />;
+      case 'service':
+        return (
+          <div className="p-6 border border-dashed border-muted-foreground/25 rounded-lg">
+            <p className="text-muted-foreground text-center">
+              Редактор услуги #{id} (язык: {activeTab})
+              <br />
+              <span className="text-sm">Компонент в разработке</span>
+            </p>
+          </div>
+        );
+      case 'case':
+        return (
+          <div className="p-6 border border-dashed border-muted-foreground/25 rounded-lg">
+            <p className="text-muted-foreground text-center">
+              Редактор кейса #{id} (язык: {activeTab})
+              <br />
+              <span className="text-sm">Компонент в разработке</span>
+            </p>
+          </div>
+        );
+      case 'legal':
+        return (
+          <div className="p-6 border border-dashed border-muted-foreground/25 rounded-lg">
+            <p className="text-muted-foreground text-center">
+              Редактор документа #{id} (язык: {activeTab})
+              <br />
+              <span className="text-sm">Компонент в разработке</span>
+            </p>
+          </div>
+        );
+      default:
+        return <div>Неизвестный тип контента</div>;
+    }
   };
 
   const getTranslationStatus = (lang: 'ru' | 'en') => {

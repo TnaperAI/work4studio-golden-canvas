@@ -50,23 +50,28 @@ const ContentDashboard = () => {
         .from('site_content')
         .select('*');
 
-      // Fetch services
+      // Fetch services with translations
       const { data: services } = await supabase
         .from('services')
-        .select('*, service_translations(*)');
+        .select('*');
+      
+      const { data: serviceTranslations } = await supabase
+        .from('service_translations')
+        .select('*');
 
-      // Fetch cases
+      // Fetch cases with translations
       const { data: cases } = await supabase
         .from('cases')
-        .select('*, case_translations(*)');
+        .select('*');
+        
+      const { data: caseTranslations } = await supabase
+        .from('case_translations')
+        .select('*');
 
       // Fetch legal documents
       const { data: legalDocs } = await supabase
         .from('legal_documents')
         .select('*');
-      
-      // Fetch legal document translations (simplified for now)
-      const legalTranslations: any[] = [];
 
       const items: ContentItem[] = [];
 
@@ -75,7 +80,7 @@ const ContentDashboard = () => {
         { slug: 'home', title: 'Главная страница', icon: Home },
         { slug: 'about', title: 'О нас', icon: Info },
         { slug: 'contact', title: 'Контакты', icon: Mail },
-        { slug: 'services', title: 'Страница услуг', icon: Briefcase }
+        { slug: 'services-page', title: 'Страница услуг', icon: Briefcase }
       ];
 
       mainPages.forEach(page => {
@@ -97,7 +102,7 @@ const ContentDashboard = () => {
 
       // Add services
       services?.forEach(service => {
-        const hasTranslation = service.service_translations?.some((t: any) => t.language === 'en');
+        const hasTranslation = serviceTranslations?.some((t: any) => t.service_id === service.id && t.language === 'en');
         items.push({
           id: `service-${service.id}`,
           title: service.title,
@@ -112,7 +117,7 @@ const ContentDashboard = () => {
 
       // Add cases
       cases?.forEach(caseItem => {
-        const hasTranslation = caseItem.case_translations?.some((t: any) => t.language === 'en');
+        const hasTranslation = caseTranslations?.some((t: any) => t.case_id === caseItem.id && t.language === 'en');
         items.push({
           id: `case-${caseItem.id}`,
           title: caseItem.title,
@@ -127,14 +132,13 @@ const ContentDashboard = () => {
 
       // Add legal documents
       legalDocs?.forEach(doc => {
-        const hasTranslation = legalTranslations?.some((t: any) => t.document_id === doc.id && t.language === 'en');
         items.push({
           id: `legal-${doc.id}`,
           title: doc.title,
           description: doc.type,
           icon: FileText,
           hasRussian: true,
-          hasEnglish: hasTranslation || false,
+          hasEnglish: false, // Simplified for now
           type: 'legal',
           onClick: () => window.location.hash = `legal-editor-${doc.id}`
         });
