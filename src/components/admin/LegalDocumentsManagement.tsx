@@ -10,6 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { FileText, Edit, Save, X, Plus, Trash2 } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { useSiteContent } from '@/hooks/useSiteContent';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface LegalDocument {
   id: string;
@@ -22,6 +24,8 @@ interface LegalDocument {
 }
 
 const LegalDocumentsManagement = () => {
+  const { getContent } = useSiteContent();
+  const { language } = useLanguage();
   const [documents, setDocuments] = useState<LegalDocument[]>([]);
   const [editingDocument, setEditingDocument] = useState<LegalDocument | null>(null);
   const [editingTranslation, setEditingTranslation] = useState<{ title: string; content: string } | null>(null);
@@ -62,8 +66,8 @@ const LegalDocumentsManagement = () => {
       setTranslations(map);
     } catch (error: any) {
       toast({
-        title: 'Ошибка',
-        description: 'Не удалось загрузить документы: ' + error.message,
+        title: getContent('admin_legal', 'error_title') || (language === 'en' ? 'Error' : 'Ошибка'),
+        description: `${getContent('admin_legal', 'load_error') || (language === 'en' ? 'Failed to load documents:' : 'Не удалось загрузить документы:')} ${error.message}`,
         variant: 'destructive',
       });
     } finally {
@@ -118,8 +122,8 @@ const LegalDocumentsManagement = () => {
       }
 
       toast({
-        title: 'Успешно',
-        description: 'Документ обновлен',
+        title: getContent('admin_legal', 'success_title') || (language === 'en' ? 'Success' : 'Успешно'),
+        description: getContent('admin_legal', 'document_updated') || (language === 'en' ? 'Document updated' : 'Документ обновлен'),
       });
 
       await fetchDocuments();
@@ -127,8 +131,8 @@ const LegalDocumentsManagement = () => {
       setEditingTranslation(null);
     } catch (error: any) {
       toast({
-        title: 'Ошибка',
-        description: 'Не удалось сохранить документ: ' + error.message,
+        title: getContent('admin_legal', 'error_title') || (language === 'en' ? 'Error' : 'Ошибка'),
+        description: `${getContent('admin_legal', 'save_error') || (language === 'en' ? 'Failed to save document:' : 'Не удалось сохранить документ:')} ${error.message}`,
         variant: 'destructive',
       });
     } finally {
@@ -139,8 +143,8 @@ const LegalDocumentsManagement = () => {
   const handleAddDocument = async () => {
     if (!newDocument.type || !newDocument.title || !newDocument.content) {
       toast({
-        title: 'Ошибка',
-        description: 'Заполните все поля',
+        title: getContent('admin_legal', 'error_title') || (language === 'en' ? 'Error' : 'Ошибка'),
+        description: getContent('admin_legal', 'fill_all_fields') || (language === 'en' ? 'Please fill all fields' : 'Заполните все поля'),
         variant: 'destructive',
       });
       return;
@@ -159,8 +163,8 @@ const LegalDocumentsManagement = () => {
       if (error) throw error;
 
       toast({
-        title: 'Успешно',
-        description: 'Документ добавлен',
+        title: getContent('admin_legal', 'success_title') || (language === 'en' ? 'Success' : 'Успешно'),
+        description: getContent('admin_legal', 'document_added') || (language === 'en' ? 'Document added' : 'Документ добавлен'),
       });
 
       await fetchDocuments();
@@ -225,15 +229,15 @@ const LegalDocumentsManagement = () => {
         <div>
           <h1 className="text-3xl font-heading font-bold flex items-center gap-2">
             <FileText className="h-8 w-8" />
-            Правовые документы
+            {getContent('admin_legal', 'title') || (language === 'en' ? 'Legal Documents' : 'Правовые документы')}
           </h1>
           <p className="text-muted-foreground">
-            Управление политикой конфиденциальности и другими правовыми документами
+            {getContent('admin_legal', 'description') || (language === 'en' ? 'Manage privacy policy and other legal documents' : 'Управление политикой конфиденциальности и другими правовыми документами')}
           </p>
         </div>
         <Button onClick={() => setShowAddForm(true)}>
           <Plus className="h-4 w-4 mr-2" />
-          Добавить документ
+          {getContent('admin_legal', 'add_document') || (language === 'en' ? 'Add Document' : 'Добавить документ')}
         </Button>
       </div>
 

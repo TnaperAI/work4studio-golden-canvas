@@ -3,7 +3,6 @@ import NewAdminLayout from './NewAdminLayout';
 import Dashboard from './Dashboard';
 import ContentDashboard from './ContentDashboard';
 import ContactSubmissionsManagement from './ContactSubmissionsManagement';
-import LegalDocumentsManagement from './LegalDocumentsManagement';
 import PageSEOManagement from './PageSEOManagement';
 import CompanyParser from './CompanyParser';
 import TeamManagement from './TeamManagement';
@@ -14,7 +13,6 @@ type AdminView =
   | 'dashboard' 
   | 'pages' 
   | 'submissions' 
-  | 'legal' 
   | 'seo' 
   | 'company-parser'
   | 'team' 
@@ -95,9 +93,6 @@ const NewAdminDashboard = () => {
         case 'cases':
           setCurrentView('pages'); // Cases are managed through ContentDashboard
           break;
-        case 'legal':
-          setCurrentView('legal');
-          break;
         case 'seo':
           setCurrentView('seo');
           break;
@@ -142,8 +137,8 @@ const NewAdminDashboard = () => {
               window.location.hash = 'pages';
             } else if (editorContext.type === 'service' || editorContext.type === 'case') {
               window.location.hash = 'pages'; // Go back to ContentDashboard
-            } else {
-              window.location.hash = 'legal';
+            } else if (editorContext.type === 'legal') {
+              window.location.hash = 'pages'; // Legal documents are now in ContentDashboard
             }
           }}
         />
@@ -155,8 +150,6 @@ const NewAdminDashboard = () => {
         return <ContentDashboard />;
       case 'submissions':
         return <ContactSubmissionsManagement />;
-      case 'legal':
-        return <LegalDocumentsManagement />;
       case 'seo':
         return <PageSEOManagement />;
       case 'company-parser':
