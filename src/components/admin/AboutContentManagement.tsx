@@ -159,7 +159,8 @@ const AboutContentManagement = ({ language: propLanguage }: AboutContentManageme
       description: 'Принципы и ценности компании',
       color: 'from-amber-500 to-yellow-500',
       fields: [
-        { key: 'values_title', label: 'Заголовок секции', type: 'text' },
+        { key: 'values_title', label: 'Заголовок секции (часть 1)', type: 'text' },
+        { key: 'values_title_second', label: 'Заголовок секции (часть 2)', type: 'text' },
         { key: 'values_subtitle', label: 'Описание секции', type: 'textarea' },
         { key: 'value_1_title', label: 'Ценность 1 - заголовок', type: 'text' },
         { key: 'value_1_description', label: 'Ценность 1 - описание', type: 'textarea' },
