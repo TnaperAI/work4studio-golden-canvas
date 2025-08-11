@@ -8,6 +8,7 @@ import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import HomeContentManagement from './HomeContentManagement';
 
 interface PageContentEditorProps {
   slug: string;
@@ -274,6 +275,11 @@ const PageContentEditor = ({ slug, language, onContentChange, onTitleChange }: P
   }
 
   const fields = getPageFields(slug);
+
+  // Special handling for home page - use beautiful component
+  if (slug === 'home') {
+    return <HomeContentManagement language={language} />;
+  }
 
   return (
     <div className="space-y-6">
