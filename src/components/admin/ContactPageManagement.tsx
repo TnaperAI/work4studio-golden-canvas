@@ -251,40 +251,6 @@ const ContactPageManagement = ({ language: propLanguage }: ContactPageManagement
           );
         })}
       </div>
-
-      <Card className="bg-muted/30 border-dashed border-2 border-muted-foreground/20">
-        <CardContent className="p-8 text-center">
-          <div className="flex flex-col items-center space-y-4">
-            <div className="p-4 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-              <Sparkles className="h-8 w-8" />
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-2">Дополнительные настройки</h3>
-              <p className="text-muted-foreground mb-6">
-                Управляйте SEO настройками и заявками с формы контактов
-              </p>
-              <div className="flex gap-4 justify-center">
-                <Button 
-                  variant="outline" 
-                  onClick={() => window.location.hash = 'seo'}
-                  className="flex items-center gap-2"
-                >
-                  <Globe className="h-4 w-4" />
-                  SEO настройки
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={() => window.location.hash = 'submissions'}
-                  className="flex items-center gap-2"
-                >
-                  <User className="h-4 w-4" />
-                  Управление заявками
-                </Button>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
