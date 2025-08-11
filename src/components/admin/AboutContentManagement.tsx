@@ -266,6 +266,27 @@ const AboutContentManagement = ({ language: propLanguage }: AboutContentManageme
               </CardHeader>
               
               <CardContent className="space-y-6">
+                {section.title === 'Блок команды' && (
+                  <div className="mb-6 p-4 bg-muted/50 rounded-lg border-2 border-dashed border-primary/20">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-semibold text-primary mb-2">Управление участниками команды</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Добавляйте, редактируйте и управляйте участниками команды
+                        </p>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => window.location.hash = 'team'}
+                        className="shrink-0"
+                      >
+                        <Users className="h-4 w-4 mr-2" />
+                        Управление командой
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                
                 <div className="grid gap-6 md:grid-cols-2">
                   {section.fields.map((field, fieldIndex) => (
                     <div key={field.key} className="space-y-2">
