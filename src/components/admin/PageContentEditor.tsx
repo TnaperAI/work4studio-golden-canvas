@@ -295,7 +295,7 @@ const PageContentEditor = ({ slug, language, onContentChange, onTitleChange }: P
   }
 
   // Special handling for services page - use beautiful component  
-  if (slug === 'services') {
+  if (slug === 'services' || slug === 'services-page') {
     return <ServicesPageManagement language={language} />;
   }
 
