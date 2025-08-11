@@ -10,9 +10,7 @@ import {
   LogOut, 
   Menu,
   X,
-  Scale,
   Globe,
-  Search,
   MessageSquare,
   Mail
 } from 'lucide-react';
