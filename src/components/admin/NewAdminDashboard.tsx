@@ -3,7 +3,6 @@ import NewAdminLayout from './NewAdminLayout';
 import Dashboard from './Dashboard';
 import ContentDashboard from './ContentDashboard';
 import ContactSubmissionsManagement from './ContactSubmissionsManagement';
-import ContactContentManagement from './ContactContentManagement';
 import LegalDocumentsManagement from './LegalDocumentsManagement';
 import PageSEOManagement from './PageSEOManagement';
 import CompanyParser from './CompanyParser';
@@ -15,7 +14,6 @@ type AdminView =
   | 'dashboard' 
   | 'pages' 
   | 'submissions' 
-  | 'contact-content'
   | 'legal' 
   | 'seo' 
   | 'company-parser'
@@ -91,9 +89,6 @@ const NewAdminDashboard = () => {
         case 'submissions':
           setCurrentView('submissions');
           break;
-        case 'contact-content':
-          setCurrentView('contact-content');
-          break;
         case 'services':
           setCurrentView('pages'); // Services are managed through ContentDashboard
           break;
@@ -160,8 +155,6 @@ const NewAdminDashboard = () => {
         return <ContentDashboard />;
       case 'submissions':
         return <ContactSubmissionsManagement />;
-      case 'contact-content':
-        return <ContactContentManagement />;
       case 'legal':
         return <LegalDocumentsManagement />;
       case 'seo':
