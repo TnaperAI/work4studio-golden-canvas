@@ -6,6 +6,7 @@ import ContactSubmissionsManagement from './ContactSubmissionsManagement';
 import LegalDocumentsManagement from './LegalDocumentsManagement';
 import PageSEOManagement from './PageSEOManagement';
 import CompanyParser from './CompanyParser';
+import TeamManagement from './TeamManagement';
 import Settings from './Settings';
 import UniversalContentEditor from './UniversalContentEditor';
 
@@ -15,7 +16,8 @@ type AdminView =
   | 'submissions' 
   | 'legal' 
   | 'seo' 
-  | 'company-parser' 
+  | 'company-parser'
+  | 'team' 
   | 'settings'
   | 'editor';
 
@@ -102,6 +104,9 @@ const NewAdminDashboard = () => {
         case 'company-parser':
           setCurrentView('company-parser');
           break;
+        case 'team':
+          setCurrentView('team');
+          break;
         case 'settings':
           setCurrentView('settings');
           break;
@@ -156,6 +161,8 @@ const NewAdminDashboard = () => {
         return <PageSEOManagement />;
       case 'company-parser':
         return <CompanyParser />;
+      case 'team':
+        return <TeamManagement />;
       case 'settings':
         return <Settings />;
       case 'dashboard':

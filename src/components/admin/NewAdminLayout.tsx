@@ -28,6 +28,7 @@ const NewAdminLayout = ({ children }: NewAdminLayoutProps) => {
     { name: 'Дашборд', href: '#dashboard', icon: Home },
     { name: 'Основные страницы', href: '#pages', icon: FileText },
     { name: 'Заявки', href: '#submissions', icon: Users },
+    { name: 'Команда', href: '#team', icon: Users },
     { name: 'SEO настройки', href: '#seo', icon: Globe },
     { name: 'Правовые документы', href: '#legal', icon: Scale },
     { name: 'Поиск компаний', href: '#company-parser', icon: Search },
