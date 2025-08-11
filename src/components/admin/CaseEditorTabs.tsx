@@ -31,6 +31,7 @@ interface CaseData {
   is_featured: boolean;
   is_active: boolean;
   sort_order: number;
+  // SEO fields remain for compatibility but managed elsewhere
   meta_title: string;
   meta_description: string;
   meta_keywords: string;
@@ -46,6 +47,7 @@ interface CaseTranslation {
   short_description: string;
   description: string;
   results: string[];
+  // SEO fields remain for compatibility but managed elsewhere
   meta_title: string;
   meta_description: string;
   meta_keywords: string;
@@ -412,43 +414,6 @@ const CaseEditorTabs = ({ caseId, onBack }: CaseEditorTabsProps) => {
                   placeholder="https://example.com"
                 />
               </div>
-
-              <div className="space-y-2">
-                <Label>H1 заголовок</Label>
-                <Input
-                  value={formData.h1_tag}
-                  onChange={(e) => updateField('h1_tag', e.target.value)}
-                  placeholder="H1 заголовок страницы"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Meta Title</Label>
-                <Input
-                  value={formData.meta_title}
-                  onChange={(e) => updateField('meta_title', e.target.value)}
-                  placeholder="Title для поисковиков"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Meta Description</Label>
-                <Textarea
-                  value={formData.meta_description}
-                  onChange={(e) => updateField('meta_description', e.target.value)}
-                  placeholder="Описание для поисковиков"
-                  rows={3}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Ключевые слова</Label>
-                <Input
-                  value={formData.meta_keywords}
-                  onChange={(e) => updateField('meta_keywords', e.target.value)}
-                  placeholder="keyword1, keyword2, keyword3"
-                />
-              </div>
             </CardContent>
           </Card>
 
@@ -549,43 +514,6 @@ const CaseEditorTabs = ({ caseId, onBack }: CaseEditorTabsProps) => {
                   onChange={(e) => updateEnField('description', e.target.value)}
                   placeholder="Detailed project description, tasks and solutions..."
                   rows={4}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>H1 Tag</Label>
-                <Input
-                  value={enData.h1_tag}
-                  onChange={(e) => updateEnField('h1_tag', e.target.value)}
-                  placeholder="Page H1 heading"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Meta Title</Label>
-                <Input
-                  value={enData.meta_title}
-                  onChange={(e) => updateEnField('meta_title', e.target.value)}
-                  placeholder="SEO title"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Meta Description</Label>
-                <Textarea
-                  value={enData.meta_description}
-                  onChange={(e) => updateEnField('meta_description', e.target.value)}
-                  placeholder="SEO description"
-                  rows={3}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Keywords</Label>
-                <Input
-                  value={enData.meta_keywords}
-                  onChange={(e) => updateEnField('meta_keywords', e.target.value)}
-                  placeholder="keyword1, keyword2, keyword3"
                 />
               </div>
             </CardContent>
