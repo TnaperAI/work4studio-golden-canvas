@@ -32,7 +32,6 @@ const NewAdminLayout = ({ children }: NewAdminLayoutProps) => {
     { name: 'Заявки', href: '#submissions', icon: MessageSquare },
     { name: 'Команда', href: '#team', icon: Users },
     { name: 'SEO настройки', href: '#seo', icon: Globe },
-    { name: 'Поиск компаний', href: '#company-parser', icon: Search },
     { name: 'Настройки', href: '#settings', icon: Settings },
   ];
 
