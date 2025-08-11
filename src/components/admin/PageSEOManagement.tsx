@@ -31,6 +31,11 @@ interface ServicePage {
   title: string;
 }
 
+interface CasePage {
+  slug: string;
+  title: string;
+}
+
 const getStaticPages = (getContent: any, language: string) => [
   { slug: 'home', name: getContent('admin_seo', 'page_home') || (language === 'en' ? 'Home Page' : 'Главная страница') },
   { slug: 'services', name: getContent('admin_seo', 'page_services') || (language === 'en' ? 'Services' : 'Услуги') },
@@ -49,32 +54,58 @@ const PageSEOManagement = () => {
   const [saving, setSaving] = useState(false);
   const [servicePagesLoading, setServicePagesLoading] = useState(true);
   const [servicePages, setServicePages] = useState<ServicePage[]>([]);
+  const [casePages, setCasePages] = useState<CasePage[]>([]);
   const [allPages, setAllPages] = useState(getStaticPages(getContent, language));
   const [selectedLanguage, setSelectedLanguage] = useState<'ru' | 'en'>('ru');
 
   useEffect(() => {
-    fetchServicePages();
-  }, []);
+    fetchAllPages();
+  }, [getContent, language]);
 
-  const fetchServicePages = async () => {
+  const fetchAllPages = async () => {
+    setServicePagesLoading(true);
     try {
-      const { data, error } = await supabase
+      // Fetch services
+      const { data: servicesData, error: servicesError } = await supabase
         .from('services')
         .select('slug, title')
         .eq('is_active', true)
         .order('title');
 
-      if (error) {
-        console.error('Error fetching services:', error);
-      } else {
-        setServicePages(data || []);
-        // Объединяем статические страницы с страницами услуг
-        const dynamicPages = (data || []).map(service => ({
-          slug: `service-${service.slug}`,
-          name: `${getContent('admin_seo', 'service_prefix') || (language === 'en' ? 'Service:' : 'Услуга:')} ${service.title}`
-        }));
-        setAllPages([...getStaticPages(getContent, language), ...dynamicPages]);
+      if (servicesError) {
+        console.error('Error fetching services:', servicesError);
       }
+
+      // Fetch cases
+      const { data: casesData, error: casesError } = await supabase
+        .from('cases')
+        .select('slug, title')
+        .eq('is_active', true)
+        .order('title');
+
+      if (casesError) {
+        console.error('Error fetching cases:', casesError);
+      }
+
+      setServicePages(servicesData || []);
+      setCasePages(casesData || []);
+
+      // Объединяем статические страницы с динамическими
+      const servicePages = (servicesData || []).map(service => ({
+        slug: `service-${service.slug}`,
+        name: `${getContent('admin_seo', 'service_prefix') || (language === 'en' ? 'Service:' : 'Услуга:')} ${service.title}`
+      }));
+
+      const casePages = (casesData || []).map(caseItem => ({
+        slug: `case-${caseItem.slug}`,
+        name: `${getContent('admin_seo', 'case_prefix') || (language === 'en' ? 'Case:' : 'Кейс:')} ${caseItem.title}`
+      }));
+
+      setAllPages([
+        ...getStaticPages(getContent, language), 
+        ...servicePages,
+        ...casePages
+      ]);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -118,6 +149,34 @@ const PageSEOManagement = () => {
             og_title: serviceData.og_title,
             og_description: serviceData.og_description,
             og_image: serviceData.og_image
+          };
+        }
+      } else if (selectedPage.startsWith('case-')) {
+        // Это страница кейса - берем SEO данные из таблицы cases
+        const caseSlug = selectedPage.replace('case-', '');
+        const { data: caseData, error: caseError } = await supabase
+          .from('cases')
+          .select('meta_title, meta_description, meta_keywords, h1_tag, canonical_url, og_title, og_description, og_image, title')
+          .eq('slug', caseSlug)
+          .maybeSingle();
+
+        if (caseError) {
+          console.error('Error fetching case SEO:', caseError);
+        }
+
+        if (caseData) {
+          data = {
+            id: '',
+            page_slug: selectedPage,
+            page_title: caseData.meta_title || caseData.title,
+            meta_title: caseData.meta_title,
+            meta_description: caseData.meta_description,
+            meta_keywords: caseData.meta_keywords,
+            h1_tag: caseData.h1_tag,
+            canonical_url: caseData.canonical_url,
+            og_title: caseData.og_title,
+            og_description: caseData.og_description,
+            og_image: caseData.og_image
           };
         }
       } else {
@@ -183,6 +242,24 @@ const PageSEOManagement = () => {
             og_image: pageSEO.og_image
           })
           .eq('slug', serviceSlug);
+
+        if (error) throw error;
+      } else if (selectedPage.startsWith('case-')) {
+        // Сохраняем SEO данные кейса в таблицу cases
+        const caseSlug = selectedPage.replace('case-', '');
+        const { error } = await supabase
+          .from('cases')
+          .update({
+            meta_title: pageSEO.meta_title,
+            meta_description: pageSEO.meta_description,
+            meta_keywords: pageSEO.meta_keywords,
+            h1_tag: pageSEO.h1_tag,
+            canonical_url: pageSEO.canonical_url,
+            og_title: pageSEO.og_title,
+            og_description: pageSEO.og_description,
+            og_image: pageSEO.og_image
+          })
+          .eq('slug', caseSlug);
 
         if (error) throw error;
       } else {
@@ -259,6 +336,14 @@ const PageSEOManagement = () => {
                   ))}
                 </SelectContent>
               </Select>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={fetchAllPages}
+                className="mt-2"
+              >
+                {getContent('admin_seo', 'refresh_pages') || (language === 'en' ? 'Refresh pages' : 'Обновить страницы')}
+              </Button>
             </div>
             <div className="space-y-2">
               <Label>{getContent('admin_seo', 'language_label') || (language === 'en' ? 'Language' : 'Язык')}</Label>
