@@ -7,7 +7,18 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Save, RotateCcw } from 'lucide-react';
+import { 
+  Save, 
+  RotateCcw, 
+  Target, 
+  Zap, 
+  BarChart3, 
+  Wrench, 
+  Star, 
+  Smartphone, 
+  Mail, 
+  Navigation 
+} from 'lucide-react';
 
 interface HomeContentManagementProps {
   language?: 'ru' | 'en';
@@ -103,8 +114,11 @@ const HomeContentManagement = ({ language: propLanguage }: HomeContentManagement
   const sections = [
     {
       id: 'hero',
-      title: 'Главный блок (Hero)',
-      description: 'Основной заголовок и описание на главной странице',
+      title: 'Главный блок',
+      emoji: '🎯',
+      icon: Target,
+      description: 'Основной заголовок, подзаголовок и статистика на главной странице',
+      color: 'from-blue-500 to-cyan-500',
       fields: [
         { key: 'title', label: 'Заголовок', type: 'text' },
         { key: 'subtitle', label: 'Подзаголовок', type: 'textarea' },
@@ -127,8 +141,11 @@ const HomeContentManagement = ({ language: propLanguage }: HomeContentManagement
     },
     {
       id: 'cta',
-      title: 'Блок призыва к действию (CTA)',
+      title: 'Блок призыва к действию',
+      emoji: '⚡',
+      icon: Zap,
       description: 'Заголовки и кнопки в блоке CTA',
+      color: 'from-yellow-500 to-orange-500',
       fields: [
         { key: 'title', label: 'Заголовок', type: 'text' },
         { key: 'subtitle', label: 'Описание', type: 'textarea' },
@@ -139,7 +156,10 @@ const HomeContentManagement = ({ language: propLanguage }: HomeContentManagement
     {
       id: 'stats',
       title: 'Статистика',
+      emoji: '📊',
+      icon: BarChart3,
       description: 'Числовые показатели под главным блоком',
+      color: 'from-green-500 to-emerald-500',
       fields: [
         { key: 'days', label: 'Количество дней', type: 'text' },
         { key: 'days_text', label: 'Описание для дней', type: 'text' },
@@ -156,7 +176,10 @@ const HomeContentManagement = ({ language: propLanguage }: HomeContentManagement
     {
       id: 'services',
       title: 'Блок услуг',
+      emoji: '🛠️',
+      icon: Wrench,
       description: 'Информация о разделе услуг на главной странице',
+      color: 'from-purple-500 to-violet-500',
       fields: [
         { key: 'title', label: 'Заголовок', type: 'text' },
         { key: 'subtitle', label: 'Описание', type: 'textarea' },
@@ -176,7 +199,10 @@ const HomeContentManagement = ({ language: propLanguage }: HomeContentManagement
     {
       id: 'advantages',
       title: 'Преимущества',
+      emoji: '⭐',
+      icon: Star,
       description: 'Блок с преимуществами компании',
+      color: 'from-amber-500 to-yellow-500',
       fields: [
         { key: 'title', label: 'Заголовок', type: 'text' },
         { key: 'subtitle', label: 'Описание', type: 'textarea' },
@@ -193,7 +219,10 @@ const HomeContentManagement = ({ language: propLanguage }: HomeContentManagement
     {
       id: 'cases',
       title: 'Блок кейсов',
+      emoji: '📱',
+      icon: Smartphone,
       description: 'Заголовки и описания для раздела кейсов',
+      color: 'from-pink-500 to-rose-500',
       fields: [
         { key: 'title', label: 'Заголовок', type: 'text' },
         { key: 'subtitle', label: 'Описание', type: 'textarea' },
@@ -203,7 +232,10 @@ const HomeContentManagement = ({ language: propLanguage }: HomeContentManagement
     {
       id: 'contact',
       title: 'Блок контактной формы',
+      emoji: '✉️',
+      icon: Mail,
       description: 'Заголовки и тексты в блоке обратной связи',
+      color: 'from-teal-500 to-cyan-500',
       fields: [
         { key: 'title', label: 'Заголовок', type: 'text' },
         { key: 'subtitle', label: 'Описание под заголовком', type: 'textarea' },
@@ -223,7 +255,10 @@ const HomeContentManagement = ({ language: propLanguage }: HomeContentManagement
     {
       id: 'header',
       title: 'Навигация сайта',
+      emoji: '🧭',
+      icon: Navigation,
       description: 'Тексты меню и кнопок в шапке сайта',
+      color: 'from-indigo-500 to-blue-500',
       fields: [
         { key: 'nav_home', label: 'Главная', type: 'text' },
         { key: 'nav_services', label: 'Услуги', type: 'text' },
@@ -265,37 +300,73 @@ const HomeContentManagement = ({ language: propLanguage }: HomeContentManagement
         </div>
       </div>
 
-      <div className="grid gap-6">
-        {sections.map(section => (
-          <Card key={section.id}>
-            <CardHeader>
-              <CardTitle>{section.title}</CardTitle>
-              <CardDescription>{section.description}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {section.fields.map(field => (
-                <div key={field.key} className="space-y-2">
-                  <Label htmlFor={`${section.id}-${field.key}`}>{field.label}</Label>
-                  {field.type === 'textarea' ? (
-                    <Textarea
-                      id={`${section.id}-${field.key}`}
-                      value={formData[section.id]?.[field.key] || ''}
-                      onChange={(e) => handleChange(section.id, field.key, e.target.value)}
-                      rows={3}
-                      className="resize-none"
-                    />
-                  ) : (
-                    <Input
-                      id={`${section.id}-${field.key}`}
-                      value={formData[section.id]?.[field.key] || ''}
-                      onChange={(e) => handleChange(section.id, field.key, e.target.value)}
-                    />
-                  )}
+      <div className="grid gap-8">
+        {sections.map((section, index) => {
+          const IconComponent = section.icon;
+          return (
+            <Card key={section.id} className="relative overflow-hidden border-2 hover:shadow-xl transition-all duration-300">
+              {/* Gradient background */}
+              <div className={`absolute top-0 left-0 w-full h-2 bg-gradient-to-r ${section.color}`}></div>
+              
+              <CardHeader className="pb-6">
+                <div className="flex items-center gap-4">
+                  {/* Icon with gradient background */}
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${section.color} flex items-center justify-center shadow-lg`}>
+                    <IconComponent className="w-8 h-8 text-white" />
+                  </div>
+                  
+                  <div className="flex-1">
+                    <CardTitle className="text-2xl font-heading flex items-center gap-3">
+                      <span className="text-2xl">{section.emoji}</span>
+                      {section.title}
+                    </CardTitle>
+                    <CardDescription className="text-base mt-2 text-muted-foreground">
+                      {section.description}
+                    </CardDescription>
+                  </div>
+                  
+                  {/* Block number */}
+                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+                    <span className="text-sm font-bold text-muted-foreground">{index + 1}</span>
+                  </div>
                 </div>
-              ))}
-            </CardContent>
-          </Card>
-        ))}
+              </CardHeader>
+              
+              <CardContent className="space-y-6">
+                <div className="grid gap-6 md:grid-cols-2">
+                  {section.fields.map((field, fieldIndex) => (
+                    <div key={field.key} className="space-y-2">
+                      <Label 
+                        htmlFor={`${section.id}-${field.key}`}
+                        className="text-sm font-semibold text-foreground"
+                      >
+                        {field.label}
+                      </Label>
+                      {field.type === 'textarea' ? (
+                        <Textarea
+                          id={`${section.id}-${field.key}`}
+                          value={formData[section.id]?.[field.key] || ''}
+                          onChange={(e) => handleChange(section.id, field.key, e.target.value)}
+                          rows={3}
+                          className="resize-none border-border focus:border-primary transition-colors"
+                          placeholder={`Введите ${field.label.toLowerCase()}...`}
+                        />
+                      ) : (
+                        <Input
+                          id={`${section.id}-${field.key}`}
+                          value={formData[section.id]?.[field.key] || ''}
+                          onChange={(e) => handleChange(section.id, field.key, e.target.value)}
+                          className="border-border focus:border-primary transition-colors"
+                          placeholder={`Введите ${field.label.toLowerCase()}...`}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );
