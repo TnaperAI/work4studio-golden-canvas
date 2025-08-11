@@ -413,6 +413,77 @@ const CaseEditorTabs = ({ caseId, onBack }: CaseEditorTabsProps) => {
                 />
               </div>
 
+              <div className="space-y-2">
+                <Label>H1 заголовок</Label>
+                <Input
+                  value={formData.h1_tag}
+                  onChange={(e) => updateField('h1_tag', e.target.value)}
+                  placeholder="H1 заголовок страницы"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Meta Title</Label>
+                <Input
+                  value={formData.meta_title}
+                  onChange={(e) => updateField('meta_title', e.target.value)}
+                  placeholder="Title для поисковиков"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Meta Description</Label>
+                <Textarea
+                  value={formData.meta_description}
+                  onChange={(e) => updateField('meta_description', e.target.value)}
+                  placeholder="Описание для поисковиков"
+                  rows={3}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Ключевые слова</Label>
+                <Input
+                  value={formData.meta_keywords}
+                  onChange={(e) => updateField('meta_keywords', e.target.value)}
+                  placeholder="keyword1, keyword2, keyword3"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Настройки проекта (общие для всех языков)</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="space-y-2">
+                  <Label>Дата проекта</Label>
+                  <Input
+                    type="date"
+                    value={formData.project_date}
+                    onChange={(e) => updateField('project_date', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Длительность</Label>
+                  <Input
+                    value={formData.project_duration}
+                    onChange={(e) => updateField('project_duration', e.target.value)}
+                    placeholder="2 месяца"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Бюджет</Label>
+                  <Input
+                    value={formData.budget_range}
+                    onChange={(e) => updateField('budget_range', e.target.value)}
+                    placeholder="300 000 - 500 000 ₽"
+                  />
+                </div>
+              </div>
+
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
@@ -443,13 +514,23 @@ const CaseEditorTabs = ({ caseId, onBack }: CaseEditorTabsProps) => {
               <CardTitle>Basic Information (EN)</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Case Title</Label>
-                <Input
-                  value={enData.title}
-                  onChange={(e) => updateEnField('title', e.target.value)}
-                  placeholder="Corporate website for IT company"
-                />
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Case Title *</Label>
+                  <Input
+                    value={enData.title}
+                    onChange={(e) => updateEnField('title', e.target.value)}
+                    placeholder="Corporate website for IT company"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Slug (shared)</Label>
+                  <Input
+                    value={formData.slug}
+                    disabled
+                    placeholder="Управляется в RU версии"
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -468,6 +549,43 @@ const CaseEditorTabs = ({ caseId, onBack }: CaseEditorTabsProps) => {
                   onChange={(e) => updateEnField('description', e.target.value)}
                   placeholder="Detailed project description, tasks and solutions..."
                   rows={4}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>H1 Tag</Label>
+                <Input
+                  value={enData.h1_tag}
+                  onChange={(e) => updateEnField('h1_tag', e.target.value)}
+                  placeholder="Page H1 heading"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Meta Title</Label>
+                <Input
+                  value={enData.meta_title}
+                  onChange={(e) => updateEnField('meta_title', e.target.value)}
+                  placeholder="SEO title"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Meta Description</Label>
+                <Textarea
+                  value={enData.meta_description}
+                  onChange={(e) => updateEnField('meta_description', e.target.value)}
+                  placeholder="SEO description"
+                  rows={3}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Keywords</Label>
+                <Input
+                  value={enData.meta_keywords}
+                  onChange={(e) => updateEnField('meta_keywords', e.target.value)}
+                  placeholder="keyword1, keyword2, keyword3"
                 />
               </div>
             </CardContent>

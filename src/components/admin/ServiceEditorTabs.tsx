@@ -378,6 +378,50 @@ const ServiceEditorTabs = ({ serviceId, onBack }: ServiceEditorTabsProps) => {
                 />
               </div>
 
+              <div className="space-y-2">
+                <Label>H1 заголовок</Label>
+                <Input
+                  value={formData.h1_tag}
+                  onChange={(e) => updateField('h1_tag', e.target.value)}
+                  placeholder="H1 заголовок страницы"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Meta Title</Label>
+                <Input
+                  value={formData.meta_title}
+                  onChange={(e) => updateField('meta_title', e.target.value)}
+                  placeholder="Title для поисковиков"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Meta Description</Label>
+                <Textarea
+                  value={formData.meta_description}
+                  onChange={(e) => updateField('meta_description', e.target.value)}
+                  placeholder="Описание для поисковиков"
+                  rows={3}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Ключевые слова</Label>
+                <Input
+                  value={formData.meta_keywords}
+                  onChange={(e) => updateField('meta_keywords', e.target.value)}
+                  placeholder="keyword1, keyword2, keyword3"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Настройки и цены (общие для всех языков)</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label>Цена от ($)</Label>
@@ -429,13 +473,23 @@ const ServiceEditorTabs = ({ serviceId, onBack }: ServiceEditorTabsProps) => {
               <CardTitle>Basic Information (EN)</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Service Title</Label>
-                <Input
-                  value={enData.title}
-                  onChange={(e) => updateEnField('title', e.target.value)}
-                  placeholder="Corporate Website"
-                />
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Service Title *</Label>
+                  <Input
+                    value={enData.title}
+                    onChange={(e) => updateEnField('title', e.target.value)}
+                    placeholder="Corporate Website"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Slug (shared)</Label>
+                  <Input
+                    value={formData.slug}
+                    disabled
+                    placeholder="Управляется в RU версии"
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -454,6 +508,43 @@ const ServiceEditorTabs = ({ serviceId, onBack }: ServiceEditorTabsProps) => {
                   onChange={(e) => updateEnField('description', e.target.value)}
                   placeholder="Detailed service description..."
                   rows={4}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>H1 Tag</Label>
+                <Input
+                  value={enData.h1_tag}
+                  onChange={(e) => updateEnField('h1_tag', e.target.value)}
+                  placeholder="Page H1 heading"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Meta Title</Label>
+                <Input
+                  value={enData.meta_title}
+                  onChange={(e) => updateEnField('meta_title', e.target.value)}
+                  placeholder="SEO title"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Meta Description</Label>
+                <Textarea
+                  value={enData.meta_description}
+                  onChange={(e) => updateEnField('meta_description', e.target.value)}
+                  placeholder="SEO description"
+                  rows={3}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Keywords</Label>
+                <Input
+                  value={enData.meta_keywords}
+                  onChange={(e) => updateEnField('meta_keywords', e.target.value)}
+                  placeholder="keyword1, keyword2, keyword3"
                 />
               </div>
             </CardContent>
