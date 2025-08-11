@@ -11,6 +11,7 @@ import { useSiteContent } from '@/hooks/useSiteContent';
 import HomeContentManagement from './HomeContentManagement';
 import AboutContentManagement from './AboutContentManagement';
 import ContactPageManagement from './ContactPageManagement';
+import ServicesPageManagement from './ServicesPageManagement';
 
 interface PageContentEditorProps {
   slug: string;
@@ -291,6 +292,11 @@ const PageContentEditor = ({ slug, language, onContentChange, onTitleChange }: P
   // Special handling for contact page - use beautiful component  
   if (slug === 'contact') {
     return <ContactPageManagement language={language} />;
+  }
+
+  // Special handling for services page - use beautiful component  
+  if (slug === 'services') {
+    return <ServicesPageManagement language={language} />;
   }
 
   return (
