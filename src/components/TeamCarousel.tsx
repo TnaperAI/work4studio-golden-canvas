@@ -1,16 +1,27 @@
+import { useState, useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
 
 interface TeamMember {
   id: string;
   name: string;
   position: string;
-  description: string;
-  image: string;
-  skills: string[];
-  experience: string;
+  description: string | null;
+  image: string | null;
+  skills: string[] | null;
+  experience: string | null;
   is_active: boolean;
-  sort_order: number;
+  sort_order: number | null;
+}
+
+interface TeamMemberTranslation {
+  id: string;
+  team_member_id: string;
+  language: string;
+  name: string;
+  position: string;
+  description: string | null;
 }
 
 interface TeamGridProps {
@@ -19,8 +30,38 @@ interface TeamGridProps {
 
 export const TeamCarousel = ({ members }: TeamGridProps) => {
   const { language } = useLanguage();
+  const [translations, setTranslations] = useState<{[key: string]: TeamMemberTranslation[]}>({});
+  const [loading, setLoading] = useState(true);
 
-  const localizeExperience = (exp: string) => {
+  useEffect(() => {
+    fetchTranslations();
+  }, []);
+
+  const fetchTranslations = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('team_member_translations')
+        .select('*');
+
+      if (error) throw error;
+      
+      const translationsByMember: {[key: string]: TeamMemberTranslation[]} = {};
+      data?.forEach(translation => {
+        if (!translationsByMember[translation.team_member_id]) {
+          translationsByMember[translation.team_member_id] = [];
+        }
+        translationsByMember[translation.team_member_id].push(translation);
+      });
+      
+      setTranslations(translationsByMember);
+    } catch (error) {
+      console.error('Error fetching translations:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const localizeExperience = (exp: string | null) => {
     if (!exp) return '';
     if (language === 'en') {
       const match = exp.match(/(\d+)\s*(\+?)/);
@@ -38,6 +79,44 @@ export const TeamCarousel = ({ members }: TeamGridProps) => {
     return exp;
   };
 
+  const getDisplayName = (member: TeamMember) => {
+    const memberTranslations = translations[member.id] || [];
+    const currentTranslation = memberTranslations.find(t => t.language === language);
+    return currentTranslation?.name || member.name;
+  };
+
+  const getDisplayPosition = (member: TeamMember) => {
+    const memberTranslations = translations[member.id] || [];
+    const currentTranslation = memberTranslations.find(t => t.language === language);
+    return currentTranslation?.position || member.position;
+  };
+
+  const getDisplayDescription = (member: TeamMember) => {
+    const memberTranslations = translations[member.id] || [];
+    const currentTranslation = memberTranslations.find(t => t.language === language);
+    return currentTranslation?.description || member.description;
+  };
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className="bg-card border border-border rounded-3xl p-8 animate-pulse">
+            <div className="w-32 h-32 mx-auto mb-6 bg-muted rounded-2xl"></div>
+            <div className="h-4 bg-muted rounded mb-2 mx-auto w-24"></div>
+            <div className="h-3 bg-muted rounded mb-2 mx-auto w-32"></div>
+            <div className="h-3 bg-muted rounded mb-4 mx-auto w-16"></div>
+            <div className="h-12 bg-muted rounded mb-6"></div>
+            <div className="flex gap-2 justify-center">
+              <div className="h-6 bg-muted rounded w-16"></div>
+              <div className="h-6 bg-muted rounded w-20"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {members.map((member) => (
@@ -50,29 +129,33 @@ export const TeamCarousel = ({ members }: TeamGridProps) => {
               {member.image ? (
                 <img 
                   src={member.image} 
-                  alt={member.name}
+                  alt={getDisplayName(member)}
                   className="w-full h-full object-cover"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
                   <span className="text-2xl font-heading font-bold text-primary">
-                    {member.name.split(' ').map(n => n[0]).join('')}
+                    {getDisplayName(member).split(' ').map(n => n[0]).join('')}
                   </span>
                 </div>
               )}
             </div>
           </div>
-          <h3 className="text-xl font-heading font-bold mb-2">{member.name}</h3>
-          <p className="text-primary font-medium mb-2">{member.position}</p>
+          <h3 className="text-xl font-heading font-bold mb-2">{getDisplayName(member)}</h3>
+          <p className="text-primary font-medium mb-2">{getDisplayPosition(member)}</p>
           <p className="text-sm text-muted-foreground mb-4">{localizeExperience(member.experience)}</p>
-          <p className="text-muted-foreground leading-relaxed mb-6">{member.description}</p>
-          <div className="flex flex-wrap gap-2 justify-center">
-            {member.skills.map((skill, skillIndex) => (
-              <Badge key={skillIndex} variant="secondary" className="text-xs">
-                {skill}
-              </Badge>
-            ))}
-          </div>
+          {getDisplayDescription(member) && (
+            <p className="text-muted-foreground leading-relaxed mb-6">{getDisplayDescription(member)}</p>
+          )}
+          {member.skills && member.skills.length > 0 && (
+            <div className="flex flex-wrap gap-2 justify-center">
+              {member.skills.map((skill, skillIndex) => (
+                <Badge key={skillIndex} variant="secondary" className="text-xs">
+                  {skill}
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
       ))}
     </div>

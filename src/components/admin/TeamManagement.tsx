@@ -7,7 +7,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   Plus, 
   Edit, 
@@ -15,12 +17,10 @@ import {
   Save, 
   X,
   Users,
-  Image,
-  Star,
   Clock,
   ChevronUp,
   ChevronDown,
-  Upload
+  Globe
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
@@ -38,15 +38,33 @@ interface TeamMember {
   updated_at: string;
 }
 
+interface TeamMemberTranslation {
+  id: string;
+  team_member_id: string;
+  language: string;
+  name: string;
+  position: string;
+  description: string | null;
+}
+
 const TeamManagement = () => {
   const [members, setMembers] = useState<TeamMember[]>([]);
+  const [translations, setTranslations] = useState<{[key: string]: TeamMemberTranslation[]}>({});
   const [loading, setLoading] = useState(true);
   const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [activeLanguage, setActiveLanguage] = useState<'ru' | 'en'>('ru');
   const [formData, setFormData] = useState({
-    name: '',
-    position: '',
-    description: '',
+    ru: {
+      name: '',
+      position: '',
+      description: ''
+    },
+    en: {
+      name: '',
+      position: '',
+      description: ''
+    },
     image: '',
     skills: '',
     experience: '',
@@ -54,9 +72,11 @@ const TeamManagement = () => {
     sort_order: 0
   });
   const { toast } = useToast();
+  const { language } = useLanguage();
 
   useEffect(() => {
     fetchMembers();
+    fetchTranslations();
   }, []);
 
   const fetchMembers = async () => {
@@ -75,6 +95,28 @@ const TeamManagement = () => {
         description: 'Не удалось загрузить список команды',
         variant: 'destructive'
       });
+    }
+  };
+
+  const fetchTranslations = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('team_member_translations')
+        .select('*');
+
+      if (error) throw error;
+      
+      const translationsByMember: {[key: string]: TeamMemberTranslation[]} = {};
+      data?.forEach(translation => {
+        if (!translationsByMember[translation.team_member_id]) {
+          translationsByMember[translation.team_member_id] = [];
+        }
+        translationsByMember[translation.team_member_id].push(translation);
+      });
+      
+      setTranslations(translationsByMember);
+    } catch (error) {
+      console.error('Error fetching translations:', error);
     } finally {
       setLoading(false);
     }
@@ -87,15 +129,17 @@ const TeamManagement = () => {
       const skillsArray = formData.skills ? formData.skills.split(',').map(s => s.trim()).filter(s => s) : [];
       
       const memberData = {
-        name: formData.name,
-        position: formData.position,
-        description: formData.description || null,
+        name: formData.ru.name, // Используем русское имя как основное
+        position: formData.ru.position,
+        description: formData.ru.description || null,
         image: formData.image || null,
         skills: skillsArray.length > 0 ? skillsArray : null,
         experience: formData.experience || null,
         is_active: formData.is_active,
         sort_order: formData.sort_order
       };
+
+      let memberId: string;
 
       if (editingMember) {
         const { error } = await supabase
@@ -104,26 +148,46 @@ const TeamManagement = () => {
           .eq('id', editingMember.id);
 
         if (error) throw error;
-        
-        toast({
-          title: 'Участник обновлен',
-          description: 'Информация о члене команды успешно обновлена'
-        });
+        memberId = editingMember.id;
       } else {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('team_members')
-          .insert([memberData]);
+          .insert([memberData])
+          .select()
+          .single();
 
         if (error) throw error;
-        
-        toast({
-          title: 'Участник добавлен',
-          description: 'Новый член команды успешно добавлен'
-        });
+        memberId = data.id;
       }
+
+      // Сохраняем переводы
+      for (const lang of ['ru', 'en']) {
+        const translationData = {
+          team_member_id: memberId,
+          language: lang,
+          name: formData[lang as 'ru' | 'en'].name,
+          position: formData[lang as 'ru' | 'en'].position,
+          description: formData[lang as 'ru' | 'en'].description || null
+        };
+
+        const { error: upsertError } = await supabase
+          .from('team_member_translations')
+          .upsert(translationData, { 
+            onConflict: 'team_member_id,language',
+            ignoreDuplicates: false 
+          });
+
+        if (upsertError) throw upsertError;
+      }
+
+      toast({
+        title: editingMember ? 'Участник обновлен' : 'Участник добавлен',
+        description: 'Информация о члене команды успешно сохранена'
+      });
 
       resetForm();
       fetchMembers();
+      fetchTranslations();
     } catch (error) {
       console.error('Error saving team member:', error);
       toast({
@@ -134,12 +198,25 @@ const TeamManagement = () => {
     }
   };
 
-  const handleEdit = (member: TeamMember) => {
+  const handleEdit = async (member: TeamMember) => {
     setEditingMember(member);
+    
+    // Загружаем переводы для редактируемого участника
+    const memberTranslations = translations[member.id] || [];
+    const ruTranslation = memberTranslations.find(t => t.language === 'ru');
+    const enTranslation = memberTranslations.find(t => t.language === 'en');
+    
     setFormData({
-      name: member.name,
-      position: member.position,
-      description: member.description || '',
+      ru: {
+        name: ruTranslation?.name || member.name,
+        position: ruTranslation?.position || member.position,
+        description: ruTranslation?.description || member.description || ''
+      },
+      en: {
+        name: enTranslation?.name || '',
+        position: enTranslation?.position || '',
+        description: enTranslation?.description || ''
+      },
       image: member.image || '',
       skills: member.skills ? member.skills.join(', ') : '',
       experience: member.experience || '',
@@ -168,6 +245,7 @@ const TeamManagement = () => {
       });
       
       fetchMembers();
+      fetchTranslations();
     } catch (error) {
       console.error('Error deleting team member:', error);
       toast({
@@ -180,9 +258,16 @@ const TeamManagement = () => {
 
   const resetForm = () => {
     setFormData({
-      name: '',
-      position: '',
-      description: '',
+      ru: {
+        name: '',
+        position: '',
+        description: ''
+      },
+      en: {
+        name: '',
+        position: '',
+        description: ''
+      },
       image: '',
       skills: '',
       experience: '',
@@ -191,6 +276,7 @@ const TeamManagement = () => {
     });
     setEditingMember(null);
     setIsCreating(false);
+    setActiveLanguage('ru');
   };
 
   const updateSortOrder = async (id: string, newOrder: number) => {
@@ -205,6 +291,24 @@ const TeamManagement = () => {
     } catch (error) {
       console.error('Error updating sort order:', error);
     }
+  };
+
+  const getDisplayName = (member: TeamMember) => {
+    const memberTranslations = translations[member.id] || [];
+    const currentTranslation = memberTranslations.find(t => t.language === language);
+    return currentTranslation?.name || member.name;
+  };
+
+  const getDisplayPosition = (member: TeamMember) => {
+    const memberTranslations = translations[member.id] || [];
+    const currentTranslation = memberTranslations.find(t => t.language === language);
+    return currentTranslation?.position || member.position;
+  };
+
+  const getDisplayDescription = (member: TeamMember) => {
+    const memberTranslations = translations[member.id] || [];
+    const currentTranslation = memberTranslations.find(t => t.language === language);
+    return currentTranslation?.description || member.description;
   };
 
   if (loading) {
@@ -224,7 +328,7 @@ const TeamManagement = () => {
             Управление командой
           </h1>
           <p className="text-muted-foreground">
-            Добавляйте и редактируйте информацию о членах команды
+            Добавляйте и редактируйте информацию о членах команды на русском и английском языках
           </p>
         </div>
         <Dialog open={isCreating} onOpenChange={setIsCreating}>
@@ -234,102 +338,171 @@ const TeamManagement = () => {
               Добавить участника
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>
+              <DialogTitle className="flex items-center gap-2">
+                <Globe className="h-5 w-5" />
                 {editingMember ? 'Редактировать участника' : 'Добавить нового участника'}
               </DialogTitle>
               <DialogDescription>
-                Заполните информацию о члене команды
+                Заполните информацию о члене команды на русском и английском языках
               </DialogDescription>
             </DialogHeader>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Имя *</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    required
-                    placeholder="Введите имя"
-                  />
-                </div>
+              <Tabs value={activeLanguage} onValueChange={(value) => setActiveLanguage(value as 'ru' | 'en')}>
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="ru">🇷🇺 Русский</TabsTrigger>
+                  <TabsTrigger value="en">🇺🇸 English</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="ru" className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name-ru">Имя *</Label>
+                      <Input
+                        id="name-ru"
+                        value={formData.ru.name}
+                        onChange={(e) => setFormData(prev => ({ 
+                          ...prev, 
+                          ru: { ...prev.ru, name: e.target.value }
+                        }))}
+                        required
+                        placeholder="Введите имя на русском"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="position-ru">Должность *</Label>
+                      <Input
+                        id="position-ru"
+                        value={formData.ru.position}
+                        onChange={(e) => setFormData(prev => ({ 
+                          ...prev, 
+                          ru: { ...prev.ru, position: e.target.value }
+                        }))}
+                        required
+                        placeholder="Введите должность на русском"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="description-ru">Описание</Label>
+                    <Textarea
+                      id="description-ru"
+                      value={formData.ru.description}
+                      onChange={(e) => setFormData(prev => ({ 
+                        ...prev, 
+                        ru: { ...prev.ru, description: e.target.value }
+                      }))}
+                      rows={3}
+                      placeholder="Краткое описание на русском языке"
+                    />
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="en" className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name-en">Name *</Label>
+                      <Input
+                        id="name-en"
+                        value={formData.en.name}
+                        onChange={(e) => setFormData(prev => ({ 
+                          ...prev, 
+                          en: { ...prev.en, name: e.target.value }
+                        }))}
+                        required
+                        placeholder="Enter name in English"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="position-en">Position *</Label>
+                      <Input
+                        id="position-en"
+                        value={formData.en.position}
+                        onChange={(e) => setFormData(prev => ({ 
+                          ...prev, 
+                          en: { ...prev.en, position: e.target.value }
+                        }))}
+                        required
+                        placeholder="Enter position in English"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="description-en">Description</Label>
+                    <Textarea
+                      id="description-en"
+                      value={formData.en.description}
+                      onChange={(e) => setFormData(prev => ({ 
+                        ...prev, 
+                        en: { ...prev.en, description: e.target.value }
+                      }))}
+                      rows={3}
+                      placeholder="Brief description in English"
+                    />
+                  </div>
+                </TabsContent>
+              </Tabs>
+
+              <div className="space-y-4 border-t pt-4">
+                <h3 className="text-lg font-medium">Общая информация</h3>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="position">Должность *</Label>
+                  <Label htmlFor="image">URL изображения</Label>
                   <Input
-                    id="position"
-                    value={formData.position}
-                    onChange={(e) => setFormData(prev => ({ ...prev, position: e.target.value }))}
-                    required
-                    placeholder="Введите должность"
+                    id="image"
+                    value={formData.image}
+                    onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
+                    placeholder="https://example.com/image.jpg"
                   />
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="description">Описание</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  rows={3}
-                  placeholder="Краткое описание о сотруднике"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="image">URL изображения</Label>
-                <Input
-                  id="image"
-                  value={formData.image}
-                  onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="skills">Навыки</Label>
-                  <Input
-                    id="skills"
-                    value={formData.skills}
-                    onChange={(e) => setFormData(prev => ({ ...prev, skills: e.target.value }))}
-                    placeholder="React, TypeScript, Node.js (через запятую)"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="skills">Навыки</Label>
+                    <Input
+                      id="skills"
+                      value={formData.skills}
+                      onChange={(e) => setFormData(prev => ({ ...prev, skills: e.target.value }))}
+                      placeholder="React, TypeScript, Node.js (через запятую)"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="experience">Опыт работы</Label>
+                    <Input
+                      id="experience"
+                      value={formData.experience}
+                      onChange={(e) => setFormData(prev => ({ ...prev, experience: e.target.value }))}
+                      placeholder="5+ лет"
+                    />
+                  </div>
                 </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="experience">Опыт работы</Label>
-                  <Input
-                    id="experience"
-                    value={formData.experience}
-                    onChange={(e) => setFormData(prev => ({ ...prev, experience: e.target.value }))}
-                    placeholder="5+ лет"
-                  />
-                </div>
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="is_active"
-                    checked={formData.is_active}
-                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_active: checked }))}
-                  />
-                  <Label htmlFor="is_active">Активный участник</Label>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="sort_order">Порядок сортировки</Label>
-                  <Input
-                    id="sort_order"
-                    type="number"
-                    value={formData.sort_order}
-                    onChange={(e) => setFormData(prev => ({ ...prev, sort_order: parseInt(e.target.value) || 0 }))}
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="is_active"
+                      checked={formData.is_active}
+                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_active: checked }))}
+                    />
+                    <Label htmlFor="is_active">Активный участник</Label>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="sort_order">Порядок сортировки</Label>
+                    <Input
+                      id="sort_order"
+                      type="number"
+                      value={formData.sort_order}
+                      onChange={(e) => setFormData(prev => ({ ...prev, sort_order: parseInt(e.target.value) || 0 }))}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -372,7 +545,7 @@ const TeamManagement = () => {
                     {member.image ? (
                       <img
                         src={member.image}
-                        alt={member.name}
+                        alt={getDisplayName(member)}
                         className="w-16 h-16 rounded-xl object-cover"
                       />
                     ) : (
@@ -382,13 +555,13 @@ const TeamManagement = () => {
                     )}
                     <div>
                       <CardTitle className="flex items-center gap-2">
-                        {member.name}
+                        {getDisplayName(member)}
                         {!member.is_active && (
                           <Badge variant="secondary">Неактивен</Badge>
                         )}
                       </CardTitle>
                       <CardDescription className="text-base">
-                        {member.position}
+                        {getDisplayPosition(member)}
                       </CardDescription>
                       {member.experience && (
                         <div className="flex items-center gap-1 mt-1">
@@ -435,9 +608,9 @@ const TeamManagement = () => {
               </CardHeader>
               
               <CardContent>
-                {member.description && (
+                {getDisplayDescription(member) && (
                   <p className="text-muted-foreground mb-4 leading-relaxed">
-                    {member.description}
+                    {getDisplayDescription(member)}
                   </p>
                 )}
                 
