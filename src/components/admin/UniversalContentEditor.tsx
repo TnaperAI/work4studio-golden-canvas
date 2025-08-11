@@ -5,6 +5,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Save, Eye, Globe, CheckCircle, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import ServiceEditor from './ServiceEditor';
+import CaseEditor from './CaseEditor';
+import LegalDocumentEditor from './LegalDocumentEditor';
 import PageContentEditor from './PageContentEditor';
 
 interface UniversalContentEditorProps {
@@ -44,50 +47,43 @@ const UniversalContentEditor = ({ type, id, slug, onBack }: UniversalContentEdit
   };
 
   const renderContentEditor = () => {
-    const commonProps = {
-      language: activeTab,
-      onContentChange: (hasContent: boolean) => {
-        if (activeTab === 'ru') {
-          setHasRussianContent(hasContent);
-        } else {
-          setHasEnglishContent(hasContent);
-        }
-      },
-      onTitleChange: setTitle
-    };
-
     switch (type) {
       case 'page':
-        return <PageContentEditor slug={slug!} {...commonProps} />;
+        return (
+          <PageContentEditor 
+            slug={slug!} 
+            language={activeTab}
+            onContentChange={(hasContent: boolean) => {
+              if (activeTab === 'ru') {
+                setHasRussianContent(hasContent);
+              } else {
+                setHasEnglishContent(hasContent);
+              }
+            }}
+            onTitleChange={setTitle}
+          />
+        );
       case 'service':
         return (
-          <div className="p-6 border border-dashed border-muted-foreground/25 rounded-lg">
-            <p className="text-muted-foreground text-center">
-              Редактор услуги #{id} (язык: {activeTab})
-              <br />
-              <span className="text-sm">Компонент в разработке</span>
-            </p>
-          </div>
+          <ServiceEditor
+            serviceId={id}
+            onBack={onBack}
+          />
         );
       case 'case':
         return (
-          <div className="p-6 border border-dashed border-muted-foreground/25 rounded-lg">
-            <p className="text-muted-foreground text-center">
-              Редактор кейса #{id} (язык: {activeTab})
-              <br />
-              <span className="text-sm">Компонент в разработке</span>
-            </p>
-          </div>
+          <CaseEditor
+            caseId={id}
+            onBack={onBack}
+          />
         );
       case 'legal':
         return (
-          <div className="p-6 border border-dashed border-muted-foreground/25 rounded-lg">
-            <p className="text-muted-foreground text-center">
-              Редактор документа #{id} (язык: {activeTab})
-              <br />
-              <span className="text-sm">Компонент в разработке</span>
-            </p>
-          </div>
+          <LegalDocumentEditor
+            documentId={id}
+            documentType={slug}
+            onBack={onBack}
+          />
         );
       default:
         return <div>Неизвестный тип контента</div>;
@@ -193,27 +189,10 @@ const UniversalContentEditor = ({ type, id, slug, onBack }: UniversalContentEdit
         </CardContent>
       </Card>
 
-      {/* Language Tabs */}
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'ru' | 'en')}>
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="ru" className="flex items-center gap-2">
-            {getTranslationStatus('ru')}
-            Русский
-          </TabsTrigger>
-          <TabsTrigger value="en" className="flex items-center gap-2">
-            {getTranslationStatus('en')}
-            English
-          </TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="ru" className="space-y-6">
-          {renderContentEditor()}
-        </TabsContent>
-        
-        <TabsContent value="en" className="space-y-6">
-          {renderContentEditor()}
-        </TabsContent>
-      </Tabs>
+      {/* Content Editor - let individual editors handle their own tabs */}
+      <div className="space-y-6">
+        {renderContentEditor()}
+      </div>
     </div>
   );
 };
