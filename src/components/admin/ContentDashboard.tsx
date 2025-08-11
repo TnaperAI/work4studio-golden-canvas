@@ -245,7 +245,15 @@ const ContentDashboard = () => {
                 <Button 
                   size="sm" 
                   variant="outline"
-                  onClick={() => window.location.hash = `${key}-create`}
+                  onClick={() => {
+                    if (key === 'services') {
+                      window.location.hash = 'services-create';
+                    } else if (key === 'cases') {
+                      window.location.hash = 'cases-create';
+                    } else if (key === 'legal') {
+                      window.location.hash = 'legal-create';
+                    }
+                  }}
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Создать

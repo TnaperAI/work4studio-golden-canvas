@@ -50,18 +50,72 @@ const UniversalContentEditor = ({ type, id, slug, onBack }: UniversalContentEdit
     switch (type) {
       case 'page':
         return (
-          <PageContentEditor 
-            slug={slug!} 
-            language={activeTab}
-            onContentChange={(hasContent: boolean) => {
-              if (activeTab === 'ru') {
-                setHasRussianContent(hasContent);
-              } else {
-                setHasEnglishContent(hasContent);
-              }
-            }}
-            onTitleChange={setTitle}
-          />
+          <div className="space-y-6">
+            {/* Translation Status */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium">Статус переводов</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    {getTranslationStatus('ru')}
+                    <span className="text-sm">Русский</span>
+                    {hasRussianContent && <Badge variant="default">Готов</Badge>}
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    {getTranslationStatus('en')}
+                    <span className="text-sm">English</span>
+                    {hasEnglishContent && <Badge variant="default">Готов</Badge>}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Language Tabs */}
+            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'ru' | 'en')}>
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="ru" className="flex items-center gap-2">
+                  {getTranslationStatus('ru')}
+                  Русский
+                </TabsTrigger>
+                <TabsTrigger value="en" className="flex items-center gap-2">
+                  {getTranslationStatus('en')}
+                  English
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="ru" className="space-y-6">
+                <PageContentEditor 
+                  slug={slug!} 
+                  language={activeTab}
+                  onContentChange={(hasContent: boolean) => {
+                    if (activeTab === 'ru') {
+                      setHasRussianContent(hasContent);
+                    } else {
+                      setHasEnglishContent(hasContent);
+                    }
+                  }}
+                  onTitleChange={setTitle}
+                />
+              </TabsContent>
+              
+              <TabsContent value="en" className="space-y-6">
+                <PageContentEditor 
+                  slug={slug!} 
+                  language={activeTab}
+                  onContentChange={(hasContent: boolean) => {
+                    if (activeTab === 'ru') {
+                      setHasRussianContent(hasContent);
+                    } else {
+                      setHasEnglishContent(hasContent);
+                    }
+                  }}
+                  onTitleChange={setTitle}
+                />
+              </TabsContent>
+            </Tabs>
+          </div>
         );
       case 'service':
         return (
@@ -128,68 +182,49 @@ const UniversalContentEditor = ({ type, id, slug, onBack }: UniversalContentEdit
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <Button 
-            variant="ghost" 
-            onClick={onBack}
-            className="p-2"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Назад
-          </Button>
-          <div className="flex items-center space-x-3">
-            {getEditorIcon()}
-            <div>
-              <h1 className="text-2xl font-heading font-bold">{getEditorTitle()}</h1>
-              {title && <p className="text-muted-foreground">{title}</p>}
-            </div>
-          </div>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <Button 
-            variant="outline" 
-            onClick={handlePreview}
-            className="flex items-center gap-2"
-          >
-            <Eye className="h-4 w-4" />
-            Предпросмотр
-          </Button>
-          <Button 
-            onClick={handleSave}
-            disabled={isLoading}
-            className="flex items-center gap-2"
-          >
-            <Save className="h-4 w-4" />
-            {isLoading ? 'Сохранение...' : 'Сохранить'}
-          </Button>
-        </div>
-      </div>
-
-      {/* Translation Status */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium">Статус переводов</CardTitle>
-        </CardHeader>
-        <CardContent>
+      {/* Header - only for pages, services/cases/legal have their own */}
+      {type === 'page' && (
+        <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              {getTranslationStatus('ru')}
-              <span className="text-sm">Русский</span>
-              {hasRussianContent && <Badge variant="default">Готов</Badge>}
-            </div>
-            <div className="flex items-center space-x-2">
-              {getTranslationStatus('en')}
-              <span className="text-sm">English</span>
-              {hasEnglishContent && <Badge variant="default">Готов</Badge>}
+            <Button 
+              variant="ghost" 
+              onClick={onBack}
+              className="p-2"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Назад
+            </Button>
+            <div className="flex items-center space-x-3">
+              {getEditorIcon()}
+              <div>
+                <h1 className="text-2xl font-heading font-bold">{getEditorTitle()}</h1>
+                {title && <p className="text-muted-foreground">{title}</p>}
+              </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+          
+          <div className="flex items-center space-x-2">
+            <Button 
+              variant="outline" 
+              onClick={handlePreview}
+              className="flex items-center gap-2"
+            >
+              <Eye className="h-4 w-4" />
+              Предпросмотр
+            </Button>
+            <Button 
+              onClick={handleSave}
+              disabled={isLoading}
+              className="flex items-center gap-2"
+            >
+              <Save className="h-4 w-4" />
+              {isLoading ? 'Сохранение...' : 'Сохранить'}
+            </Button>
+          </div>
+        </div>
+      )}
 
-      {/* Content Editor - let individual editors handle their own tabs */}
+      {/* Content Editor */}
       <div className="space-y-6">
         {renderContentEditor()}
       </div>

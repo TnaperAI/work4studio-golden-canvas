@@ -61,9 +61,20 @@ const NewAdminDashboard = () => {
       }
 
       // Handle create routes
-      if (hash.includes('-create')) {
-        const type = hash.replace('-create', '') as 'service' | 'case' | 'legal';
-        setEditorContext({ type });
+      if (hash === 'services-create') {
+        setEditorContext({ type: 'service' });
+        setCurrentView('editor');
+        return;
+      }
+      
+      if (hash === 'cases-create') {
+        setEditorContext({ type: 'case' });
+        setCurrentView('editor');
+        return;
+      }
+      
+      if (hash === 'legal-create') {
+        setEditorContext({ type: 'legal' });
         setCurrentView('editor');
         return;
       }
@@ -75,6 +86,12 @@ const NewAdminDashboard = () => {
           break;
         case 'submissions':
           setCurrentView('submissions');
+          break;
+        case 'services':
+          setCurrentView('pages'); // Services are managed through ContentDashboard
+          break;
+        case 'cases':
+          setCurrentView('pages'); // Cases are managed through ContentDashboard
           break;
         case 'legal':
           setCurrentView('legal');
@@ -118,8 +135,10 @@ const NewAdminDashboard = () => {
           onBack={() => {
             if (editorContext.type === 'page') {
               window.location.hash = 'pages';
+            } else if (editorContext.type === 'service' || editorContext.type === 'case') {
+              window.location.hash = 'pages'; // Go back to ContentDashboard
             } else {
-              window.location.hash = editorContext.type + 's';
+              window.location.hash = 'legal';
             }
           }}
         />
