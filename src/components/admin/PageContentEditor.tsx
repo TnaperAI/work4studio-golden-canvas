@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import HomeContentManagement from './HomeContentManagement';
+import AboutContentManagement from './AboutContentManagement';
 
 interface PageContentEditorProps {
   slug: string;
@@ -279,6 +280,11 @@ const PageContentEditor = ({ slug, language, onContentChange, onTitleChange }: P
   // Special handling for home page - use beautiful component
   if (slug === 'home') {
     return <HomeContentManagement language={language} />;
+  }
+
+  // Special handling for about page - use beautiful component  
+  if (slug === 'about') {
+    return <AboutContentManagement language={language} />;
   }
 
   return (
