@@ -113,6 +113,7 @@ const ContactContentManagement = ({ language: propLanguage }: ContactContentMana
       id: 'contact_breadcrumb',
       title: 'Хлебные крошки',
       icon: MapPin,
+      description: 'Навигационные элементы в верхней части страницы',
       fields: [
         { key: 'breadcrumb_home', label: 'Главная', placeholder: 'Главная / Home' },
         { key: 'breadcrumb_contact', label: 'Контакты', placeholder: 'Контакты / Contacts' },
@@ -122,52 +123,56 @@ const ContactContentManagement = ({ language: propLanguage }: ContactContentMana
       id: 'contact_hero',
       title: 'Hero блок',
       icon: MessageSquare,
+      description: 'Главный заголовок и описание страницы контактов',
       fields: [
         { key: 'hero_title_1', label: 'Заголовок, часть 1', placeholder: 'Обсудим ваш / Let\'s discuss your' },
         { key: 'hero_title_2', label: 'Заголовок, часть 2', placeholder: 'проект? / project?' },
         { key: 'hero_subtitle', label: 'Подзаголовок', placeholder: 'Готовы воплотить вашу идею в жизнь' },
-        { key: 'hero_description', label: 'Описание', placeholder: 'Мы создаем современные веб-решения...' }
+        { key: 'hero_description', label: 'Описание', placeholder: 'Мы создаем современные веб-решения...', isTextarea: true }
       ]
     },
     {
       id: 'contact_info',
       title: 'Контактная информация',
       icon: Phone,
+      description: 'Основные контактные данные компании',
       fields: [
         { key: 'contact_email', label: 'Email', placeholder: 'contact@example.com' },
         { key: 'contact_phone', label: 'Телефон', placeholder: '+7 (999) 123-45-67' },
         { key: 'contact_hours', label: 'Часы работы', placeholder: 'Пн-Пт: 9:00 - 18:00' },
-        { key: 'contact_address', label: 'Адрес', placeholder: 'г. Москва, ул. Примерная, д. 1' }
+        { key: 'contact_address', label: 'Адрес', placeholder: 'г. Москва, ул. Примерная, д. 1', isTextarea: true }
       ]
     },
     {
       id: 'contact_form',
       title: 'Форма обратной связи',
       icon: Mail,
+      description: 'Настройки формы для отправки сообщений',
       fields: [
         { key: 'form_title', label: 'Заголовок формы', placeholder: 'Отправьте нам сообщение' },
-        { key: 'form_description', label: 'Описание формы', placeholder: 'Заполните форму и мы свяжемся с вами' },
+        { key: 'form_description', label: 'Описание формы', placeholder: 'Заполните форму и мы свяжемся с вами', isTextarea: true },
         { key: 'form_name_label', label: 'Метка "Имя"', placeholder: 'Ваше имя' },
         { key: 'form_email_label', label: 'Метка "Email"', placeholder: 'Ваш email' },
         { key: 'form_phone_label', label: 'Метка "Телефон"', placeholder: 'Ваш телефон' },
         { key: 'form_message_label', label: 'Метка "Сообщение"', placeholder: 'Ваше сообщение' },
         { key: 'form_submit_button', label: 'Кнопка отправки', placeholder: 'Отправить сообщение' },
-        { key: 'form_success_message', label: 'Сообщение об успехе', placeholder: 'Спасибо! Мы получили ваше сообщение' },
+        { key: 'form_success_message', label: 'Сообщение об успехе', placeholder: 'Спасибо! Мы получили ваше сообщение', isTextarea: true },
         { key: 'form_error_message', label: 'Сообщение об ошибке', placeholder: 'Произошла ошибка при отправке' }
       ]
     },
     {
       id: 'contact_features',
-      title: 'Преимущества',
+      title: 'Преимущества работы с нами',
       icon: Clock,
+      description: 'Ключевые преимущества и особенности вашей компании',
       fields: [
         { key: 'features_title', label: 'Заголовок блока', placeholder: 'Почему стоит выбрать нас' },
         { key: 'feature_1_title', label: 'Преимущество 1 - Заголовок', placeholder: 'Быстрый ответ' },
-        { key: 'feature_1_description', label: 'Преимущество 1 - Описание', placeholder: 'Отвечаем в течение часа' },
+        { key: 'feature_1_description', label: 'Преимущество 1 - Описание', placeholder: 'Отвечаем в течение часа', isTextarea: true },
         { key: 'feature_2_title', label: 'Преимущество 2 - Заголовок', placeholder: 'Бесплатная консультация' },
-        { key: 'feature_2_description', label: 'Преимущество 2 - Описание', placeholder: 'Первая консультация бесплатно' },
+        { key: 'feature_2_description', label: 'Преимущество 2 - Описание', placeholder: 'Первая консультация бесплатно', isTextarea: true },
         { key: 'feature_3_title', label: 'Преимущество 3 - Заголовок', placeholder: 'Поддержка проекта' },
-        { key: 'feature_3_description', label: 'Преимущество 3 - Описание', placeholder: '3 месяца бесплатной поддержки' }
+        { key: 'feature_3_description', label: 'Преимущество 3 - Описание', placeholder: '3 месяца бесплатной поддержки', isTextarea: true }
       ]
     }
   ];
@@ -219,7 +224,7 @@ const ContactContentManagement = ({ language: propLanguage }: ContactContentMana
                     {section.title}
                   </CardTitle>
                   <CardDescription>
-                    Настройте контент для раздела "{section.title}"
+                    {section.description}
                   </CardDescription>
                 </CardHeader>
                 
@@ -230,7 +235,7 @@ const ContactContentManagement = ({ language: propLanguage }: ContactContentMana
                         <Label htmlFor={`${section.id}-${field.key}`}>
                           {field.label}
                         </Label>
-                        {field.key.includes('description') || field.key.includes('message') ? (
+                        {field.isTextarea || field.key.includes('description') || field.key.includes('message') ? (
                           <Textarea
                             id={`${section.id}-${field.key}`}
                             value={formData[section.id]?.[field.key] || ''}
