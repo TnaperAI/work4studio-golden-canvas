@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, X, Upload, Image as ImageIcon, Save } from 'lucide-react';
+import { ArrowLeft, Plus, X, Upload, Save } from 'lucide-react';
 
 interface CaseData {
   id?: string;
@@ -31,7 +31,6 @@ interface CaseData {
   is_featured: boolean;
   is_active: boolean;
   sort_order: number;
-  // SEO fields remain for compatibility but managed elsewhere
   meta_title: string;
   meta_description: string;
   meta_keywords: string;
@@ -47,7 +46,6 @@ interface CaseTranslation {
   short_description: string;
   description: string;
   results: string[];
-  // SEO fields remain for compatibility but managed elsewhere
   meta_title: string;
   meta_description: string;
   meta_keywords: string;
@@ -424,6 +422,274 @@ const CaseEditorTabs = ({ caseId, onBack }: CaseEditorTabsProps) => {
         </Button>
       </div>
 
+      {/* Project settings - Common for all languages */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Настройки проекта (общие для всех языков)</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label>Slug *</Label>
+              <Input
+                value={formData.slug}
+                onChange={(e) => updateField('slug', e.target.value)}
+                placeholder="corporate-it-website"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Категория</Label>
+              <Select value={formData.category} onValueChange={(value) => updateField('category', value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {categoryOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label>Клиент</Label>
+              <Input
+                value={formData.client_name}
+                onChange={(e) => updateField('client_name', e.target.value)}
+                placeholder="TechSolutions Ltd"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>URL проекта</Label>
+              <Input
+                value={formData.project_url}
+                onChange={(e) => updateField('project_url', e.target.value)}
+                placeholder="https://example.com"
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="space-y-2">
+              <Label>Дата проекта</Label>
+              <Input
+                type="date"
+                value={formData.project_date}
+                onChange={(e) => updateField('project_date', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Длительность</Label>
+              <Input
+                value={formData.project_duration}
+                onChange={(e) => updateField('project_duration', e.target.value)}
+                placeholder="2 месяца"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Бюджет</Label>
+              <Input
+                value={formData.budget_range}
+                onChange={(e) => updateField('budget_range', e.target.value)}
+                placeholder="$5,000 - $10,000"
+              />
+            </div>
+          </div>
+
+          {/* Main Image Upload */}
+          <div className="space-y-2">
+            <Label>Главное изображение</Label>
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleMainImageUpload}
+                    className="hidden"
+                    id="main-image-upload"
+                  />
+                  <label
+                    htmlFor="main-image-upload"
+                    className="flex items-center gap-2 px-4 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer"
+                  >
+                    <Upload className="h-4 w-4" />
+                    {uploadingMainImage ? 'Загрузка...' : 'Загрузить файл'}
+                  </label>
+                </div>
+                <Input
+                  value={formData.main_image}
+                  onChange={(e) => updateField('main_image', e.target.value)}
+                  placeholder="Или вставьте URL изображения"
+                  className="flex-1"
+                />
+              </div>
+              {formData.main_image && (
+                <div className="relative inline-block">
+                  <img
+                    src={formData.main_image}
+                    alt="Main"
+                    className="w-32 h-20 object-cover rounded border"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    className="absolute -top-2 -right-2 h-6 w-6 p-0"
+                    onClick={() => updateField('main_image', '')}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Gallery Images */}
+          <div className="space-y-2">
+            <Label>Галерея изображений</Label>
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleGalleryImageUpload}
+                    className="hidden"
+                    id="gallery-image-upload"
+                  />
+                  <label
+                    htmlFor="gallery-image-upload"
+                    className="flex items-center gap-2 px-4 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer"
+                  >
+                    <Upload className="h-4 w-4" />
+                    {uploadingGalleryImage ? 'Загрузка...' : 'Загрузить файл'}
+                  </label>
+                </div>
+                <Input
+                  value={newGalleryImageUrl}
+                  onChange={(e) => setNewGalleryImageUrl(e.target.value)}
+                  placeholder="Или вставьте URL изображения"
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  onClick={addGalleryImageUrl}
+                  disabled={!newGalleryImageUrl.trim()}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              {formData.gallery_images.length > 0 && (
+                <div className="grid grid-cols-4 gap-2">
+                  {formData.gallery_images.map((imageUrl, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={imageUrl}
+                        alt={`Gallery ${index + 1}`}
+                        className="w-full h-20 object-cover rounded border"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute -top-2 -right-2 h-6 w-6 p-0"
+                        onClick={() => removeGalleryImage(index)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Technologies */}
+          <div className="space-y-2">
+            <Label>Технологии</Label>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {formData.technologies.map((tech, index) => (
+                <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                  {tech}
+                  <button
+                    onClick={() => {
+                      const newTechs = formData.technologies.filter((_, i) => i !== index);
+                      updateField('technologies', newTechs);
+                    }}
+                    className="ml-1 hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Добавить технологию"
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const target = e.target as HTMLInputElement;
+                    const value = target.value.trim();
+                    if (value && !formData.technologies.includes(value)) {
+                      updateField('technologies', [...formData.technologies, value]);
+                      target.value = '';
+                    }
+                  }
+                }}
+              />
+              <Button
+                type="button"
+                onClick={(e) => {
+                  const input = (e.target as HTMLElement).parentElement?.querySelector('input') as HTMLInputElement;
+                  const value = input?.value.trim();
+                  if (value && !formData.technologies.includes(value)) {
+                    updateField('technologies', [...formData.technologies, value]);
+                    input.value = '';
+                  }
+                }}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Settings */}
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="is_featured"
+                checked={formData.is_featured}
+                onCheckedChange={(checked) => updateField('is_featured', checked)}
+              />
+              <Label htmlFor="is_featured">Рекомендуемый</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="is_active"
+                checked={formData.is_active}
+                onCheckedChange={(checked) => updateField('is_active', checked)}
+              />
+              <Label htmlFor="is_active">Активный</Label>
+            </div>
+            <div className="space-y-2">
+              <Label>Порядок сортировки</Label>
+              <Input
+                type="number"
+                value={formData.sort_order}
+                onChange={(e) => updateField('sort_order', parseInt(e.target.value) || 0)}
+                placeholder="0"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="ru">RU (Русский)</TabsTrigger>
@@ -433,52 +699,16 @@ const CaseEditorTabs = ({ caseId, onBack }: CaseEditorTabsProps) => {
         <TabsContent value="ru" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Основная информация (RU)</CardTitle>
+              <CardTitle>Контент (RU)</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Название кейса *</Label>
-                  <Input
-                    value={formData.title}
-                    onChange={(e) => updateField('title', e.target.value)}
-                    placeholder="Корпоративный сайт для IT-компании"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Slug *</Label>
-                  <Input
-                    value={formData.slug}
-                    onChange={(e) => updateField('slug', e.target.value)}
-                    placeholder="corporate-it-website"
-                  />
-                </div>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Клиент</Label>
-                  <Input
-                    value={formData.client_name}
-                    onChange={(e) => updateField('client_name', e.target.value)}
-                    placeholder="TechSolutions Ltd"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Категория</Label>
-                  <Select value={formData.category} onValueChange={(value) => updateField('category', value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categoryOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div className="space-y-2">
+                <Label>Название кейса *</Label>
+                <Input
+                  value={formData.title}
+                  onChange={(e) => updateField('title', e.target.value)}
+                  placeholder="Корпоративный сайт для IT-компании"
+                />
               </div>
 
               <div className="space-y-2">
@@ -500,190 +730,53 @@ const CaseEditorTabs = ({ caseId, onBack }: CaseEditorTabsProps) => {
                 />
               </div>
 
+              {/* Results */}
               <div className="space-y-2">
-                <Label>Ссылка на проект</Label>
-                <Input
-                  value={formData.project_url}
-                  onChange={(e) => updateField('project_url', e.target.value)}
-                  placeholder="https://example.com"
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Настройки проекта (общие для всех языков)</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Images Section */}
-              <div className="space-y-4">
-                <h4 className="font-medium">Изображения</h4>
-                
-                <div className="space-y-2">
-                  <Label>Главное изображение</Label>
-                  
-                  {/* Upload button */}
-                  <div className="flex gap-2">
-                    <input
-                      type="file"
-                      id="main-image-upload"
-                      accept="image/jpeg,image/png,image/webp"
-                      onChange={handleMainImageUpload}
-                      className="hidden"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => document.getElementById('main-image-upload')?.click()}
-                      disabled={uploadingMainImage}
-                      className="flex items-center gap-2"
-                    >
-                      <Upload className="h-4 w-4" />
-                      {uploadingMainImage ? 'Загрузка...' : 'Загрузить файл'}
-                    </Button>
-                    <span className="text-sm text-muted-foreground self-center">
-                      JPEG, PNG, WebP
-                    </span>
-                  </div>
-
-                  {/* Manual URL input */}
-                  <div className="space-y-2">
-                    <Label className="text-sm">или введите URL</Label>
-                    <Input
-                      value={formData.main_image}
-                      onChange={(e) => updateField('main_image', e.target.value)}
-                      placeholder="https://images.unsplash.com/..."
-                    />
-                  </div>
-
-                  {/* Preview */}
-                  {formData.main_image && (
-                    <div className="mt-2">
-                      <img 
-                        src={formData.main_image} 
-                        alt="Предпросмотр главного изображения"
-                        className="w-48 h-32 object-cover rounded-lg border"
-                      />
-                    </div>
-                  )}
+                <Label>Результаты проекта</Label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {formData.results.map((result, index) => (
+                    <Badge key={index} variant="outline" className="flex items-center gap-1">
+                      {result}
+                      <button
+                        onClick={() => {
+                          const newResults = formData.results.filter((_, i) => i !== index);
+                          updateField('results', newResults);
+                        }}
+                        className="ml-1 hover:text-destructive"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
                 </div>
-
-                <div className="space-y-2">
-                  <Label>Галерея изображений</Label>
-                  
-                  {/* Upload button for gallery */}
-                  <div className="flex gap-2">
-                    <input
-                      type="file"
-                      id="gallery-image-upload"
-                      accept="image/jpeg,image/png,image/webp"
-                      onChange={handleGalleryImageUpload}
-                      className="hidden"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => document.getElementById('gallery-image-upload')?.click()}
-                      disabled={uploadingGalleryImage}
-                      className="flex items-center gap-2"
-                    >
-                      <Upload className="h-4 w-4" />
-                      {uploadingGalleryImage ? 'Загрузка...' : 'Добавить файл'}
-                    </Button>
-                    <span className="text-sm text-muted-foreground self-center">
-                      JPEG, PNG, WebP
-                    </span>
-                  </div>
-
-                  {/* Manual URL input for gallery */}
-                  <div className="flex gap-2">
-                    <Input
-                      value={newGalleryImageUrl}
-                      onChange={(e) => setNewGalleryImageUrl(e.target.value)}
-                      placeholder="или введите URL изображения..."
-                      onKeyPress={(e) => e.key === 'Enter' && addGalleryImageUrl()}
-                    />
-                    <Button type="button" onClick={addGalleryImageUrl}>
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-
-                  {/* Gallery grid */}
-                  {formData.gallery_images.length > 0 && (
-                    <div className="grid grid-cols-4 gap-3 mt-4">
-                      {formData.gallery_images.map((image, index) => (
-                        <div key={index} className="relative group">
-                          <img 
-                            src={image} 
-                            alt={`Галерея ${index + 1}`}
-                            className="w-full h-24 object-cover rounded-lg border hover:opacity-75 transition-opacity"
-                          />
-                          <button 
-                            onClick={() => removeGalleryImage(index)}
-                            className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <hr className="my-4" />
-
-              {/* Project Details */}
-              <div className="space-y-4">
-                <h4 className="font-medium">Детали проекта</h4>
-                
-                <div className="grid gap-4 md:grid-cols-3">
-                  <div className="space-y-2">
-                    <Label>Дата проекта</Label>
-                    <Input
-                      type="date"
-                      value={formData.project_date}
-                      onChange={(e) => updateField('project_date', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Длительность</Label>
-                    <Input
-                      value={formData.project_duration}
-                      onChange={(e) => updateField('project_duration', e.target.value)}
-                      placeholder="2 месяца"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Бюджет</Label>
-                    <Input
-                      value={formData.budget_range}
-                      onChange={(e) => updateField('budget_range', e.target.value)}
-                      placeholder="300 000 - 500 000 ₽"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <Switch
-                        checked={formData.is_active}
-                        onCheckedChange={(checked) => updateField('is_active', checked)}
-                      />
-                      <Label>Показывать кейс</Label>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <Switch
-                        checked={formData.is_featured}
-                        onCheckedChange={(checked) => updateField('is_featured', checked)}
-                      />
-                      <Label>Избранный кейс</Label>
-                    </div>
-                  </div>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Добавить результат"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const target = e.target as HTMLInputElement;
+                        const value = target.value.trim();
+                        if (value) {
+                          updateField('results', [...formData.results, value]);
+                          target.value = '';
+                        }
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    onClick={(e) => {
+                      const input = (e.target as HTMLElement).parentElement?.querySelector('input') as HTMLInputElement;
+                      const value = input?.value.trim();
+                      if (value) {
+                        updateField('results', [...formData.results, value]);
+                        input.value = '';
+                      }
+                    }}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
             </CardContent>
@@ -693,30 +786,20 @@ const CaseEditorTabs = ({ caseId, onBack }: CaseEditorTabsProps) => {
         <TabsContent value="en" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Basic Information (EN)</CardTitle>
+              <CardTitle>Контент (EN)</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Case Title *</Label>
-                  <Input
-                    value={enData.title}
-                    onChange={(e) => updateEnField('title', e.target.value)}
-                    placeholder="Corporate website for IT company"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Slug (shared)</Label>
-                  <Input
-                    value={formData.slug}
-                    disabled
-                    placeholder="Управляется в RU версии"
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label>Название кейса</Label>
+                <Input
+                  value={enData.title}
+                  onChange={(e) => updateEnField('title', e.target.value)}
+                  placeholder="Corporate Website for IT Company"
+                />
               </div>
 
               <div className="space-y-2">
-                <Label>Short Description</Label>
+                <Label>Краткое описание</Label>
                 <Input
                   value={enData.short_description}
                   onChange={(e) => updateEnField('short_description', e.target.value)}
@@ -725,13 +808,63 @@ const CaseEditorTabs = ({ caseId, onBack }: CaseEditorTabsProps) => {
               </div>
 
               <div className="space-y-2">
-                <Label>Full Description</Label>
+                <Label>Полное описание</Label>
                 <Textarea
                   value={enData.description}
                   onChange={(e) => updateEnField('description', e.target.value)}
-                  placeholder="Detailed project description, tasks and solutions..."
+                  placeholder="Detailed project description, challenges and solutions..."
                   rows={4}
                 />
+              </div>
+
+              {/* Results */}
+              <div className="space-y-2">
+                <Label>Результаты проекта</Label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {enData.results.map((result, index) => (
+                    <Badge key={index} variant="outline" className="flex items-center gap-1">
+                      {result}
+                      <button
+                        onClick={() => {
+                          const newResults = enData.results.filter((_, i) => i !== index);
+                          updateEnField('results', newResults);
+                        }}
+                        className="ml-1 hover:text-destructive"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Add result"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const target = e.target as HTMLInputElement;
+                        const value = target.value.trim();
+                        if (value) {
+                          updateEnField('results', [...enData.results, value]);
+                          target.value = '';
+                        }
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    onClick={(e) => {
+                      const input = (e.target as HTMLElement).parentElement?.querySelector('input') as HTMLInputElement;
+                      const value = input?.value.trim();
+                      if (value) {
+                        updateEnField('results', [...enData.results, value]);
+                        input.value = '';
+                      }
+                    }}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
