@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import HomeContentManagement from './HomeContentManagement';
 import AboutContentManagement from './AboutContentManagement';
+import ContactPageManagement from './ContactPageManagement';
 
 interface PageContentEditorProps {
   slug: string;
@@ -285,6 +286,11 @@ const PageContentEditor = ({ slug, language, onContentChange, onTitleChange }: P
   // Special handling for about page - use beautiful component  
   if (slug === 'about') {
     return <AboutContentManagement language={language} />;
+  }
+
+  // Special handling for contact page - use beautiful component  
+  if (slug === 'contact') {
+    return <ContactPageManagement language={language} />;
   }
 
   return (
