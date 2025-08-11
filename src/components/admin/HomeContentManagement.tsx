@@ -12,7 +12,6 @@ import {
   RotateCcw, 
   Target, 
   Zap, 
-  BarChart3, 
   Wrench, 
   Star, 
   Smartphone, 
@@ -151,26 +150,6 @@ const HomeContentManagement = ({ language: propLanguage }: HomeContentManagement
         { key: 'subtitle', label: 'Описание', type: 'textarea' },
         { key: 'button', label: 'Основная кнопка', type: 'text' },
         { key: 'email_button', label: 'Кнопка Email', type: 'text' }
-      ]
-    },
-    {
-      id: 'stats',
-      title: 'Статистика',
-      emoji: '📊',
-      icon: BarChart3,
-      description: 'Числовые показатели под главным блоком',
-      color: 'from-green-500 to-emerald-500',
-      fields: [
-        { key: 'days', label: 'Количество дней', type: 'text' },
-        { key: 'days_text', label: 'Описание для дней', type: 'text' },
-        { key: 'projects', label: 'Количество проектов', type: 'text' },
-        { key: 'projects_text', label: 'Описание проектов', type: 'text' },
-        { key: 'satisfaction', label: 'Процент довольных клиентов', type: 'text' },
-        { key: 'satisfaction_text', label: 'Описание удовлетворенности', type: 'text' },
-        { key: 'support', label: 'Поддержка', type: 'text' },
-        { key: 'support_text', label: 'Описание поддержки', type: 'text' },
-        { key: 'code', label: 'Код (%)', type: 'text' },
-        { key: 'code_text', label: 'Описание кода', type: 'text' }
       ]
     },
     {
