@@ -373,7 +373,10 @@ const TeamManagement = () => {
         </div>
         <Dialog open={isCreating} onOpenChange={setIsCreating}>
           <DialogTrigger asChild>
-            <Button onClick={() => setIsCreating(true)}>
+            <Button onClick={() => {
+              resetForm();
+              setIsCreating(true);
+            }}>
               <Plus className="h-4 w-4 mr-2" />
               Добавить участника
             </Button>
@@ -618,7 +621,10 @@ const TeamManagement = () => {
               <p className="text-muted-foreground text-center max-w-md">
                 Добавьте первого участника команды, чтобы начать работу
               </p>
-              <Button onClick={() => setIsCreating(true)} className="mt-4">
+              <Button onClick={() => {
+                resetForm();
+                setIsCreating(true);
+              }} className="mt-4">
                 <Plus className="h-4 w-4 mr-2" />
                 Добавить участника
               </Button>
