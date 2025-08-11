@@ -1,8 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
-import AdminLayout from '@/components/admin/AdminLayout';
-import AdminDashboard from '@/components/admin/AdminDashboard';
+import NewAdminDashboard from '@/components/admin/NewAdminDashboard';
 
 const Admin = () => {
   const { user, loading: authLoading } = useAuth();
@@ -31,11 +30,7 @@ const Admin = () => {
     );
   }
 
-  return (
-    <AdminLayout>
-      <AdminDashboard />
-    </AdminLayout>
-  );
+  return <NewAdminDashboard />;
 };
 
 export default Admin;
