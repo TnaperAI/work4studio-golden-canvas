@@ -508,117 +508,6 @@ const CaseEditorTabs = ({ caseId, onBack }: CaseEditorTabsProps) => {
                   placeholder="https://example.com"
                 />
               </div>
-
-              <div className="space-y-2">
-                <Label>Главное изображение</Label>
-                
-                {/* Upload button */}
-                <div className="flex gap-2">
-                  <input
-                    type="file"
-                    id="main-image-upload"
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={handleMainImageUpload}
-                    className="hidden"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => document.getElementById('main-image-upload')?.click()}
-                    disabled={uploadingMainImage}
-                    className="flex items-center gap-2"
-                  >
-                    <Upload className="h-4 w-4" />
-                    {uploadingMainImage ? 'Загрузка...' : 'Загрузить файл'}
-                  </Button>
-                  <span className="text-sm text-muted-foreground self-center">
-                    JPEG, PNG, WebP
-                  </span>
-                </div>
-
-                {/* Manual URL input */}
-                <div className="space-y-2">
-                  <Label className="text-sm">или введите URL</Label>
-                  <Input
-                    value={formData.main_image}
-                    onChange={(e) => updateField('main_image', e.target.value)}
-                    placeholder="https://images.unsplash.com/..."
-                  />
-                </div>
-
-                {/* Preview */}
-                {formData.main_image && (
-                  <div className="mt-2">
-                    <img 
-                      src={formData.main_image} 
-                      alt="Предпросмотр главного изображения"
-                      className="w-48 h-32 object-cover rounded-lg border"
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label>Галерея изображений</Label>
-                
-                {/* Upload button for gallery */}
-                <div className="flex gap-2">
-                  <input
-                    type="file"
-                    id="gallery-image-upload"
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={handleGalleryImageUpload}
-                    className="hidden"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => document.getElementById('gallery-image-upload')?.click()}
-                    disabled={uploadingGalleryImage}
-                    className="flex items-center gap-2"
-                  >
-                    <Upload className="h-4 w-4" />
-                    {uploadingGalleryImage ? 'Загрузка...' : 'Добавить файл'}
-                  </Button>
-                  <span className="text-sm text-muted-foreground self-center">
-                    JPEG, PNG, WebP
-                  </span>
-                </div>
-
-                {/* Manual URL input for gallery */}
-                <div className="flex gap-2">
-                  <Input
-                    value={newGalleryImageUrl}
-                    onChange={(e) => setNewGalleryImageUrl(e.target.value)}
-                    placeholder="или введите URL изображения..."
-                    onKeyPress={(e) => e.key === 'Enter' && addGalleryImageUrl()}
-                  />
-                  <Button type="button" onClick={addGalleryImageUrl}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                {/* Gallery grid */}
-                {formData.gallery_images.length > 0 && (
-                  <div className="grid grid-cols-4 gap-3 mt-4">
-                    {formData.gallery_images.map((image, index) => (
-                      <div key={index} className="relative group">
-                        <img 
-                          src={image} 
-                          alt={`Галерея ${index + 1}`}
-                          className="w-full h-24 object-cover rounded-lg border hover:opacity-75 transition-opacity"
-                        />
-                        <button 
-                          onClick={() => removeGalleryImage(index)}
-                          className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
             </CardContent>
           </Card>
 
@@ -627,50 +516,173 @@ const CaseEditorTabs = ({ caseId, onBack }: CaseEditorTabsProps) => {
               <CardTitle>Настройки проекта (общие для всех языков)</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-3">
+              {/* Images Section */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Изображения</h4>
+                
                 <div className="space-y-2">
-                  <Label>Дата проекта</Label>
-                  <Input
-                    type="date"
-                    value={formData.project_date}
-                    onChange={(e) => updateField('project_date', e.target.value)}
-                  />
+                  <Label>Главное изображение</Label>
+                  
+                  {/* Upload button */}
+                  <div className="flex gap-2">
+                    <input
+                      type="file"
+                      id="main-image-upload"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handleMainImageUpload}
+                      className="hidden"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => document.getElementById('main-image-upload')?.click()}
+                      disabled={uploadingMainImage}
+                      className="flex items-center gap-2"
+                    >
+                      <Upload className="h-4 w-4" />
+                      {uploadingMainImage ? 'Загрузка...' : 'Загрузить файл'}
+                    </Button>
+                    <span className="text-sm text-muted-foreground self-center">
+                      JPEG, PNG, WebP
+                    </span>
+                  </div>
+
+                  {/* Manual URL input */}
+                  <div className="space-y-2">
+                    <Label className="text-sm">или введите URL</Label>
+                    <Input
+                      value={formData.main_image}
+                      onChange={(e) => updateField('main_image', e.target.value)}
+                      placeholder="https://images.unsplash.com/..."
+                    />
+                  </div>
+
+                  {/* Preview */}
+                  {formData.main_image && (
+                    <div className="mt-2">
+                      <img 
+                        src={formData.main_image} 
+                        alt="Предпросмотр главного изображения"
+                        className="w-48 h-32 object-cover rounded-lg border"
+                      />
+                    </div>
+                  )}
                 </div>
+
                 <div className="space-y-2">
-                  <Label>Длительность</Label>
-                  <Input
-                    value={formData.project_duration}
-                    onChange={(e) => updateField('project_duration', e.target.value)}
-                    placeholder="2 месяца"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Бюджет</Label>
-                  <Input
-                    value={formData.budget_range}
-                    onChange={(e) => updateField('budget_range', e.target.value)}
-                    placeholder="300 000 - 500 000 ₽"
-                  />
+                  <Label>Галерея изображений</Label>
+                  
+                  {/* Upload button for gallery */}
+                  <div className="flex gap-2">
+                    <input
+                      type="file"
+                      id="gallery-image-upload"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handleGalleryImageUpload}
+                      className="hidden"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => document.getElementById('gallery-image-upload')?.click()}
+                      disabled={uploadingGalleryImage}
+                      className="flex items-center gap-2"
+                    >
+                      <Upload className="h-4 w-4" />
+                      {uploadingGalleryImage ? 'Загрузка...' : 'Добавить файл'}
+                    </Button>
+                    <span className="text-sm text-muted-foreground self-center">
+                      JPEG, PNG, WebP
+                    </span>
+                  </div>
+
+                  {/* Manual URL input for gallery */}
+                  <div className="flex gap-2">
+                    <Input
+                      value={newGalleryImageUrl}
+                      onChange={(e) => setNewGalleryImageUrl(e.target.value)}
+                      placeholder="или введите URL изображения..."
+                      onKeyPress={(e) => e.key === 'Enter' && addGalleryImageUrl()}
+                    />
+                    <Button type="button" onClick={addGalleryImageUrl}>
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {/* Gallery grid */}
+                  {formData.gallery_images.length > 0 && (
+                    <div className="grid grid-cols-4 gap-3 mt-4">
+                      {formData.gallery_images.map((image, index) => (
+                        <div key={index} className="relative group">
+                          <img 
+                            src={image} 
+                            alt={`Галерея ${index + 1}`}
+                            className="w-full h-24 object-cover rounded-lg border hover:opacity-75 transition-opacity"
+                          />
+                          <button 
+                            onClick={() => removeGalleryImage(index)}
+                            className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      checked={formData.is_active}
-                      onCheckedChange={(checked) => updateField('is_active', checked)}
+              <hr className="my-4" />
+
+              {/* Project Details */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Детали проекта</h4>
+                
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="space-y-2">
+                    <Label>Дата проекта</Label>
+                    <Input
+                      type="date"
+                      value={formData.project_date}
+                      onChange={(e) => updateField('project_date', e.target.value)}
                     />
-                    <Label>Показывать кейс</Label>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Длительность</Label>
+                    <Input
+                      value={formData.project_duration}
+                      onChange={(e) => updateField('project_duration', e.target.value)}
+                      placeholder="2 месяца"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Бюджет</Label>
+                    <Input
+                      value={formData.budget_range}
+                      onChange={(e) => updateField('budget_range', e.target.value)}
+                      placeholder="300 000 - 500 000 ₽"
+                    />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      checked={formData.is_featured}
-                      onCheckedChange={(checked) => updateField('is_featured', checked)}
-                    />
-                    <Label>Избранный кейс</Label>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        checked={formData.is_active}
+                        onCheckedChange={(checked) => updateField('is_active', checked)}
+                      />
+                      <Label>Показывать кейс</Label>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        checked={formData.is_featured}
+                        onCheckedChange={(checked) => updateField('is_featured', checked)}
+                      />
+                      <Label>Избранный кейс</Label>
+                    </div>
                   </div>
                 </div>
               </div>
