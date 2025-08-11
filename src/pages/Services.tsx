@@ -168,7 +168,8 @@ const Services = () => {
     }
   }, [pageSEO]);
   const formatPrice = (from: number | null, to: number | null) => {
-    if (!from) return 'Цена не указана';
+    const noPriceText = language === 'en' ? 'Price not specified' : 'Цена не указана';
+    if (!from) return noPriceText;
     return `${from.toLocaleString()}$`;
   };
   return <div className="min-h-screen">
@@ -181,12 +182,12 @@ const Services = () => {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/">{language === 'en' ? 'Home' : 'Главная'}</Link>
+                  <Link to="/">{getContent('services_page', 'breadcrumb_home') || (language === 'en' ? 'Home' : 'Главная')}</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>{language === 'en' ? 'Services' : 'Услуги'}</BreadcrumbPage>
+                <BreadcrumbPage>{getContent('services_page', 'breadcrumb_services') || (language === 'en' ? 'Services' : 'Услуги')}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>

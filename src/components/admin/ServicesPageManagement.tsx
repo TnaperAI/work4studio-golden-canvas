@@ -117,6 +117,8 @@ const ServicesPageManagement = ({ language: propLanguage }: ServicesPageManageme
       description: 'Заголовок, подзаголовок и хлебные крошки страницы услуг',
       color: 'from-blue-500 to-cyan-500',
       fields: [
+        { key: 'breadcrumb_home', label: 'Хлебная крошка: Главная', type: 'text' },
+        { key: 'breadcrumb_services', label: 'Хлебная крошка: Услуги', type: 'text' },
         { key: 'title', label: 'Заголовок страницы', type: 'text' },
         { key: 'subtitle', label: 'Подзаголовок страницы', type: 'textarea' },
         { key: 'description', label: 'Описание страницы', type: 'textarea' }
