@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import ConsentCheckbox from '@/components/ConsentCheckbox';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +17,7 @@ const ContactForm = () => {
   const [isAgreed, setIsAgreed] = useState(false);
   const { toast } = useToast();
   const { language } = useLanguage();
+  const { getContent } = useSiteContent();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,17 +87,17 @@ const ContactForm = () => {
           <div className="text-center mb-20 animate-on-scroll">
             <h2 className="text-4xl md:text-6xl font-bold mb-6">
               <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                {language === 'en' ? 'Let\'s discuss your' : 'Обсудим ваш'}
+                {getContent('contact', 'title') || (language === 'en' ? "Let's discuss your" : 'Обсудим ваш')}
               </span>{' '}
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 {language === 'en' ? 'project' : 'проект'}
               </span>
             </h2>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-              {language === 'en' 
+              {getContent('contact', 'subtitle') || (language === 'en' 
                 ? 'Submit a request and we will contact you to discuss details and create the perfect solution'
                 : 'Оставьте заявку, и мы свяжемся с вами для обсуждения деталей и создания идеального решения'
-              }
+              )}
             </p>
           </div>
 
@@ -106,7 +108,7 @@ const ContactForm = () => {
                 <form onSubmit={handleSubmit} className="space-y-8">
                   <div>
                     <label htmlFor="name" className="block text-lg font-semibold mb-3">
-                      {language === 'en' ? 'Your name' : 'Ваше имя'}
+                      {getContent('contact', 'form_name_label') || (language === 'en' ? 'Your name' : 'Ваше имя')}
                     </label>
                     <input
                       type="text"
@@ -116,13 +118,13 @@ const ContactForm = () => {
                       onChange={handleChange}
                       required
                       className="w-full px-6 py-4 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all text-lg"
-                      placeholder={language === 'en' ? 'How should we address you?' : 'Как к вам обращаться?'}
+                      placeholder={getContent('contact', 'form_name_placeholder') || (language === 'en' ? 'How should we address you?' : 'Как к вам обращаться?')}
                     />
                   </div>
 
                   <div>
                     <label htmlFor="email" className="block text-lg font-semibold mb-3">
-                      Email
+                      {getContent('contact', 'form_email_label') || 'Email'}
                     </label>
                     <input
                       type="email"
@@ -138,7 +140,7 @@ const ContactForm = () => {
 
                   <div>
                     <label htmlFor="message" className="block text-lg font-semibold mb-3">
-                      {language === 'en' ? 'Message' : 'Сообщение'}
+                      {getContent('contact', 'form_message_label') || (language === 'en' ? 'Message' : 'Сообщение')}
                     </label>
                     <textarea
                       id="message"
@@ -148,7 +150,7 @@ const ContactForm = () => {
                       required
                       rows={6}
                       className="w-full px-6 py-4 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all resize-none text-lg"
-                      placeholder={language === 'en' ? 'Tell us about your project...' : 'Расскажите о вашем проекте...'}
+                      placeholder={getContent('contact', 'form_message_placeholder') || (language === 'en' ? 'Tell us about your project...' : 'Расскажите о вашем проекте...')}
                     />
                   </div>
 
@@ -166,7 +168,7 @@ const ContactForm = () => {
                       <div className="animate-spin rounded-full h-6 w-6 border-2 border-current border-t-transparent" />
                     ) : (
                       <>
-                        {language === 'en' ? 'Submit request' : 'Отправить заявку'}
+                        {getContent('contact', 'form_submit_button') || (language === 'en' ? 'Submit request' : 'Отправить заявку')}
                         <Send className="w-6 h-6 ml-3" />
                       </>
                     )}
@@ -180,13 +182,13 @@ const ContactForm = () => {
               <div className="space-y-10">
                 <div>
                   <h3 className="text-3xl md:text-4xl font-heading font-bold mb-8 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    {language === 'en' ? 'Contact us directly' : 'Свяжитесь с нами напрямую'}
+                    {getContent('contact', 'contact_title') || (language === 'en' ? 'Contact us directly' : 'Свяжитесь с нами напрямую')}
                   </h3>
                   <p className="text-xl text-muted-foreground leading-relaxed">
-                    {language === 'en' 
+                    {getContent('contact', 'contact_subtitle') || (language === 'en' 
                       ? 'Prefer personal communication? Choose a convenient way to contact us and get a quick response'
                       : 'Предпочитаете личное общение? Выберите удобный способ связи и получите быстрый ответ'
-                    }
+                    )}
                   </p>
                 </div>
 
@@ -218,7 +220,7 @@ const ContactForm = () => {
                     <div className="ml-6">
                       <h4 className="text-xl font-bold mb-1">Telegram</h4>
                       <p className="text-muted-foreground text-lg">
-                        {language === 'en' ? 'Write directly' : 'Написать напрямую'}
+                        {getContent('contact', 'contact_telegram_text') || (language === 'en' ? 'Write directly' : 'Написать напрямую')}
                       </p>
                     </div>
                   </a>
@@ -232,7 +234,7 @@ const ContactForm = () => {
                     </div>
                     <div className="ml-6 text-left">
                       <h4 className="text-xl font-bold mb-1">
-                        {language === 'en' ? 'Call' : 'Позвонить'}
+                        {getContent('contact', 'contact_phone_text') || (language === 'en' ? 'Call' : 'Позвонить')}
                       </h4>
                       <p className="text-muted-foreground text-lg">+20 109 645 3054</p>
                     </div>
@@ -243,10 +245,10 @@ const ContactForm = () => {
                   <p className="text-lg text-center leading-relaxed">
                     ⚡ <strong className="text-primary">
                       {language === 'en' ? 'Quick response:' : 'Быстрый ответ:'}
-                    </strong> {language === 'en' 
+                    </strong> {getContent('contact', 'contact_quick_response_text') || (language === 'en' 
                       ? 'We respond within 30 minutes during business hours'
                       : 'Отвечаем в течение 30 минут в рабочее время'
-                    }
+                    )}
                   </p>
                 </div>
               </div>

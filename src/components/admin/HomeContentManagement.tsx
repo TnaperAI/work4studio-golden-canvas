@@ -201,6 +201,26 @@ const HomeContentManagement = ({ language: propLanguage }: HomeContentManagement
       ]
     },
     {
+      id: 'contact',
+      title: 'Блок контактной формы',
+      description: 'Заголовки и тексты в блоке обратной связи',
+      fields: [
+        { key: 'title', label: 'Заголовок', type: 'text' },
+        { key: 'subtitle', label: 'Описание под заголовком', type: 'textarea' },
+        { key: 'form_name_label', label: 'Подпись к полю "Имя"', type: 'text' },
+        { key: 'form_name_placeholder', label: 'Плейсхолдер поля "Имя"', type: 'text' },
+        { key: 'form_email_label', label: 'Подпись к полю "Email"', type: 'text' },
+        { key: 'form_message_label', label: 'Подпись к полю "Сообщение"', type: 'text' },
+        { key: 'form_message_placeholder', label: 'Плейсхолдер поля "Сообщение"', type: 'text' },
+        { key: 'form_submit_button', label: 'Текст кнопки отправки', type: 'text' },
+        { key: 'contact_title', label: 'Заголовок правой колонки', type: 'text' },
+        { key: 'contact_subtitle', label: 'Описание правой колонки', type: 'textarea' },
+        { key: 'contact_telegram_text', label: 'Текст для Telegram', type: 'text' },
+        { key: 'contact_phone_text', label: 'Текст для телефона', type: 'text' },
+        { key: 'contact_quick_response_text', label: 'Текст быстрого ответа', type: 'text' }
+      ]
+    },
+    {
       id: 'header',
       title: 'Навигация сайта',
       description: 'Тексты меню и кнопок в шапке сайта',
