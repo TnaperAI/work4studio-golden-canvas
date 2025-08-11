@@ -246,6 +246,15 @@ const LegalDocumentEditor = ({ documentId, documentType, onBack }: LegalDocument
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
+                <Label>Document Type</Label>
+                <Input
+                  value={formData.type}
+                  onChange={(e) => updateField('type', e.target.value)}
+                  placeholder="privacy, terms, etc."
+                />
+              </div>
+
+              <div className="space-y-2">
                 <Label>Title</Label>
                 <Input
                   value={enData.title}
