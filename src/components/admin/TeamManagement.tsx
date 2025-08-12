@@ -61,16 +61,18 @@ const TeamManagement = () => {
     ru: {
       name: '',
       position: '',
-      description: ''
+      description: '',
+      skills: '',
+      experience: ''
     },
     en: {
       name: '',
       position: '',
-      description: ''
+      description: '',
+      skills: '',
+      experience: ''
     },
     image: '',
-    skills: '',
-    experience: '',
     is_active: true,
     sort_order: 0
   });
@@ -129,7 +131,7 @@ const TeamManagement = () => {
     e.preventDefault();
     
     try {
-      const skillsArray = formData.skills ? formData.skills.split(',').map(s => s.trim()).filter(s => s) : [];
+      const skillsArray = formData.ru.skills ? formData.ru.skills.split(',').map(s => s.trim()).filter(s => s) : [];
       
       const memberData = {
         name: formData.ru.name, // Используем русское имя как основное
@@ -137,7 +139,7 @@ const TeamManagement = () => {
         description: formData.ru.description || null,
         image: formData.image || null,
         skills: skillsArray.length > 0 ? skillsArray : null,
-        experience: formData.experience || null,
+        experience: formData.ru.experience || null,
         is_active: formData.is_active,
         sort_order: formData.sort_order
       };
@@ -213,16 +215,18 @@ const TeamManagement = () => {
       ru: {
         name: ruTranslation?.name || member.name,
         position: ruTranslation?.position || member.position,
-        description: ruTranslation?.description || member.description || ''
+        description: ruTranslation?.description || member.description || '',
+        skills: member.skills ? member.skills.join(', ') : '',
+        experience: member.experience || ''
       },
       en: {
         name: enTranslation?.name || '',
         position: enTranslation?.position || '',
-        description: enTranslation?.description || ''
+        description: enTranslation?.description || '',
+        skills: '',
+        experience: ''
       },
       image: member.image || '',
-      skills: member.skills ? member.skills.join(', ') : '',
-      experience: member.experience || '',
       is_active: member.is_active,
       sort_order: member.sort_order || 0
     });
@@ -264,16 +268,18 @@ const TeamManagement = () => {
       ru: {
         name: '',
         position: '',
-        description: ''
+        description: '',
+        skills: '',
+        experience: ''
       },
       en: {
         name: '',
         position: '',
-        description: ''
+        description: '',
+        skills: '',
+        experience: ''
       },
       image: '',
-      skills: '',
-      experience: '',
       is_active: true,
       sort_order: 0
     });
@@ -443,6 +449,34 @@ const TeamManagement = () => {
                       placeholder="Краткое описание на русском языке"
                     />
                   </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="skills-ru">Навыки</Label>
+                      <Input
+                        id="skills-ru"
+                        value={formData.ru.skills}
+                        onChange={(e) => setFormData(prev => ({ 
+                          ...prev, 
+                          ru: { ...prev.ru, skills: e.target.value }
+                        }))}
+                        placeholder="React, TypeScript, Node.js (через запятую)"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="experience-ru">Опыт работы</Label>
+                      <Input
+                        id="experience-ru"
+                        value={formData.ru.experience}
+                        onChange={(e) => setFormData(prev => ({ 
+                          ...prev, 
+                          ru: { ...prev.ru, experience: e.target.value }
+                        }))}
+                        placeholder="5+ лет"
+                      />
+                    </div>
+                  </div>
                 </TabsContent>
 
                 <TabsContent value="en" className="space-y-4">
@@ -488,6 +522,34 @@ const TeamManagement = () => {
                       rows={3}
                       placeholder="Brief description in English"
                     />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="skills-en">Skills</Label>
+                      <Input
+                        id="skills-en"
+                        value={formData.en.skills}
+                        onChange={(e) => setFormData(prev => ({ 
+                          ...prev, 
+                          en: { ...prev.en, skills: e.target.value }
+                        }))}
+                        placeholder="React, TypeScript, Node.js (comma separated)"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="experience-en">Experience</Label>
+                      <Input
+                        id="experience-en"
+                        value={formData.en.experience}
+                        onChange={(e) => setFormData(prev => ({ 
+                          ...prev, 
+                          en: { ...prev.en, experience: e.target.value }
+                        }))}
+                        placeholder="5+ years"
+                      />
+                    </div>
                   </div>
                 </TabsContent>
               </Tabs>
@@ -553,27 +615,6 @@ const TeamManagement = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="skills">Навыки</Label>
-                    <Input
-                      id="skills"
-                      value={formData.skills}
-                      onChange={(e) => setFormData(prev => ({ ...prev, skills: e.target.value }))}
-                      placeholder="React, TypeScript, Node.js (через запятую)"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="experience">Опыт работы</Label>
-                    <Input
-                      id="experience"
-                      value={formData.experience}
-                      onChange={(e) => setFormData(prev => ({ ...prev, experience: e.target.value }))}
-                      placeholder="5+ лет"
-                    />
-                  </div>
-                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex items-center space-x-2">
