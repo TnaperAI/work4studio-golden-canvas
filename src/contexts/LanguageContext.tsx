@@ -14,15 +14,18 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('ru');
-
-  useEffect(() => {
-    // Загружаем язык из localStorage при инициализации
-    const savedLanguage = localStorage.getItem('language') as Language;
-    if (savedLanguage && (savedLanguage === 'ru' || savedLanguage === 'en')) {
-      setLanguage(savedLanguage);
+  // Инициализируем язык сразу из localStorage, чтобы избежать мерцания
+  const getInitialLanguage = (): Language => {
+    if (typeof window !== 'undefined') {
+      const savedLanguage = localStorage.getItem('language') as Language;
+      if (savedLanguage && (savedLanguage === 'ru' || savedLanguage === 'en')) {
+        return savedLanguage;
+      }
     }
-  }, []);
+    return 'ru'; // fallback по умолчанию
+  };
+
+  const [language, setLanguage] = useState<Language>(getInitialLanguage);
 
   const updateLanguage = (lang: Language) => {
     setLanguage(lang);
