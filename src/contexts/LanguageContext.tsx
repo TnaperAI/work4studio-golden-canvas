@@ -19,18 +19,15 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     if (typeof window !== 'undefined') {
       const savedLanguage = localStorage.getItem('language') as Language;
       if (savedLanguage && (savedLanguage === 'ru' || savedLanguage === 'en')) {
-        console.log('Initial language from localStorage:', savedLanguage);
         return savedLanguage;
       }
     }
-    console.log('Using default language: ru');
     return 'ru'; // fallback по умолчанию
   };
 
   const [language, setLanguage] = useState<Language>(getInitialLanguage);
 
   const updateLanguage = (lang: Language) => {
-    console.log('Language changed to:', lang);
     setLanguage(lang);
     localStorage.setItem('language', lang);
   };

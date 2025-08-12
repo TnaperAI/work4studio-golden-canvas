@@ -17,7 +17,7 @@ interface Service {
 const Services = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
-  const { getContent } = useSiteContent();
+  const { getContent, loading: contentLoading } = useSiteContent();
 
   useEffect(() => {
     const fetchServices = async () => {

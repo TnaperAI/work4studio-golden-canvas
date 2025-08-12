@@ -4,7 +4,16 @@ import { useSiteContent } from '@/hooks/useSiteContent';
 
 const Hero = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
-  const { getContent } = useSiteContent();
+  const { getContent, loading } = useSiteContent();
+
+  // Не рендерим контент пока он не загрузился
+  if (loading) {
+    return (
+      <section className="hero-container bg-background relative overflow-hidden min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </section>
+    );
+  }
 
   return (
     <section className="hero-container bg-background relative overflow-hidden">"

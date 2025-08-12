@@ -33,7 +33,6 @@ export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ childr
 
   useEffect(() => {
     const fetchContent = async () => {
-      console.log('Fetching site content...');
       try {
         const { data, error } = await supabase
           .from('site_content')
@@ -44,14 +43,12 @@ export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ childr
         if (error) {
           console.error('Error fetching site content:', error);
         } else {
-          console.log('Site content loaded:', data?.length, 'items');
           setContent(data || []);
         }
       } catch (error) {
         console.error('Unexpected error fetching site content:', error);
       } finally {
         setLoading(false);
-        console.log('Site content loading finished');
       }
     };
 
@@ -81,12 +78,11 @@ export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ childr
 
   const getContent = (section: string, key: string, lang?: string): string => {
     const currentLang = lang || language;
-    const item = content.find(c => c.section === section && c.key === key && c.language === currentLang);
+    let item = content.find(c => c.section === section && c.key === key && c.language === currentLang);
     
-    // Диагностический лог для отладки проблемы с языком
-    if (!item) {
-      console.log(`Content not found: section=${section}, key=${key}, lang=${currentLang}, available languages:`, 
-        content.filter(c => c.section === section && c.key === key).map(c => c.language));
+    // Если контент не найден для текущего языка, попробуем fallback на русский
+    if (!item && currentLang !== 'ru') {
+      item = content.find(c => c.section === section && c.key === key && c.language === 'ru');
     }
     
     return item?.value || '';

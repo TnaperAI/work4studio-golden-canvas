@@ -9,7 +9,7 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const location = useLocation();
-  const { getContent } = useSiteContent();
+  const { getContent, loading } = useSiteContent();
 
   const navigation = [
     { name: getContent('header', 'nav_home') || 'Главная', href: '/' },
