@@ -47,6 +47,8 @@ interface TeamMemberTranslation {
   name: string;
   position: string;
   description: string | null;
+  skills: string[] | null;
+  experience: string | null;
 }
 
 const TeamManagement = () => {
@@ -167,12 +169,17 @@ const TeamManagement = () => {
 
       // Сохраняем переводы
       for (const lang of ['ru', 'en']) {
+        const skillsArray = formData[lang as 'ru' | 'en'].skills ? 
+          formData[lang as 'ru' | 'en'].skills.split(',').map(s => s.trim()).filter(s => s) : [];
+        
         const translationData = {
           team_member_id: memberId,
           language: lang,
           name: formData[lang as 'ru' | 'en'].name,
           position: formData[lang as 'ru' | 'en'].position,
-          description: formData[lang as 'ru' | 'en'].description || null
+          description: formData[lang as 'ru' | 'en'].description || null,
+          skills: skillsArray.length > 0 ? skillsArray : [],
+          experience: formData[lang as 'ru' | 'en'].experience || null
         };
 
         const { error: upsertError } = await supabase
@@ -216,15 +223,15 @@ const TeamManagement = () => {
         name: ruTranslation?.name || member.name,
         position: ruTranslation?.position || member.position,
         description: ruTranslation?.description || member.description || '',
-        skills: member.skills ? member.skills.join(', ') : '',
-        experience: member.experience || ''
+        skills: ruTranslation?.skills ? ruTranslation.skills.join(', ') : (member.skills ? member.skills.join(', ') : ''),
+        experience: ruTranslation?.experience || member.experience || ''
       },
       en: {
         name: enTranslation?.name || '',
         position: enTranslation?.position || '',
         description: enTranslation?.description || '',
-        skills: '',
-        experience: ''
+        skills: enTranslation?.skills ? enTranslation.skills.join(', ') : '',
+        experience: enTranslation?.experience || ''
       },
       image: member.image || '',
       is_active: member.is_active,

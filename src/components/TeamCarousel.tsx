@@ -22,6 +22,8 @@ interface TeamMemberTranslation {
   name: string;
   position: string;
   description: string | null;
+  skills: string[] | null;
+  experience: string | null;
 }
 
 interface TeamGridProps {
@@ -59,6 +61,18 @@ export const TeamCarousel = ({ members }: TeamGridProps) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getDisplaySkills = (member: TeamMember) => {
+    const memberTranslations = translations[member.id] || [];
+    const currentTranslation = memberTranslations.find(t => t.language === language);
+    return currentTranslation?.skills || member.skills;
+  };
+
+  const getDisplayExperience = (member: TeamMember) => {
+    const memberTranslations = translations[member.id] || [];
+    const currentTranslation = memberTranslations.find(t => t.language === language);
+    return currentTranslation?.experience || member.experience;
   };
 
   const localizeExperience = (exp: string | null) => {
@@ -143,13 +157,13 @@ export const TeamCarousel = ({ members }: TeamGridProps) => {
           </div>
           <h3 className="text-xl font-heading font-bold mb-2">{getDisplayName(member)}</h3>
           <p className="text-primary font-medium mb-2">{getDisplayPosition(member)}</p>
-          <p className="text-sm text-muted-foreground mb-4">{localizeExperience(member.experience)}</p>
+          <p className="text-sm text-muted-foreground mb-4">{localizeExperience(getDisplayExperience(member))}</p>
           {getDisplayDescription(member) && (
             <p className="text-muted-foreground leading-relaxed mb-6">{getDisplayDescription(member)}</p>
           )}
-          {member.skills && member.skills.length > 0 && (
+          {getDisplaySkills(member) && getDisplaySkills(member)!.length > 0 && (
             <div className="flex flex-wrap gap-2 justify-center">
-              {member.skills.map((skill, skillIndex) => (
+              {getDisplaySkills(member)!.map((skill, skillIndex) => (
                 <Badge key={skillIndex} variant="secondary" className="text-xs">
                   {skill}
                 </Badge>

@@ -555,30 +555,36 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
+          experience: string | null
           id: string
           language: string
           name: string
           position: string
+          skills: string[] | null
           team_member_id: string
           updated_at: string
         }
         Insert: {
           created_at?: string
           description?: string | null
+          experience?: string | null
           id?: string
           language?: string
           name: string
           position: string
+          skills?: string[] | null
           team_member_id: string
           updated_at?: string
         }
         Update: {
           created_at?: string
           description?: string | null
+          experience?: string | null
           id?: string
           language?: string
           name?: string
           position?: string
+          skills?: string[] | null
           team_member_id?: string
           updated_at?: string
         }
