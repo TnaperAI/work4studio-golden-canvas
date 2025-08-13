@@ -267,35 +267,42 @@ const Cases = () => {
       // Обновляем meta теги
       const updateMetaTag = (name: string, content: string) => {
         if (!content) return;
-        let meta = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement;
-        if (!meta) {
-          meta = document.createElement('meta');
-          meta.name = name;
-          document.head.appendChild(meta);
-        }
+        // Удаляем существующий тег
+        const existing = document.querySelector(`meta[name="${name}"]`);
+        if (existing) existing.remove();
+        
+        // Создаем новый тег
+        const meta = document.createElement('meta');
+        meta.name = name;
         meta.content = content;
+        document.head.appendChild(meta);
+        console.log(`🏷️ Updated meta[name="${name}"]="${content}"`);
       };
 
       const updatePropertyTag = (property: string, content: string) => {
         if (!content) return;
-        let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
-        if (!meta) {
-          meta = document.createElement('meta');
-          meta.setAttribute('property', property);
-          document.head.appendChild(meta);
-        }
+        // Удаляем существующий тег
+        const existing = document.querySelector(`meta[property="${property}"]`);
+        if (existing) existing.remove();
+        
+        // Создаем новый тег
+        const meta = document.createElement('meta');
+        meta.setAttribute('property', property);
         meta.content = content;
+        document.head.appendChild(meta);
+        console.log(`🏷️ Updated meta[property="${property}"]="${content}"`);
       };
 
       // Обновляем canonical URL
       if (seoData.canonical_url) {
-        let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
-        if (!canonical) {
-          canonical = document.createElement('link');
-          canonical.rel = 'canonical';
-          document.head.appendChild(canonical);
-        }
+        const existing = document.querySelector('link[rel="canonical"]');
+        if (existing) existing.remove();
+        
+        const canonical = document.createElement('link');
+        canonical.rel = 'canonical';
         canonical.href = seoData.canonical_url;
+        document.head.appendChild(canonical);
+        console.log(`🔗 Updated canonical="${seoData.canonical_url}"`);
       }
 
       console.log('🔧 Applying SEO data:', seoData);
