@@ -258,9 +258,12 @@ const Cases = () => {
       canonical_url: selectedCase.canonical_url || `${window.location.origin}/cases/${selectedCase.slug}`
     } : pageSEO;
 
+    console.log('🔧 About to apply SEO data, seoData exists:', !!seoData);
+    
     if (seoData) {
       // ПРИНУДИТЕЛЬНО обновляем title
-      document.title = seoData.page_title || 'Work4Studio Cases';
+      const newTitle = seoData.page_title || (seoData as any).meta_title || 'Work4Studio Cases';
+      document.title = newTitle;
       console.log(`📄 Updated title="${document.title}"`);
 
       // Очищаем ВСЕ старые Open Graph теги
