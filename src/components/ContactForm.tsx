@@ -7,6 +7,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useSiteContent } from '@/hooks/useSiteContent';
 
 const ContactForm = () => {
+  console.log('🎯 ContactForm component rendered');
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -18,6 +20,8 @@ const ContactForm = () => {
   const { toast } = useToast();
   const { language } = useLanguage();
   const { getContent, loading } = useSiteContent();
+
+  console.log('🔍 ContactForm - loading:', loading, 'language:', language);
 
   // Не рендерим форму пока контент не загрузился
   if (loading) {
