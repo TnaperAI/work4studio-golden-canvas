@@ -242,6 +242,7 @@ const Cases = () => {
 
   // Обновляем SEO теги когда загружаются данные или меняется выбранный кейс
   useEffect(() => {
+    console.log('🎯 Cases SEO - selectedCase:', selectedCase?.title, 'pageSEO:', pageSEO?.og_title);
     // Определяем какие SEO данные использовать
     const seoData = selectedCase ? {
       page_title: selectedCase.meta_title || selectedCase.title,
@@ -293,6 +294,7 @@ const Cases = () => {
         canonical.href = seoData.canonical_url;
       }
 
+      console.log('🔧 Applying SEO data:', seoData);
       // Устанавливаем мета теги
       updateMetaTag('description', seoData.meta_description);
       if (seoData.meta_keywords) {

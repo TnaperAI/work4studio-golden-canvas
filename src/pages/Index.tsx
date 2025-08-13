@@ -29,15 +29,21 @@ const Index = () => {
   useEffect(() => {
     const fetchSEO = async () => {
       try {
+        // Определяем язык из URL
+        const urlLanguage = window.location.pathname.startsWith('/en') ? 'en' : 'ru';
+        console.log('🔍 Fetching SEO for home page, language:', urlLanguage);
+        
         const { data: seoData, error } = await supabase
           .from('page_seo')
           .select('*')
           .eq('page_slug', 'home')
+          .eq('language', urlLanguage)
           .maybeSingle();
 
         if (error) {
-          console.error('SEO error:', error);
+          console.error('❌ SEO error:', error);
         } else {
+          console.log('✅ SEO data loaded:', seoData);
           setPageSEO(seoData);
         }
       } catch (error) {
@@ -50,6 +56,7 @@ const Index = () => {
 
   // Обновляем SEO теги когда загружаются данные
   useEffect(() => {
+    console.log('🎯 Applying SEO tags:', pageSEO);
     if (pageSEO) {
       // Обновляем title
       if (pageSEO.page_title) {
