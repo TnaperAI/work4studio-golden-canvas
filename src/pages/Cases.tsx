@@ -221,6 +221,7 @@ const Cases = () => {
       }
 
       // Fetch SEO data
+      console.log('🔍 Fetching Cases SEO for language:', language);
       const { data: seoData, error: seoError } = await supabase
         .from('page_seo')
         .select('*')
@@ -229,8 +230,9 @@ const Cases = () => {
         .maybeSingle();
 
       if (seoError) {
-        console.error('SEO error:', seoError);
+        console.error('❌ Cases SEO error:', seoError);
       } else {
+        console.log('✅ Cases SEO data loaded:', seoData);
         setPageSEO(seoData);
       }
     } catch (error) {

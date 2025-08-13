@@ -140,6 +140,7 @@ const About = () => {
       } = await supabase.from('company_info').select('*').eq('language', language).maybeSingle();
 
       // Fetch page SEO
+      console.log('🔍 Fetching About SEO for language:', language);
       const {
         data: seoData,
         error: seoError
@@ -151,10 +152,11 @@ const About = () => {
         console.error('Company error:', companyError);
       }
       if (seoError) {
-        console.error('SEO error:', seoError);
+        console.error('❌ About SEO error:', seoError);
       }
       setTeam(teamData || []);
       setCompanyInfo(companyData);
+      console.log('✅ About SEO data loaded:', seoData);
       setPageSEO(seoData);
     } catch (error) {
       console.error('Error fetching about data:', error);

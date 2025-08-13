@@ -44,6 +44,7 @@ const Contact = () => {
   useEffect(() => {
     const fetchSEO = async () => {
       try {
+        console.log('🔍 Fetching Contact SEO for language:', language);
         const { data: seoData, error } = await supabase
           .from('page_seo')
           .select('*')
@@ -51,8 +52,9 @@ const Contact = () => {
           .eq('language', language)
           .maybeSingle();
         if (error) {
-          console.error('SEO error:', error);
+          console.error('❌ Contact SEO error:', error);
         } else {
+          console.log('✅ Contact SEO data loaded:', seoData);
           setPageSEO(seoData);
         }
       } catch (error) {

@@ -94,17 +94,20 @@ const Services = () => {
         }
 
         // Fetch SEO data (limit to avoid multiple rows error)
+        console.log('🔍 Fetching Services SEO for language:', language);
         const { data: seoData, error: seoError } = await supabase
           .from('page_seo')
           .select('*')
           .eq('page_slug', 'services')
+          .eq('language', language)
           .order('updated_at', { ascending: false })
           .limit(1)
           .maybeSingle();
 
         if (seoError) {
-          console.error('SEO error:', seoError);
+          console.error('❌ Services SEO error:', seoError);
         } else {
+          console.log('✅ Services SEO data loaded:', seoData);
           setPageSEO(seoData);
         }
       } catch (error) {
