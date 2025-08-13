@@ -110,6 +110,7 @@ const Contact = () => {
       updatePropertyTag('og:description', pageSEO.og_description);
       updatePropertyTag('og:image', pageSEO.og_image);
       updatePropertyTag('og:type', 'website');
+      updatePropertyTag('og:url', window.location.href);
     }
   }, [pageSEO]);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

@@ -122,6 +122,7 @@ const About = () => {
       updatePropertyTag('og:description', pageSEO.og_description);
       updatePropertyTag('og:image', pageSEO.og_image);
       updatePropertyTag('og:type', 'website');
+      updatePropertyTag('og:url', window.location.href);
     }
   }, [pageSEO]);
   const fetchData = async () => {
