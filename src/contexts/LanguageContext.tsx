@@ -1,10 +1,18 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-export type Language = 'ru' | 'en';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { 
+  Language, 
+  DEFAULT_LANGUAGE, 
+  getLanguageFromPath, 
+  addLanguageToPath, 
+  removeLanguageFromPath,
+  isRootPath 
+} from '@/utils/languageRouting';
 
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
+  isLoading: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -14,27 +22,43 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  // Инициализируем язык сразу из localStorage, чтобы избежать мерцания
-  const getInitialLanguage = (): Language => {
-    if (typeof window !== 'undefined') {
-      const savedLanguage = localStorage.getItem('language') as Language;
-      if (savedLanguage && (savedLanguage === 'ru' || savedLanguage === 'en')) {
-        return savedLanguage;
-      }
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Инициализируем язык из URL
+  const [language, setLanguageState] = useState<Language>(() => {
+    return getLanguageFromPath(location.pathname);
+  });
+
+  // Обновляем язык при изменении URL
+  useEffect(() => {
+    const newLanguage = getLanguageFromPath(location.pathname);
+    if (newLanguage !== language) {
+      setLanguageState(newLanguage);
     }
-    return 'ru'; // fallback по умолчанию
-  };
+  }, [location.pathname, language]);
 
-  const [language, setLanguage] = useState<Language>(getInitialLanguage);
+  // Редирект с корневого URL на язык по умолчанию
+  useEffect(() => {
+    if (isRootPath(location.pathname)) {
+      const targetPath = addLanguageToPath(location.pathname, DEFAULT_LANGUAGE);
+      navigate(targetPath, { replace: true });
+      return;
+    }
+    setIsLoading(false);
+  }, [location.pathname, navigate]);
 
-  const updateLanguage = (lang: Language) => {
-    setLanguage(lang);
-    localStorage.setItem('language', lang);
+  const setLanguage = (newLanguage: Language) => {
+    const currentPath = removeLanguageFromPath(location.pathname);
+    const newPath = addLanguageToPath(currentPath, newLanguage);
+    navigate(newPath);
   };
 
   const value = {
     language,
-    setLanguage: updateLanguage,
+    setLanguage,
+    isLoading,
   };
 
   return (
@@ -51,3 +75,6 @@ export const useLanguage = (): LanguageContextType => {
   }
   return context;
 };
+
+// Экспортируем тип для обратной совместимости
+export type { Language };

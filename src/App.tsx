@@ -45,6 +45,27 @@ const App = () => {
           <Sonner />
           <ScrollToTop />
           <Routes>
+            {/* Маршруты с языковыми префиксами */}
+            <Route path="/ru" element={<Index />} />
+            <Route path="/en" element={<Index />} />
+            <Route path="/ru/cases" element={<Cases />} />
+            <Route path="/en/cases" element={<Cases />} />
+            <Route path="/ru/cases/:slug" element={<Cases />} />
+            <Route path="/en/cases/:slug" element={<Cases />} />
+            <Route path="/ru/services" element={<Services />} />
+            <Route path="/en/services" element={<Services />} />
+            <Route path="/ru/contact" element={<Contact />} />
+            <Route path="/en/contact" element={<Contact />} />
+            <Route path="/ru/about" element={<About />} />
+            <Route path="/en/about" element={<About />} />
+            <Route path="/ru/services/:service" element={<ServiceDetail />} />
+            <Route path="/en/services/:service" element={<ServiceDetail />} />
+            <Route path="/ru/login" element={<Login />} />
+            <Route path="/en/login" element={<Login />} />
+            <Route path="/ru/legal/:type" element={<PrivacyPolicy />} />
+            <Route path="/en/legal/:type" element={<PrivacyPolicy />} />
+            
+            {/* Редирект с корневых маршрутов */}
             <Route path="/" element={<Index />} />
             <Route path="/cases" element={<Cases />} />
             <Route path="/cases/:slug" element={<Cases />} />
@@ -53,12 +74,14 @@ const App = () => {
             <Route path="/about" element={<About />} />
             <Route path="/services/:service" element={<ServiceDetail />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/legal/:type" element={<PrivacyPolicy />} />
+            
+            {/* Админка без языковых префиксов */}
             <Route path="/admin" element={
               <Suspense fallback={<LoadingSpinner />}>
                 <Admin />
               </Suspense>
             } />
-            <Route path="/legal/:type" element={<PrivacyPolicy />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

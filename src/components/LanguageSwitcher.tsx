@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const LanguageSwitcher = () => {
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, isLoading } = useLanguage();
 
   const languages = [
     { code: 'ru' as const, name: 'Русский', flag: '🇷🇺' },
@@ -18,6 +18,15 @@ const LanguageSwitcher = () => {
   ];
 
   const currentLanguage = languages.find(lang => lang.code === language);
+
+  if (isLoading) {
+    return null; // Не показываем переключатель пока идет редирект
+  }
+
+  const handleLanguageChange = (newLang: 'ru' | 'en') => {
+    // setLanguage из контекста теперь обрабатывает навигацию с URL
+    setLanguage(newLang);
+  };
 
   return (
     <DropdownMenu>
@@ -36,7 +45,7 @@ const LanguageSwitcher = () => {
         {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
-            onClick={() => setLanguage(lang.code)}
+            onClick={() => handleLanguageChange(lang.code)}
             className={`flex items-center gap-2 cursor-pointer ${
               language === lang.code ? 'bg-muted' : ''
             }`}

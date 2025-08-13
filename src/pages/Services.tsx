@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Target, Zap } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { LocalizedLink } from '@/components/LocalizedLink';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
@@ -183,7 +183,7 @@ const Services = () => {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/">{getContent('services_page', 'breadcrumb_home') || (language === 'en' ? 'Home' : 'Главная')}</Link>
+                  <LocalizedLink to="/">{getContent('services_page', 'breadcrumb_home') || (language === 'en' ? 'Home' : 'Главная')}</LocalizedLink>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
@@ -264,11 +264,11 @@ const Services = () => {
                       ? `${language === 'en' ? 'from' : 'от'} ${service.price_from.toLocaleString()}$`
                       : (language === 'en' ? 'Price not set' : 'Цена не указана')}
                   </span>
-                  <Link to={`/services/${service.slug}`}>
+                  <LocalizedLink to={`/services/${service.slug}`}>
                     <Button size="sm" className="bg-primary hover:bg-primary/80">
                       Подробнее
                     </Button>
-                  </Link>
+                  </LocalizedLink>
                 </div>
               </div>)}
             

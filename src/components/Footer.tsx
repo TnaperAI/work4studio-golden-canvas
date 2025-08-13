@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { LocalizedLink } from './LocalizedLink';
 import { Mail } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
@@ -148,13 +148,13 @@ const Footer = () => {
             <ul className="space-y-4">
               {navigation.map((item) => (
                 <li key={item.name}>
-                  <Link
+                  <LocalizedLink
                     to={item.href}
                     className="text-muted-foreground hover:text-primary transition-all duration-300 text-lg relative group"
                   >
                     {item.name}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent transition-all duration-300 group-hover:w-full"></span>
-                  </Link>
+                  </LocalizedLink>
                 </li>
               ))}
             </ul>
@@ -168,13 +168,13 @@ const Footer = () => {
             <ul className="space-y-4">
               {services.map((service) => (
                 <li key={service.id}>
-                  <Link
+                  <LocalizedLink
                     to={`/services/${service.slug}`}
                     className="text-muted-foreground hover:text-primary transition-all duration-300 text-lg relative group"
                   >
                     {service.title}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent transition-all duration-300 group-hover:w-full"></span>
-                  </Link>
+                  </LocalizedLink>
                 </li>
               ))}
             </ul>
@@ -189,22 +189,22 @@ const Footer = () => {
             </p>
             <div className="flex items-center space-x-6">
               {legalDocuments.map((doc) => (
-                <Link 
+                <LocalizedLink 
                   key={doc.id}
                   to={`/legal/${doc.type}`} 
                   className="text-sm text-muted-foreground hover:text-primary transition-colors underline"
                 >
                   {doc.title}
-                </Link>
+                </LocalizedLink>
               ))}
             </div>
             <div className="flex items-center space-x-3">
               <span className="text-sm text-muted-foreground">{language === 'en' ? 'Built by' : 'Разработано'}</span>
-              <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+              <LocalizedLink to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
                 <span className="font-logo font-bold text-lg bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                   Work<span className="text-primary">4</span>Studio
                 </span>
-              </Link>
+              </LocalizedLink>
             </div>
           </div>
         </div>

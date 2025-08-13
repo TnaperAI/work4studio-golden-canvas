@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { LocalizedLink } from './LocalizedLink';
 import ContactFormModal from './ContactFormModal';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useSiteContent } from '@/hooks/useSiteContent';
@@ -26,7 +27,7 @@ const Header = () => {
       <nav className="container-custom relative z-10">
         <div className="relative flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="group flex items-center hover:scale-105 transition-transform duration-300">
+          <LocalizedLink to="/" className="group flex items-center hover:scale-105 transition-transform duration-300">
             <div className="relative">
               {/* Background glow */}
               <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-accent/30 blur-lg group-hover:blur-xl transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
@@ -38,7 +39,7 @@ const Header = () => {
                 </span>
               </div>
             </div>
-          </Link>
+          </LocalizedLink>
 
           {/* Middle mobile/tablet language switcher between logo and burger */}
           <div className="lg:hidden flex-1 flex items-center justify-center">
@@ -48,7 +49,7 @@ const Header = () => {
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
             {navigation.map((item) => (
-              <Link
+              <LocalizedLink
                 key={item.name}
                 to={item.href}
                 className={`text-base font-medium transition-all duration-300 relative group ${
@@ -61,7 +62,7 @@ const Header = () => {
                 <span className={`absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-primary to-accent transform origin-left transition-transform duration-300 ${
                   isActive(item.href) ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
                 }`}></span>
-              </Link>
+              </LocalizedLink>
             ))}
             <LanguageSwitcher />
             <button 
@@ -88,7 +89,7 @@ const Header = () => {
           <div className="lg:hidden absolute top-full left-0 right-0 bg-background border-b border-border shadow-lg">
             <div className="px-4 py-6 space-y-4">
               {navigation.map((item) => (
-                <Link
+                <LocalizedLink
                   key={item.name}
                   to={item.href}
                   className={`block px-4 py-3 text-lg font-medium transition-all duration-300 rounded-xl ${
@@ -99,7 +100,7 @@ const Header = () => {
                   onClick={() => setIsOpen(false)}
                 >
                   {item.name}
-                </Link>
+                </LocalizedLink>
               ))}
               <div className="pt-4 space-y-4">
                 <button 
