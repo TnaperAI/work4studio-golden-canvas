@@ -50,6 +50,12 @@ interface Case {
   is_featured: boolean;
   h1_tag: string;
   sort_order: number;
+  meta_title?: string;
+  meta_description?: string;
+  og_title?: string;
+  og_description?: string;
+  og_image?: string;
+  canonical_url?: string;
 }
 
 interface PageSEO {
@@ -234,12 +240,23 @@ const Cases = () => {
     }
   };
 
-  // Обновляем SEO теги когда загружаются данные
+  // Обновляем SEO теги когда загружаются данные или меняется выбранный кейс
   useEffect(() => {
-    if (pageSEO) {
+    // Определяем какие SEO данные использовать
+    const seoData = selectedCase ? {
+      page_title: selectedCase.meta_title || selectedCase.title,
+      meta_description: selectedCase.meta_description || selectedCase.short_description,
+      meta_keywords: '', // Кейсы обычно не используют keywords
+      og_title: selectedCase.og_title || selectedCase.title,
+      og_description: selectedCase.og_description || selectedCase.short_description,
+      og_image: selectedCase.og_image || selectedCase.main_image,
+      canonical_url: selectedCase.canonical_url || `${window.location.origin}/cases/${selectedCase.slug}`
+    } : pageSEO;
+
+    if (seoData) {
       // Обновляем title
-      if (pageSEO.page_title) {
-        document.title = pageSEO.page_title;
+      if (seoData.page_title) {
+        document.title = seoData.page_title;
       }
 
       // Обновляем meta теги
@@ -266,25 +283,30 @@ const Cases = () => {
       };
 
       // Обновляем canonical URL
-      if (pageSEO.canonical_url) {
+      if (seoData.canonical_url) {
         let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
         if (!canonical) {
           canonical = document.createElement('link');
           canonical.rel = 'canonical';
           document.head.appendChild(canonical);
         }
-        canonical.href = pageSEO.canonical_url;
+        canonical.href = seoData.canonical_url;
       }
 
       // Устанавливаем мета теги
-      updateMetaTag('description', pageSEO.meta_description);
-      updateMetaTag('keywords', pageSEO.meta_keywords);
-      updatePropertyTag('og:title', pageSEO.og_title);
-      updatePropertyTag('og:description', pageSEO.og_description);
-      updatePropertyTag('og:image', pageSEO.og_image);
-      updatePropertyTag('og:type', 'website');
+      updateMetaTag('description', seoData.meta_description);
+      if (seoData.meta_keywords) {
+        updateMetaTag('keywords', seoData.meta_keywords);
+      }
+      updatePropertyTag('og:title', seoData.og_title);
+      updatePropertyTag('og:description', seoData.og_description);
+      updatePropertyTag('og:image', seoData.og_image);
+      updatePropertyTag('og:type', selectedCase ? 'article' : 'website');
+      
+      // Добавляем URL для Open Graph
+      updatePropertyTag('og:url', window.location.href);
     }
-  }, [pageSEO]);
+  }, [pageSEO, selectedCase]);
 
   // Перезапускаем анимацию скролла после загрузки данных
   useEffect(() => {
