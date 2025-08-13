@@ -23,14 +23,8 @@ const ContactForm = () => {
 
   console.log('🔍 ContactForm - loading:', loading, 'language:', language);
 
-  // Не рендерим форму пока контент не загрузился
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-20 min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
+  // Показываем форму даже если контент загружается
+  const formTitle = !loading ? (getContent('contact', 'title') || (language === 'en' ? "Let's discuss your" : 'Обсудим ваш')) : (language === 'en' ? "Let's discuss your" : 'Обсудим ваш');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
