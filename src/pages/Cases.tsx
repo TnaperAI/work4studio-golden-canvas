@@ -259,10 +259,15 @@ const Cases = () => {
     } : pageSEO;
 
     if (seoData) {
-      // Обновляем title
-      if (seoData.page_title) {
-        document.title = seoData.page_title;
-      }
+      // ПРИНУДИТЕЛЬНО обновляем title
+      document.title = seoData.page_title || 'Work4Studio Cases';
+      console.log(`📄 Updated title="${document.title}"`);
+
+      // Очищаем ВСЕ старые Open Graph теги
+      document.querySelectorAll('meta[property^="og:"]').forEach(tag => tag.remove());
+      document.querySelectorAll('meta[name="description"]').forEach(tag => tag.remove());
+      document.querySelectorAll('meta[name="keywords"]').forEach(tag => tag.remove());
+      console.log('🧹 Cleared all old meta tags');
 
       // Обновляем meta теги
       const updateMetaTag = (name: string, content: string) => {
