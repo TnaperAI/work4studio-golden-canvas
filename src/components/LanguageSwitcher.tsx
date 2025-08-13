@@ -19,9 +19,10 @@ const LanguageSwitcher = () => {
 
   const currentLanguage = languages.find(lang => lang.code === language);
 
-  if (isLoading) {
-    return null; // Не показываем переключатель пока идет редирект
-  }
+  // Убираем скрытие переключателя во время загрузки
+  // if (isLoading) {
+  //   return null; 
+  // }
 
   const handleLanguageChange = (newLang: 'ru' | 'en') => {
     // setLanguage из контекста теперь обрабатывает навигацию с URL
