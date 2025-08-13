@@ -168,6 +168,7 @@ const Cases = () => {
 
   useEffect(() => {
     // Очищаем состояние при изменении slug или языка
+    console.log('🔄 Cases useEffect triggered - slug:', slug, 'language:', language);
     if (!slug) {
       setSelectedCase(null);
       setLoading(true);
@@ -177,6 +178,7 @@ const Cases = () => {
   }, [slug, language]);
 
   const fetchCasesAndSEO = async () => {
+    console.log('🚀 fetchCasesAndSEO started for language:', language);
     try {
       // Fetch cases
       const { data, error } = await supabase
