@@ -52,11 +52,19 @@ export const TeamCarousel = ({ members }: TeamGridProps) => {
     }
     
     try {
+      console.log('🔍 Fetching translations for language:', language);
       const { data, error } = await supabase
         .from('team_member_translations')
         .select('*');
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Translation fetch error:', error);
+        // Don't block rendering if translations fail
+        setLoading(false);
+        return;
+      }
+      
+      console.log('✅ Translations fetched:', data?.length || 0);
       
       const translationsByMember: {[key: string]: TeamMemberTranslation[]} = {};
       data?.forEach(translation => {
@@ -68,7 +76,8 @@ export const TeamCarousel = ({ members }: TeamGridProps) => {
       
       setTranslations(translationsByMember);
     } catch (error) {
-      console.error('Error fetching translations:', error);
+      console.error('❌ Error fetching translations:', error);
+      // Don't block rendering if translations fail
     } finally {
       setLoading(false);
     }
