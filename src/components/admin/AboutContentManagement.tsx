@@ -121,19 +121,9 @@ const AboutContentManagement = ({ language: propLanguage }: AboutContentManageme
       fields: [
         { key: 'hero_title_1', label: 'Заголовок (часть 1)', type: 'text' },
         { key: 'hero_title_2', label: 'Заголовок (часть 2)', type: 'text' },
+        { key: 'company_description', label: 'Описание компании', type: 'textarea' },
         { key: 'breadcrumb_home', label: 'Хлебные крошки - Главная', type: 'text' },
         { key: 'breadcrumb_about', label: 'Хлебные крошки - О нас', type: 'text' }
-      ]
-    },
-    {
-      id: 'about',
-      title: 'Описание компании',
-      emoji: '📝',
-      icon: Heart,
-      description: 'Основное описание компании на главной странице',
-      color: 'from-pink-500 to-rose-500',
-      fields: [
-        { key: 'company_description', label: 'Описание компании', type: 'textarea' }
       ]
     },
     {
