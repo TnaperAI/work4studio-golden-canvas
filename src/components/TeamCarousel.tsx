@@ -33,21 +33,17 @@ interface TeamGridProps {
 export const TeamCarousel = ({ members }: TeamGridProps) => {
   const { language } = useLanguage();
   const [translations, setTranslations] = useState<{[key: string]: TeamMemberTranslation[]}>({});
-  const [loading, setLoading] = useState(true);
 
   console.log('🔍 TeamCarousel received members:', members?.length || 0);
 
   useEffect(() => {
     if (members && members.length > 0) {
       fetchTranslations();
-    } else {
-      setLoading(false);
     }
   }, [members, language]);
 
   const fetchTranslations = async () => {
     if (!members || members.length === 0) {
-      setLoading(false);
       return;
     }
     
@@ -59,8 +55,6 @@ export const TeamCarousel = ({ members }: TeamGridProps) => {
 
       if (error) {
         console.error('❌ Translation fetch error:', error);
-        // Don't block rendering if translations fail
-        setLoading(false);
         return;
       }
       
@@ -77,9 +71,6 @@ export const TeamCarousel = ({ members }: TeamGridProps) => {
       setTranslations(translationsByMember);
     } catch (error) {
       console.error('❌ Error fetching translations:', error);
-      // Don't block rendering if translations fail
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -135,28 +126,6 @@ export const TeamCarousel = ({ members }: TeamGridProps) => {
   if (!members || members.length === 0) {
     console.log('❌ TeamCarousel: No members provided');
     return null;
-  }
-
-  // Показываем скелетон только если есть участники, но загружаются переводы
-  if (loading) {
-    console.log('⏳ TeamCarousel: Loading translations...');
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {Array.from({ length: members.length }).map((_, index) => (
-          <div key={index} className="bg-card border border-border rounded-3xl p-8 animate-pulse">
-            <div className="w-32 h-32 mx-auto mb-6 bg-muted rounded-2xl"></div>
-            <div className="h-4 bg-muted rounded mb-2 mx-auto w-24"></div>
-            <div className="h-3 bg-muted rounded mb-2 mx-auto w-32"></div>
-            <div className="h-3 bg-muted rounded mb-4 mx-auto w-16"></div>
-            <div className="h-12 bg-muted rounded mb-6"></div>
-            <div className="flex gap-2 justify-center">
-              <div className="h-6 bg-muted rounded w-16"></div>
-              <div className="h-6 bg-muted rounded w-20"></div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
   }
 
   console.log('✅ TeamCarousel: Rendering team members:', members.length);
