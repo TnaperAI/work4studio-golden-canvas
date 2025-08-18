@@ -35,11 +35,22 @@ export const TeamCarousel = ({ members }: TeamGridProps) => {
   const [translations, setTranslations] = useState<{[key: string]: TeamMemberTranslation[]}>({});
   const [loading, setLoading] = useState(true);
 
+  console.log('🔍 TeamCarousel received members:', members?.length || 0);
+
   useEffect(() => {
-    fetchTranslations();
-  }, []);
+    if (members && members.length > 0) {
+      fetchTranslations();
+    } else {
+      setLoading(false);
+    }
+  }, [members, language]);
 
   const fetchTranslations = async () => {
+    if (!members || members.length === 0) {
+      setLoading(false);
+      return;
+    }
+    
     try {
       const { data, error } = await supabase
         .from('team_member_translations')
@@ -111,10 +122,18 @@ export const TeamCarousel = ({ members }: TeamGridProps) => {
     return currentTranslation?.description || member.description;
   };
 
+  // Если нет участников команды, не показываем ничего
+  if (!members || members.length === 0) {
+    console.log('❌ TeamCarousel: No members provided');
+    return null;
+  }
+
+  // Показываем скелетон только если есть участники, но загружаются переводы
   if (loading) {
+    console.log('⏳ TeamCarousel: Loading translations...');
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {Array.from({ length: 3 }).map((_, index) => (
+        {Array.from({ length: members.length }).map((_, index) => (
           <div key={index} className="bg-card border border-border rounded-3xl p-8 animate-pulse">
             <div className="w-32 h-32 mx-auto mb-6 bg-muted rounded-2xl"></div>
             <div className="h-4 bg-muted rounded mb-2 mx-auto w-24"></div>
@@ -130,6 +149,8 @@ export const TeamCarousel = ({ members }: TeamGridProps) => {
       </div>
     );
   }
+
+  console.log('✅ TeamCarousel: Rendering team members:', members.length);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
