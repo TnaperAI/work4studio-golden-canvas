@@ -154,6 +154,14 @@ const About = () => {
       if (seoError) {
         console.error('❌ About SEO error:', seoError);
       }
+      
+      console.log('🔍 About page data loaded:', {
+        teamData: teamData?.length || 0,
+        companyData: !!companyData,
+        seoData: !!seoData,
+        language
+      });
+      
       setTeam(teamData || []);
       setCompanyInfo(companyData);
       console.log('✅ About SEO data loaded:', seoData);
@@ -185,6 +193,12 @@ const About = () => {
   };
   
   const teamMembers = team.length > 0 ? team : [];
+  
+  console.log('🔍 Team display check:', {
+    teamLength: team.length,
+    teamMembersLength: teamMembers.length,
+    shouldShowTeam: teamMembers.length > 0
+  });
   const stats = [{
     icon: Calendar,
     label: getContent('about', 'stats_founding_year_label') || (language === 'en' ? 'Founded' : 'Год основания'),
