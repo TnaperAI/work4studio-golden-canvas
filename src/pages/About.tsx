@@ -154,14 +154,12 @@ const About = () => {
       if (seoError) {
         console.error('❌ About SEO error:', seoError);
       }
-      
       console.log('🔍 About page data loaded:', {
         teamData: teamData?.length || 0,
         companyData: !!companyData,
         seoData: !!seoData,
         language
       });
-      
       setTeam(teamData || []);
       setCompanyInfo(companyData);
       console.log('✅ About SEO data loaded:', seoData);
@@ -191,9 +189,7 @@ const About = () => {
     clients_served: '80+',
     description: getContent('about', 'company_description') || (language === 'en' ? 'Work4Studio is a team of professionals specializing in creating modern websites and applications. We combine design creativity with cutting-edge development technologies.' : 'Work4Studio — это команда профессионалов, специализирующихся на создании современных веб-сайтов и приложений.')
   };
-  
   const teamMembers = team.length > 0 ? team : [];
-  
   console.log('🔍 Team display check:', {
     teamLength: team.length,
     teamMembersLength: teamMembers.length,
@@ -353,9 +349,7 @@ const About = () => {
                 {getContent('about', 'values_title') || 'Наши'}
               </span>
               <br />
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
-                {getContent('about', 'values_title_second') || 'ценности'}
-              </span>
+              
             </h2>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               {getContent('about', 'values_subtitle') || 'Принципы, которые направляют нашу работу и отношения с клиентами'}
@@ -387,17 +381,13 @@ const About = () => {
               {getContent('about', 'team_subtitle') || 'Профессионалы, которые воплощают ваши идеи в жизнь'}
             </p>
            </div>
-           {teamMembers.length > 0 ? (
-             <div className="animate-on-scroll">
+           {teamMembers.length > 0 ? <div className="animate-on-scroll">
                <TeamCarousel members={teamMembers} />
-             </div>
-           ) : (
-             <div className="text-center py-16 animate-on-scroll">
+             </div> : <div className="text-center py-16 animate-on-scroll">
                <p className="text-muted-foreground text-lg">
                  {language === 'en' ? 'Team information will be available soon.' : 'Информация о команде скоро будет доступна.'}
                </p>
-             </div>
-           )}
+             </div>}
         </section>
 
         {/* CTA Section */}
