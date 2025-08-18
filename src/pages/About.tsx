@@ -298,7 +298,7 @@ const About = () => {
                 </>}
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-16 max-w-4xl mx-auto leading-relaxed">
-              {company.description}
+              {getContent('about', 'company_description') || company.description}
             </p>
           </div>
         </div>
@@ -336,7 +336,7 @@ const About = () => {
                   </span>
                 </h3>
               </div>
-              <p className="text-muted-foreground leading-relaxed text-lg">{company.mission}</p>
+              <p className="text-muted-foreground leading-relaxed text-lg">{getContent('about', 'mission_text') || company.mission}</p>
             </div>
             <div className="bg-card border border-border rounded-3xl p-8 md:p-12 hover:shadow-2xl hover:scale-105 transition-all duration-500 animate-on-scroll">
               <div className="flex items-center gap-4 mb-8">
@@ -349,7 +349,7 @@ const About = () => {
                   </span>
                 </h3>
               </div>
-              <p className="text-muted-foreground leading-relaxed text-lg">{company.vision}</p>
+              <p className="text-muted-foreground leading-relaxed text-lg">{getContent('about', 'vision_text') || company.vision}</p>
             </div>
           </div>
         </section>

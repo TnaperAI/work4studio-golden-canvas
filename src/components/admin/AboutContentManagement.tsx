@@ -127,6 +127,17 @@ const AboutContentManagement = ({ language: propLanguage }: AboutContentManageme
     },
     {
       id: 'about',
+      title: 'Описание компании',
+      emoji: '📝',
+      icon: Heart,
+      description: 'Основное описание компании на главной странице',
+      color: 'from-pink-500 to-rose-500',
+      fields: [
+        { key: 'company_description', label: 'Описание компании', type: 'textarea' }
+      ]
+    },
+    {
+      id: 'about',
       title: 'Статистика компании',
       emoji: '📊',
       icon: BarChart3,
@@ -148,7 +159,9 @@ const AboutContentManagement = ({ language: propLanguage }: AboutContentManageme
       color: 'from-purple-500 to-violet-500',
       fields: [
         { key: 'mission_title', label: 'Заголовок "Миссия"', type: 'text' },
-        { key: 'vision_title', label: 'Заголовок "Видение"', type: 'text' }
+        { key: 'mission_text', label: 'Текст миссии', type: 'textarea' },
+        { key: 'vision_title', label: 'Заголовок "Видение"', type: 'text' },
+        { key: 'vision_text', label: 'Текст видения', type: 'textarea' }
       ]
     },
     {
