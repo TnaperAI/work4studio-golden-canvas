@@ -158,7 +158,8 @@ const About = () => {
         teamData: teamData?.length || 0,
         companyData: !!companyData,
         seoData: !!seoData,
-        language
+        language,
+        teamDataDump: teamData
       });
       setTeam(teamData || []);
       setCompanyInfo(companyData);
