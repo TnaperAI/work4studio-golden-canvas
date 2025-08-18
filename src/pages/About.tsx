@@ -362,7 +362,9 @@ const About = () => {
                 {getContent('about', 'values_title') || 'Наши'}
               </span>
               <br />
-              
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-glow">
+                {getContent('about', 'values_title_second') || 'ценности'}
+              </span>
             </h2>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               {getContent('about', 'values_subtitle') || 'Принципы, которые направляют нашу работу и отношения с клиентами'}

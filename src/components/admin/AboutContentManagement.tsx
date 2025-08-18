@@ -148,9 +148,7 @@ const AboutContentManagement = ({ language: propLanguage }: AboutContentManageme
       color: 'from-purple-500 to-violet-500',
       fields: [
         { key: 'mission_title', label: 'Заголовок "Миссия"', type: 'text' },
-        { key: 'mission_text', label: 'Текст миссии', type: 'textarea' },
-        { key: 'vision_title', label: 'Заголовок "Видение"', type: 'text' },
-        { key: 'vision_text', label: 'Текст видения', type: 'textarea' }
+        { key: 'vision_title', label: 'Заголовок "Видение"', type: 'text' }
       ]
     },
     {
