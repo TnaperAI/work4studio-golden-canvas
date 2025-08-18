@@ -165,49 +165,26 @@ const About = () => {
     }
   };
 
-  // Default data если нет в базе
-  const defaultCompany = {
-    mission: 'Создаем уникальные веб-решения, которые помогают бизнесу расти и развиваться в цифровом мире',
-    vision: 'Стать ведущей студией веб-разработки, известной инновационными решениями и безупречным качеством',
+  // Показываем загрузочное состояние при загрузке 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+  // Используем данные из базы или динамические fallback
+  const company = companyInfo || {
+    mission: getContent('about', 'mission_text') || (language === 'en' ? 'We create unique web solutions that help businesses grow and develop in the digital world' : 'Создаем уникальные веб-решения, которые помогают бизнесу расти и развиваться в цифровом мире'),
+    vision: getContent('about', 'vision_text') || (language === 'en' ? 'To become a leading web development studio known for innovative solutions and impeccable quality' : 'Стать ведущей студией веб-разработки, известной инновационными решениями и безупречным качеством'),
     founding_year: '2019',
     team_size: '8+',
     projects_completed: '150+',
     clients_served: '80+',
-    description: 'Work4Studio — это команда профессионалов, специализирующихся на создании современных веб-сайтов и приложений. Мы объединяем креативность дизайна с передовыми технологиями разработки.'
+    description: getContent('about', 'company_description') || (language === 'en' ? 'Work4Studio is a team of professionals specializing in creating modern websites and applications. We combine design creativity with cutting-edge development technologies.' : 'Work4Studio — это команда профессионалов, специализирующихся на создании современных веб-сайтов и приложений.')
   };
-  const company = companyInfo || defaultCompany;
-  const defaultTeam = [{
-    id: '1',
-    name: 'Алексей Петров',
-    position: 'Основатель & Lead Developer',
-    description: 'Эксперт в области веб-разработки с более чем 7-летним опытом. Специализируется на React, Node.js и архитектуре приложений.',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
-    skills: ['React', 'TypeScript', 'Node.js', 'PostgreSQL'],
-    experience: '7+ лет',
-    is_active: true,
-    sort_order: 1
-  }, {
-    id: '2',
-    name: 'Мария Сидорова',
-    position: 'UI/UX Designer',
-    description: 'Создает интуитивные и красивые интерфейсы. Имеет степень в области дизайна и опыт работы с крупными брендами.',
-    image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face',
-    skills: ['Figma', 'Adobe Creative Suite', 'Prototyping', 'User Research'],
-    experience: '5+ лет',
-    is_active: true,
-    sort_order: 2
-  }, {
-    id: '3',
-    name: 'Дмитрий Козлов',
-    position: 'Frontend Developer',
-    description: 'Специалист по frontend-разработке с фокусом на производительность и пользовательский опыт.',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
-    skills: ['React', 'Vue.js', 'CSS/SCSS', 'WebPack'],
-    experience: '4+ года',
-    is_active: true,
-    sort_order: 3
-  }];
-  const teamMembers = team.length > 0 ? team : defaultTeam;
+  
+  const teamMembers = team.length > 0 ? team : [];
   const stats = [{
     icon: Calendar,
     label: getContent('about', 'stats_founding_year_label') || (language === 'en' ? 'Founded' : 'Год основания'),
@@ -229,20 +206,20 @@ const About = () => {
   // Получаем данные ценностей из базы данных или используем дефолтные
   const values = [{
     icon: Target,
-    title: getContent('about', 'value_1_title') || 'Качество',
-    description: getContent('about', 'value_1_description') || 'Мы не идем на компромиссы в вопросах качества. Каждый проект проходит строгий контроль.'
+    title: getContent('about', 'value_1_title') || (language === 'en' ? 'Quality' : 'Качество'),
+    description: getContent('about', 'value_1_description') || (language === 'en' ? 'We never compromise on quality. Every project undergoes strict quality control.' : 'Мы не идем на компромиссы в вопросах качества. Каждый проект проходит строгий контроль.')
   }, {
     icon: Zap,
-    title: getContent('about', 'value_2_title') || 'Инновации',
-    description: getContent('about', 'value_2_description') || 'Используем самые современные технологии и подходы в разработке.'
+    title: getContent('about', 'value_2_title') || (language === 'en' ? 'Innovation' : 'Инновации'),
+    description: getContent('about', 'value_2_description') || (language === 'en' ? 'We use the most modern technologies and approaches in development.' : 'Используем самые современные технологии и подходы в разработке.')
   }, {
     icon: Heart,
-    title: getContent('about', 'value_3_title') || 'Сервис',
-    description: getContent('about', 'value_3_description') || 'Ваш успех — наш приоритет. Строим долгосрочные отношения.'
+    title: getContent('about', 'value_3_title') || (language === 'en' ? 'Service' : 'Сервис'),
+    description: getContent('about', 'value_3_description') || (language === 'en' ? 'Your success is our priority. We build long-term relationships.' : 'Ваш успех — наш приоритет. Строим долгосрочные отношения.')
   }, {
     icon: CheckCircle,
-    title: getContent('about', 'value_4_title') || 'Надежность',
-    description: getContent('about', 'value_4_description') || 'Соблюдаем сроки, держим слово и всегда доступны для поддержки.'
+    title: getContent('about', 'value_4_title') || (language === 'en' ? 'Reliability' : 'Надежность'),
+    description: getContent('about', 'value_4_description') || (language === 'en' ? 'We meet deadlines, keep our word and are always available for support.' : 'Соблюдаем сроки, держим слово и всегда доступны для поддержки.')
   }];
   return <div className="min-h-screen">{/* Убираем bg-background чтобы видеть фоновую анимацию */}
       <Header />
@@ -395,10 +372,18 @@ const About = () => {
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               {getContent('about', 'team_subtitle') || 'Профессионалы, которые воплощают ваши идеи в жизнь'}
             </p>
-          </div>
-          <div className="animate-on-scroll">
-            <TeamCarousel members={teamMembers} />
-          </div>
+           </div>
+           {teamMembers.length > 0 ? (
+             <div className="animate-on-scroll">
+               <TeamCarousel members={teamMembers} />
+             </div>
+           ) : (
+             <div className="text-center py-16 animate-on-scroll">
+               <p className="text-muted-foreground text-lg">
+                 {language === 'en' ? 'Team information will be available soon.' : 'Информация о команде скоро будет доступна.'}
+               </p>
+             </div>
+           )}
         </section>
 
         {/* CTA Section */}
