@@ -173,14 +173,14 @@ const About = () => {
     }
   };
 
-  // Показываем загрузочное состояние при загрузке 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
+  // Убираем блокирующую загрузку - показываем контент даже при загрузке
+  // if (loading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  //     </div>
+  //   );
+  // }
   // Используем данные из базы или динамические fallback
   const company = companyInfo || {
     mission: getContent('about', 'mission_text') || (language === 'en' ? 'We create unique web solutions that help businesses grow and develop in the digital world' : 'Создаем уникальные веб-решения, которые помогают бизнесу расти и развиваться в цифровом мире'),
