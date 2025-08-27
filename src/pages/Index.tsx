@@ -30,8 +30,8 @@ const Index = () => {
   useEffect(() => {
     const fetchSEO = async () => {
       try {
-        // Определяем язык из URL
-        const urlLanguage = window.location.pathname.startsWith('/en') ? 'en' : 'ru';
+        // Определяем язык из URL - по умолчанию английский
+        const urlLanguage = window.location.pathname.startsWith('/ru') ? 'ru' : 'en';
         console.log('🔍 Fetching SEO for home page, language:', urlLanguage);
         
         const { data: seoData, error } = await supabase
