@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { updateHreflangForCurrentPath } from '@/utils/seo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -166,6 +167,7 @@ const ServiceDetail = () => {
       updatePropertyTag('og:description', serviceData.og_description || serviceData.short_description);
       updatePropertyTag('og:image', serviceData.og_image);
       updatePropertyTag('og:type', 'website');
+      updateHreflangForCurrentPath();
     }
   }, [serviceData]);
 

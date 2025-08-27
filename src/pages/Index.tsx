@@ -9,6 +9,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import { updateHreflangForCurrentPath } from '@/utils/seo';
 
 interface PageSEO {
   page_title: string;
@@ -105,6 +106,7 @@ const Index = () => {
       updatePropertyTag('og:image', pageSEO.og_image);
       updatePropertyTag('og:type', 'website');
       updatePropertyTag('og:url', window.location.href);
+      updateHreflangForCurrentPath();
     }
   }, [pageSEO]);
   

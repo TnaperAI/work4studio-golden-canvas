@@ -11,6 +11,7 @@ import BackToTop from '@/components/BackToTop';
 import ContactFormModal from '@/components/ContactFormModal';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { supabase } from '@/integrations/supabase/client';
+import { updateHreflangForCurrentPath } from '@/utils/seo';
 interface Service {
   id: string;
   title: string;
@@ -169,6 +170,7 @@ const Services = () => {
       updatePropertyTag('og:image', pageSEO.og_image);
       updatePropertyTag('og:type', 'website');
       updatePropertyTag('og:url', window.location.href);
+      updateHreflangForCurrentPath();
     }
   }, [pageSEO]);
   const formatPrice = (from: number | null, to: number | null) => {

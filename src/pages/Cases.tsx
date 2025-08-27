@@ -17,6 +17,7 @@ import Footer from '@/components/Footer';
 import ContactFormModal from '@/components/ContactFormModal';
 import ImageGalleryModal from '@/components/ImageGalleryModal';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import { updateHreflangForCurrentPath } from '@/utils/seo';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   Calendar,
@@ -326,6 +327,7 @@ const Cases = () => {
       
       // Добавляем URL для Open Graph
       updatePropertyTag('og:url', window.location.href);
+      updateHreflangForCurrentPath();
     }
   }, [pageSEO, selectedCase]);
 

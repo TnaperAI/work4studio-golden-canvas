@@ -12,6 +12,7 @@ import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Mail, Phone, Clock, Send, Star, CheckCircle } from 'lucide-react';
+import { updateHreflangForCurrentPath } from '@/utils/seo';
 import { Link } from 'react-router-dom';
 import ConsentCheckbox from '@/components/ConsentCheckbox';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -113,6 +114,7 @@ const Contact = () => {
       updatePropertyTag('og:image', pageSEO.og_image);
       updatePropertyTag('og:type', 'website');
       updatePropertyTag('og:url', window.location.href);
+      updateHreflangForCurrentPath();
     }
   }, [pageSEO]);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

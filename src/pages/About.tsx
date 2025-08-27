@@ -10,6 +10,7 @@ import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { TeamCarousel } from '@/components/TeamCarousel';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import { updateHreflangForCurrentPath } from '@/utils/seo';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Users, Target, Award, Clock, Star, Heart, Zap, Trophy, CheckCircle, ArrowRight, Calendar } from 'lucide-react';
@@ -123,6 +124,7 @@ const About = () => {
       updatePropertyTag('og:image', pageSEO.og_image);
       updatePropertyTag('og:type', 'website');
       updatePropertyTag('og:url', window.location.href);
+      updateHreflangForCurrentPath();
     }
   }, [pageSEO]);
   const fetchData = async () => {
