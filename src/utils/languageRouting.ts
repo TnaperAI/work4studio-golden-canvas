@@ -2,7 +2,7 @@
 
 export type Language = 'ru' | 'en';
 
-export const DEFAULT_LANGUAGE: Language = 'ru';
+export const DEFAULT_LANGUAGE: Language = 'en';
 export const SUPPORTED_LANGUAGES: Language[] = ['ru', 'en'];
 
 /**
