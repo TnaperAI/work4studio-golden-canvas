@@ -10,6 +10,7 @@ import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { updateHreflangForCurrentPath } from '@/utils/seo';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface PageSEO {
   page_title: string;
@@ -25,20 +26,19 @@ interface PageSEO {
 
 const Index = () => {
   const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
+  const { language } = useLanguage();
   useScrollAnimation();
 
   useEffect(() => {
     const fetchSEO = async () => {
       try {
-        // Определяем язык из URL - по умолчанию английский
-        const urlLanguage = window.location.pathname.startsWith('/ru') ? 'ru' : 'en';
-        console.log('🔍 Fetching SEO for home page, language:', urlLanguage);
+        console.log('🔍 Fetching SEO for home page, language:', language);
         
         const { data: seoData, error } = await supabase
           .from('page_seo')
           .select('*')
           .eq('page_slug', 'home')
-          .eq('language', urlLanguage)
+          .eq('language', language)
           .maybeSingle();
 
         if (error) {
@@ -53,7 +53,7 @@ const Index = () => {
     };
 
     fetchSEO();
-  }, []);
+  }, [language]);
 
   // Обновляем SEO теги когда загружаются данные
   useEffect(() => {
