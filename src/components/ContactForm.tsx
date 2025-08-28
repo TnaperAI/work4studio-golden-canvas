@@ -41,20 +41,30 @@ const ContactForm = () => {
     setIsSubmitting(true);
 
     try {
+      const submissionData = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || null,
+        message: formData.message,
+        source: 'homepage_form'
+      };
+
       const { error } = await supabase
         .from('contact_submissions')
-        .insert([
-          {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone || null,
-            message: formData.message,
-            source: 'homepage_form'
-          }
-        ]);
+        .insert([submissionData]);
 
       if (error) {
         throw error;
+      }
+
+      // Отправляем уведомление в Telegram
+      try {
+        await supabase.functions.invoke('notify-telegram', {
+          body: submissionData
+        });
+      } catch (telegramError) {
+        console.error('Telegram notification failed:', telegramError);
+        // Не блокируем отправку формы если Telegram недоступен
       }
 
       toast({

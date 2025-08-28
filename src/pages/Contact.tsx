@@ -139,18 +139,31 @@ const Contact = () => {
     }
     setIsSubmitting(true);
     try {
-      const {
-        error
-      } = await supabase.from('contact_submissions').insert([{
+      const submissionData = {
         name: formData.name,
         email: formData.email,
         phone: formData.phone || null,
         message: formData.message,
         source: 'contact_page'
-      }]);
+      };
+
+      const { error } = await supabase
+        .from('contact_submissions')
+        .insert([submissionData]);
+
       if (error) {
         console.error('Contact form error:', error);
         throw error;
+      }
+
+      // Отправляем уведомление в Telegram
+      try {
+        await supabase.functions.invoke('notify-telegram', {
+          body: submissionData
+        });
+      } catch (telegramError) {
+        console.error('Telegram notification failed:', telegramError);
+        // Не блокируем отправку формы если Telegram недоступен
       }
       toast({
         title: 'Заявка отправлена!',
