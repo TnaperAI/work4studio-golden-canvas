@@ -36,19 +36,22 @@ const handler = async (req: Request): Promise<Response> => {
       )
     }
 
+    // Проверяем валидность токена бота
+    const meResp = await fetch(`https://api.telegram.org/bot${telegramBotToken}/getMe`)
+    if (!meResp.ok) {
+      const details = await meResp.text()
+      console.error('Telegram getMe failed:', details)
+      return new Response(
+        JSON.stringify({ error: 'Invalid Telegram bot token', details }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
     // Форматируем сообщение для Telegram
-    const telegramMessage = `
-🔔 *Новая заявка с сайта Work4Studio*
+    const telegramMessage = `\n🔔 Новая заявка с сайта Work4Studio\n\n👤 Имя: ${submissionData.name}\n📧 Email: ${submissionData.email}\n📱 Телефон: ${submissionData.phone || 'Не указан'}\n📝 Сообщение: \n${submissionData.message}\n\n🌐 Источник: ${submissionData.source}\n⏰ Время: ${new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })}\n`
 
-👤 *Имя:* ${submissionData.name}
-📧 *Email:* ${submissionData.email}
-📱 *Телефон:* ${submissionData.phone || 'Не указан'}
-📝 *Сообщение:* 
-${submissionData.message}
-
-🌐 *Источник:* ${submissionData.source}
-⏰ *Время:* ${new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })}
-`
+    // Приводим chat_id к числу, если это только цифры
+    const chatId: number | string = /^\d+$/.test(telegramChatId) ? Number(telegramChatId) : telegramChatId
 
     // Отправляем сообщение в Telegram
     const telegramResponse = await fetch(
@@ -59,7 +62,7 @@ ${submissionData.message}
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          chat_id: telegramChatId,
+          chat_id: chatId,
           text: telegramMessage,
         }),
       }
@@ -68,7 +71,10 @@ ${submissionData.message}
     if (!telegramResponse.ok) {
       const telegramError = await telegramResponse.text()
       console.error('Telegram API error:', telegramError)
-      throw new Error(`Telegram API error: ${telegramResponse.status}`)
+      return new Response(
+        JSON.stringify({ error: 'Telegram API error', details: telegramError }),
+        { status: telegramResponse.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
     }
 
     console.log('Telegram notification sent successfully')
