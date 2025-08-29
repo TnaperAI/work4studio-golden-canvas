@@ -14,9 +14,10 @@ import Login from "./pages/Login";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ScrollToTop from "./components/ScrollToTop";
 
-// Lazy load heavy components
+// Lazy load background animation
 const BackgroundAnimation = lazy(() => import("./components/BackgroundAnimation"));
-const Admin = lazy(() => import("./pages/Admin"));
+// Import Admin directly instead of lazy loading
+import Admin from "./pages/Admin";
 
 const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
@@ -77,11 +78,7 @@ const App = () => {
             <Route path="/legal/:type" element={<PrivacyPolicy />} />
             
             {/* Админка без языковых префиксов */}
-            <Route path="/admin" element={
-              <Suspense fallback={<LoadingSpinner />}>
-                <Admin />
-              </Suspense>
-            } />
+            <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
