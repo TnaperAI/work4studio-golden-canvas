@@ -61,7 +61,6 @@ ${submissionData.message}
         body: JSON.stringify({
           chat_id: telegramChatId,
           text: telegramMessage,
-          parse_mode: 'Markdown',
         }),
       }
     )
