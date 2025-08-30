@@ -57,13 +57,20 @@ const ContactFormModal = ({ isOpen, onClose, source = 'modal' }: ContactFormModa
       }
 
       // Отправляем уведомление в Telegram
-      try {
-        await supabase.functions.invoke('notify-telegram', {
-          body: submissionData
+      const { data: tgData, error: tgError } = await supabase.functions.invoke('notify-telegram', {
+        body: submissionData
+      });
+      if (tgError) {
+        console.error('Telegram notification failed:', tgError);
+        toast({
+          title: language === 'en' ? 'Telegram error' : 'Ошибка Telegram',
+          description: language === 'en' 
+            ? 'Notification was not delivered. We will still contact you.' 
+            : 'Уведомление не доставлено. Мы все равно свяжемся с вами.',
+          variant: 'destructive',
         });
-      } catch (telegramError) {
-        console.error('Telegram notification failed:', telegramError);
-        // Не блокируем отправку формы если Telegram недоступен
+      } else {
+        console.log('Telegram notification ok:', tgData);
       }
 
       toast({
