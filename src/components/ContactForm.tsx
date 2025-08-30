@@ -58,20 +58,22 @@ const ContactForm = () => {
       }
 
       // Отправляем уведомление в Telegram
+      console.log('🚀 Вызываем notify-telegram с данными:', submissionData);
       const { data: tgData, error: tgError } = await supabase.functions.invoke('notify-telegram', {
         body: submissionData
       });
+      
+      console.log('📱 Ответ от notify-telegram:', { data: tgData, error: tgError });
+      
       if (tgError) {
-        console.error('Telegram notification failed:', tgError);
+        console.error('❌ Telegram notification failed:', tgError);
         toast({
           title: language === 'en' ? 'Telegram error' : 'Ошибка Telegram',
-          description: language === 'en' 
-            ? 'Notification was not delivered. We will still contact you.' 
-            : 'Уведомление не доставлено. Мы все равно свяжемся с вами.',
+          description: `${language === 'en' ? 'Error:' : 'Ошибка:'} ${tgError.message}`,
           variant: 'destructive',
         });
       } else {
-        console.log('Telegram notification ok:', tgData);
+        console.log('✅ Telegram notification успешно:', tgData);
       }
 
       toast({
