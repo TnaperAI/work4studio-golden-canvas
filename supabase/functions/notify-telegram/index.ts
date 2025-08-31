@@ -26,13 +26,13 @@ const handler = async (req: Request): Promise<Response> => {
     const telegramChatId = Deno.env.get('TELEGRAM_CHAT_ID')
 
     if (!telegramBotToken || !telegramChatId) {
-      console.error('Missing Telegram configuration')
+      console.error('Missing Telegram configuration', {
+        hasToken: Boolean(telegramBotToken),
+        hasChatId: Boolean(telegramChatId),
+      })
       return new Response(
         JSON.stringify({ error: 'Telegram not configured' }),
-        { 
-          status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
