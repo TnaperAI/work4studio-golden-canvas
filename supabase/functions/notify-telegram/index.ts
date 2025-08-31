@@ -22,8 +22,8 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const submissionData: ContactSubmissionData = await req.json()
     
-    const telegramBotToken = Deno.env.get('TELEGRAM_BOT_TOKEN')
-    const telegramChatId = Deno.env.get('TELEGRAM_CHAT_ID')
+    const telegramBotToken = Deno.env.get('TELEGRAM_BOT_TOKEN') || Deno.env.get('TELEGRAM_TOKEN')
+    const telegramChatId = Deno.env.get('TELEGRAM_CHAT_ID') || Deno.env.get('TELEGRAM_CHATID')
 
     if (!telegramBotToken || !telegramChatId) {
       console.error('Missing Telegram configuration', {
