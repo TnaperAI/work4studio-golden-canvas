@@ -59,7 +59,7 @@ const ContactForm = () => {
 
       // Отправляем уведомление в Telegram
       console.log('🚀 Вызываем notify-telegram с данными:', submissionData);
-      const { data: tgData, error: tgError } = await supabase.functions.invoke('notify-telegram', {
+      const { data: tgData, error: tgError } = await supabase.functions.invoke('notify-telegram2', {
         body: submissionData
       });
       

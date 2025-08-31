@@ -158,7 +158,7 @@ const Contact = () => {
 
       // Отправляем уведомление в Telegram
       try {
-        await supabase.functions.invoke('notify-telegram', {
+        await supabase.functions.invoke('notify-telegram2', {
           body: submissionData
         });
       } catch (telegramError) {
