@@ -31,7 +31,7 @@ const handler = async (req: Request): Promise<Response> => {
         hasChatId: Boolean(telegramChatId),
       })
       return new Response(
-        JSON.stringify({ error: 'Telegram not configured' }),
+        JSON.stringify({ error: 'Telegram not configured', hasToken: Boolean(telegramBotToken), hasChatId: Boolean(telegramChatId) }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
