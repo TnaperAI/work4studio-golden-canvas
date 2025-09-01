@@ -31,21 +31,21 @@ const PrivacyPolicy = () => {
         .from('legal_documents')
         .select('*')
         .eq('type', documentType)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       setDocument(data);
 
-      if (language === 'en') {
-        const { data: tr } = await (supabase as any)
+      if (data && language === 'en') {
+        const { data: tr, error: trError } = await supabase
           .from('legal_document_translations')
           .select('title, content')
           .eq('document_id', data.id)
           .eq('language', 'en')
-          .limit(1);
+          .maybeSingle();
 
-        if (tr && tr.length > 0) {
-          setTranslation({ title: tr[0].title, content: tr[0].content });
+        if (!trError && tr) {
+          setTranslation({ title: tr.title, content: tr.content });
         }
       }
     } catch (error) {
