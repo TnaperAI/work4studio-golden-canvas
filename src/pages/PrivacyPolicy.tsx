@@ -37,6 +37,7 @@ const PrivacyPolicy = () => {
       setDocument(data);
 
       if (data && language === 'en') {
+        console.log('Fetching EN translation for document:', data.id);
         const { data: tr, error: trError } = await supabase
           .from('legal_document_translations')
           .select('title, content')
@@ -44,7 +45,11 @@ const PrivacyPolicy = () => {
           .eq('language', 'en')
           .maybeSingle();
 
+        console.log('Translation data:', tr);
+        console.log('Translation error:', trError);
+        
         if (!trError && tr) {
+          console.log('Setting translation:', tr);
           setTranslation(tr);
         }
       }
@@ -91,7 +96,7 @@ const PrivacyPolicy = () => {
           <div className="space-y-8">
             <div className="text-center space-y-4">
               <h1 className="text-4xl md:text-5xl font-heading font-bold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                {translation?.title ?? document.title}
+                {translation?.title || document.title}
               </h1>
               <p className="text-muted-foreground text-lg">
                 {language === 'en' ? 'Last updated:' : 'Последнее обновление:'} {new Date(document.last_updated).toLocaleDateString(language === 'en' ? 'en-US' : 'ru-RU', {
@@ -106,7 +111,7 @@ const PrivacyPolicy = () => {
               <div className="prose prose-lg max-w-none text-card-foreground">
                 <div 
                   className="whitespace-pre-wrap leading-relaxed text-lg"
-                  dangerouslySetInnerHTML={{ __html: (translation?.content ?? document.content).replace(/\n/g, '<br />') }}
+                  dangerouslySetInnerHTML={{ __html: (translation?.content || document.content).replace(/\n/g, '<br />') }}
                 />
               </div>
             </div>
