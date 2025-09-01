@@ -45,7 +45,7 @@ const PrivacyPolicy = () => {
           .maybeSingle();
 
         if (!trError && tr) {
-          setTranslation({ title: tr.title, content: tr.content });
+          setTranslation(tr);
         }
       }
     } catch (error) {
