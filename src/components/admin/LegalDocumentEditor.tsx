@@ -149,10 +149,8 @@ const LegalDocumentEditor = ({ documentId, documentType, onBack }: LegalDocument
           .upsert({
             document_id: savedId,
             language: 'en',
-            title: enData.title,
-            content: enData.content
-          }, {
-            onConflict: 'document_id,language'
+            title: enData.title || '',
+            content: enData.content || ''
           });
 
         if (translationError) {
