@@ -44,6 +44,7 @@ const LegalDocumentEditor = ({ documentId, documentType, onBack }: LegalDocument
     title: '',
     content: ''
   });
+  const [enId, setEnId] = useState<string | null>(null);
 
   useEffect(() => {
     if (documentId) {
@@ -72,16 +73,19 @@ const LegalDocumentEditor = ({ documentId, documentType, onBack }: LegalDocument
         // Fetch EN translation
         const { data: translation, error: trError } = await supabase
           .from('legal_document_translations')
-          .select('title, content')
+          .select('id, title, content')
           .eq('document_id', document.id)
           .eq('language', 'en')
           .maybeSingle();
 
         if (!trError && translation) {
+          setEnId(translation.id);
           setEnData({
             title: translation.title || '',
             content: translation.content || ''
           });
+        } else {
+          setEnId(null);
         }
       }
     } catch (error: any) {
@@ -144,18 +148,30 @@ const LegalDocumentEditor = ({ documentId, documentType, onBack }: LegalDocument
       const hasEnTranslation = enData.title.trim() || enData.content.trim();
       
       if (hasEnTranslation && savedId) {
-        const { error: translationError } = await supabase
-          .from('legal_document_translations')
-          .upsert({
-            document_id: savedId,
-            language: 'en',
-            title: enData.title || '',
-            content: enData.content || ''
-          });
+        if (enId) {
+          const { error: trUpdErr } = await supabase
+            .from('legal_document_translations')
+            .update({
+              title: enData.title || '',
+              content: enData.content || ''
+            })
+            .eq('id', enId);
 
-        if (translationError) {
-          console.error('Error saving translation:', translationError);
-          throw translationError;
+          if (trUpdErr) throw trUpdErr;
+        } else {
+          const { data: insertedTr, error: trInsErr } = await supabase
+            .from('legal_document_translations')
+            .insert([{
+              document_id: savedId,
+              language: 'en',
+              title: enData.title || '',
+              content: enData.content || ''
+            }])
+            .select('id')
+            .single();
+
+          if (trInsErr) throw trInsErr;
+          if (insertedTr) setEnId(insertedTr.id);
         }
       }
 
