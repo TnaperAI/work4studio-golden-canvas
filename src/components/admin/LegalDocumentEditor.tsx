@@ -69,10 +69,15 @@ const LegalDocumentEditor = ({ documentId, documentType, onBack }: LegalDocument
       if (document) {
         setFormData(document);
 
-      // Fetch EN translation - skip this for now since table doesn't exist
-      const translation = null;
+        // Fetch EN translation
+        const { data: translation, error: trError } = await supabase
+          .from('legal_document_translations')
+          .select('title, content')
+          .eq('document_id', document.id)
+          .eq('language', 'en')
+          .maybeSingle();
 
-        if (translation) {
+        if (!trError && translation) {
           setEnData({
             title: translation.title || '',
             content: translation.content || ''
@@ -135,8 +140,26 @@ const LegalDocumentEditor = ({ documentId, documentType, onBack }: LegalDocument
         savedId = inserted.id;
       }
 
-      // Save EN translation if provided - skip this for now since table doesn't exist
-      // const hasEnTranslation = enData.title.trim() || enData.content.trim();
+      // Save EN translation if provided
+      const hasEnTranslation = enData.title.trim() || enData.content.trim();
+      
+      if (hasEnTranslation && savedId) {
+        const { error: translationError } = await supabase
+          .from('legal_document_translations')
+          .upsert({
+            document_id: savedId,
+            language: 'en',
+            title: enData.title,
+            content: enData.content
+          }, {
+            onConflict: 'document_id,language'
+          });
+
+        if (translationError) {
+          console.error('Error saving translation:', translationError);
+          throw translationError;
+        }
+      }
 
       toast({
         title: 'Успешно',
