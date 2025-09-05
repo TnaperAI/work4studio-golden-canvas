@@ -121,7 +121,7 @@ const Services = () => {
                     to={`/services/${service.slug}`}
                     className="inline-flex items-center text-primary hover:text-primary/80 transition-colors font-medium"
                   >
-                    Подробнее
+                    {getContent('services', 'read_more') || 'Подробнее'}
                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
