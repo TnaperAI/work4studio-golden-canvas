@@ -34,6 +34,7 @@ export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ childr
   useEffect(() => {
     const fetchContent = async () => {
       try {
+        console.log('🔄 Fetching site content...');
         const { data, error } = await supabase
           .from('site_content')
           .select('*')
@@ -43,6 +44,7 @@ export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ childr
         if (error) {
           console.error('Error fetching site content:', error);
         } else {
+          console.log('✅ Site content loaded:', data?.length, 'items');
           setContent(data || []);
         }
       } catch (error) {
