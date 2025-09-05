@@ -18,6 +18,10 @@ const Services = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const { getContent, loading: contentLoading } = useSiteContent();
+  
+  // Debug: log the button text to see what's being returned
+  const buttonText = getContent('services', 'read_more');
+  console.log('Button text for services.read_more:', buttonText);
 
   useEffect(() => {
     const fetchServices = async () => {
