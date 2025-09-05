@@ -271,7 +271,7 @@ const Services = () => {
                   </span>
                   <LocalizedLink to={`/services/${service.slug}`}>
                     <Button size="sm" className="bg-primary hover:bg-primary/80">
-                      Подробнее
+                      {language === 'en' ? 'Learn More' : 'Подробнее'}
                     </Button>
                   </LocalizedLink>
                 </div>
