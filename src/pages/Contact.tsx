@@ -38,20 +38,24 @@ const Contact = () => {
   const [pageSEO, setPageSEO] = useState<PageSEO | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
-  const { toast } = useToast();
-  const { language } = useLanguage();
-  const { getContent } = useSiteContent();
+  const {
+    toast
+  } = useToast();
+  const {
+    language
+  } = useLanguage();
+  const {
+    getContent
+  } = useSiteContent();
   useScrollAnimation();
   useEffect(() => {
     const fetchSEO = async () => {
       try {
         console.log('🔍 Fetching Contact SEO for language:', language);
-        const { data: seoData, error } = await supabase
-          .from('page_seo')
-          .select('*')
-          .eq('page_slug', 'contact')
-          .eq('language', language)
-          .maybeSingle();
+        const {
+          data: seoData,
+          error
+        } = await supabase.from('page_seo').select('*').eq('page_slug', 'contact').eq('language', language).maybeSingle();
         if (error) {
           console.error('❌ Contact SEO error:', error);
         } else {
@@ -146,11 +150,9 @@ const Contact = () => {
         message: formData.message,
         source: 'contact_page'
       };
-
-      const { error } = await supabase
-        .from('contact_submissions')
-        .insert([submissionData]);
-
+      const {
+        error
+      } = await supabase.from('contact_submissions').insert([submissionData]);
       if (error) {
         console.error('Contact form error:', error);
         throw error;
@@ -229,9 +231,7 @@ const Contact = () => {
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-16 max-w-4xl mx-auto leading-relaxed">
-              {getContent('contact', 'hero_subtitle') || (language === 'en' 
-                ? 'Tell us about your tasks — we will find the optimal solution and launch the project quickly'
-                : 'Расскажите о своих задачах — поможем найти оптимальное решение и запустим проект в кратчайшие сроки')}
+              {getContent('contact', 'hero_subtitle') || (language === 'en' ? 'Tell us about your tasks — we will find the optimal solution and launch the project quickly' : 'Расскажите о своих задачах — поможем найти оптимальное решение и запустим проект в кратчайшие сроки')}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-8 mb-8">
               <div className="flex items-center text-lg text-muted-foreground bg-card border border-border px-6 py-3 rounded-2xl">
@@ -264,16 +264,16 @@ const Contact = () => {
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-lg font-medium">{getContent('contact','form_label_name') || (language === 'en' ? 'Name' : 'Имя')}</Label>
-                    <Input id="name" name="name" type="text" placeholder={getContent('contact','form_placeholder_name') || (language === 'en' ? 'Your name' : 'Ваше имя')} value={formData.name} onChange={handleInputChange} required className="h-14 text-lg bg-background border border-border rounded-2xl" />
+                    <Label htmlFor="name" className="text-lg font-medium">{getContent('contact', 'form_label_name') || (language === 'en' ? 'Name' : 'Имя')}</Label>
+                    <Input id="name" name="name" type="text" placeholder={getContent('contact', 'form_placeholder_name') || (language === 'en' ? 'Your name' : 'Ваше имя')} value={formData.name} onChange={handleInputChange} required className="h-14 text-lg bg-background border border-border rounded-2xl" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-lg font-medium">{getContent('contact','form_label_email') || 'Email'}</Label>
-                    <Input id="email" name="email" type="email" placeholder={getContent('contact','form_placeholder_email') || 'your@email.com'} value={formData.email} onChange={handleInputChange} required className="h-14 text-lg bg-background border border-border rounded-2xl" />
+                    <Label htmlFor="email" className="text-lg font-medium">{getContent('contact', 'form_label_email') || 'Email'}</Label>
+                    <Input id="email" name="email" type="email" placeholder={getContent('contact', 'form_placeholder_email') || 'your@email.com'} value={formData.email} onChange={handleInputChange} required className="h-14 text-lg bg-background border border-border rounded-2xl" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="message" className="text-lg font-medium">{getContent('contact','form_label_message') || (language === 'en' ? 'Message' : 'Сообщение')}</Label>
-                    <Textarea id="message" name="message" placeholder={getContent('contact','form_placeholder_message') || (language === 'en' ? 'Tell us about your project...' : 'Расскажите о своем проекте...')} value={formData.message} onChange={handleInputChange} required rows={6} className="text-lg bg-background border border-border rounded-2xl" />
+                    <Label htmlFor="message" className="text-lg font-medium">{getContent('contact', 'form_label_message') || (language === 'en' ? 'Message' : 'Сообщение')}</Label>
+                    <Textarea id="message" name="message" placeholder={getContent('contact', 'form_placeholder_message') || (language === 'en' ? 'Tell us about your project...' : 'Расскажите о своем проекте...')} value={formData.message} onChange={handleInputChange} required rows={6} className="text-lg bg-background border border-border rounded-2xl" />
                   </div>
                   
                   <ConsentCheckbox isAgreed={isAgreed} onChange={setIsAgreed} />
@@ -281,10 +281,10 @@ const Contact = () => {
                   <Button type="submit" disabled={isSubmitting} className="w-full h-16 bg-gradient-to-r from-primary to-accent text-primary-foreground text-xl font-medium hover:shadow-2xl hover:scale-105 transition-all duration-300">
                     {isSubmitting ? <div className="flex items-center gap-3">
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        {getContent('contact','form_sending_text') || (language === 'en' ? 'Sending...' : 'Отправляем...')}
+                        {getContent('contact', 'form_sending_text') || (language === 'en' ? 'Sending...' : 'Отправляем...')}
                       </div> : <>
                         <Send className="h-6 w-6 mr-3" />
-                        {getContent('contact','form_button_text') || (language === 'en' ? 'Send request' : 'Отправить заявку')}
+                        {getContent('contact', 'form_button_text') || (language === 'en' ? 'Send request' : 'Отправить заявку')}
                       </>}
                   </Button>
                 </form>
@@ -296,7 +296,7 @@ const Contact = () => {
               <div className="bg-card border border-border rounded-3xl p-8 md:p-12">
                 <h3 className="text-2xl md:text-3xl font-heading font-bold mb-8">
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    {getContent('contact','info_title') || (language === 'en' ? 'Contact information' : 'Контактная информация')}
+                    {getContent('contact', 'info_title') || (language === 'en' ? 'Contact information' : 'Контактная информация')}
                   </span>
                 </h3>
                 <div className="space-y-6">
@@ -305,19 +305,19 @@ const Contact = () => {
                       <Mail className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-lg mb-2">{getContent('contact','info_email_label') || 'Email'}</h4>
-                      <p className="text-muted-foreground">{getContent('contact','info_email') || 'info@work4studio.com'}</p>
+                      <h4 className="font-semibold text-lg mb-2">{getContent('contact', 'info_email_label') || 'Email'}</h4>
+                      <p className="text-muted-foreground">{getContent('contact', 'info_email') || 'info@work4studio.com'}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center flex-shrink-0">
                       <svg className="h-6 w-6 text-primary" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                        <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
                       </svg>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-lg mb-2">{getContent('contact','info_telegram_label') || 'Telegram'}</h4>
-                      <p className="text-muted-foreground">{getContent('contact','info_telegram_caption') || (language === 'en' ? 'Write directly' : 'Написать напрямую')}</p>
+                      <h4 className="font-semibold text-lg mb-2">{getContent('contact', 'info_telegram_label') || 'Telegram'}</h4>
+                      <p className="text-muted-foreground">{getContent('contact', 'info_telegram_caption') || (language === 'en' ? 'Write directly' : 'Написать напрямую')}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -325,8 +325,8 @@ const Contact = () => {
                       <Clock className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-lg mb-2">{getContent('contact','info_hours_label') || (language === 'en' ? 'Working hours' : 'Время работы')}</h4>
-                      <p className="text-muted-foreground">{getContent('contact','info_hours_value') || (language === 'en' ? 'Mon-Fri: 10:00 - 19:00' : 'Пн-Пт: 10:00 - 19:00')}</p>
+                      <h4 className="font-semibold text-lg mb-2">{getContent('contact', 'info_hours_label') || (language === 'en' ? 'Working hours' : 'Время работы')}</h4>
+                      <p className="text-muted-foreground">{getContent('contact', 'info_hours_value') || (language === 'en' ? 'Mon-Fri: 10:00 - 19:00' : 'Пн-Пт: 10:00 - 19:00')}</p>
                     </div>
                   </div>
                 </div>
@@ -336,25 +336,25 @@ const Contact = () => {
               <div className="bg-card border border-border rounded-3xl p-8 md:p-12">
                 <h3 className="text-2xl md:text-3xl font-heading font-bold mb-8">
                   <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                    {getContent('contact','why_title') || (language === 'en' ? 'Why choose us' : 'Почему выбирают нас')}
+                    {getContent('contact', 'why_title') || (language === 'en' ? 'Why choose us' : 'Почему выбирают нас')}
                   </span>
                 </h3>
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-muted-foreground">{getContent('contact','why_point_1') || (language === 'en' ? 'Free consultation and project estimate' : 'Бесплатная консультация и оценка проекта')}</span>
+                    <span className="text-muted-foreground">{getContent('contact', 'why_point_1') || (language === 'en' ? 'Free consultation and project estimate' : 'Бесплатная консультация и оценка проекта')}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-muted-foreground">{getContent('contact','why_point_2') || (language === 'en' ? 'Rapid development from 3 days' : 'Быстрая разработка от 3 дней')}</span>
+                    <span className="text-muted-foreground">{getContent('contact', 'why_point_2') || (language === 'en' ? 'Rapid development from 3 days' : 'Быстрая разработка от 3 дней')}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-muted-foreground">{getContent('contact','why_point_3') || (language === 'en' ? 'Quality guarantee and support' : 'Гарантия качества и поддержка')}</span>
+                    <span className="text-muted-foreground">{getContent('contact', 'why_point_3') || (language === 'en' ? 'Quality guarantee and support' : 'Гарантия качества и поддержка')}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-muted-foreground">{getContent('contact','why_point_4') || (language === 'en' ? 'Modern technologies and approaches' : 'Современные технологии и подходы')}</span>
+                    <span className="text-muted-foreground">{getContent('contact', 'why_point_4') || (language === 'en' ? 'Modern technologies and approaches' : 'Современные технологии и подходы')}</span>
                   </div>
                 </div>
               </div>
@@ -375,12 +375,8 @@ const Contact = () => {
               </h2>
               
               <div className="space-y-6 text-lg">
-                {language === 'en' ? (
-                  <div className="space-y-6">
-                    <p className="text-muted-foreground">
-                      <strong className="text-foreground">Individual entrepreneur ANDREI ISKOU</strong> is a professional web development specialist 
-                      creating modern and functional websites, applications, and digital solutions.
-                    </p>
+                {language === 'en' ? <div className="space-y-6">
+                    
                     
                     <div className="grid md:grid-cols-2 gap-6">
                       <div className="space-y-4">
@@ -404,17 +400,8 @@ const Contact = () => {
                       </div>
                     </div>
                     
-                    <div className="mt-8 p-6 bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl border border-border">
-                      <h3 className="text-xl font-semibold text-foreground mb-3">Our Services</h3>
-                      <p className="text-muted-foreground">
-                        We offer comprehensive web development services including website development, 
-                        mobile applications, e-commerce solutions, and digital marketing. Professional 
-                        development with high-quality results and customer satisfaction guaranteed.
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-6">
+                    
+                  </div> : <div className="space-y-6">
                     <p className="text-muted-foreground">
                       <strong className="text-foreground">Индивидуальный предприниматель АНДРЕЙ ИСКОУ</strong> — профессиональный специалист веб-разработки, 
                       создающий современные и функциональные сайты, приложения и цифровые решения.
@@ -450,8 +437,7 @@ const Contact = () => {
                         разработка с гарантией высокого качества результата и полного удовлетворения клиентов.
                       </p>
                     </div>
-                  </div>
-                )}
+                  </div>}
               </div>
             </CardContent>
           </Card>
