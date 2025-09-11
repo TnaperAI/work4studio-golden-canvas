@@ -362,7 +362,98 @@ const Contact = () => {
           </div>
         </div>
       </section>
-      
+
+      {/* Company Information Section */}
+      <section className="section-padding bg-card/50">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <Card className="border border-border">
+            <CardContent className="p-8 md:p-12">
+              <h2 className="text-3xl font-heading font-bold mb-8 text-center">
+                <span className="bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+                  {language === 'en' ? 'About Our Company' : 'О нашей компании'}
+                </span>
+              </h2>
+              
+              <div className="space-y-6 text-lg">
+                {language === 'en' ? (
+                  <div className="space-y-6">
+                    <p className="text-muted-foreground">
+                      <strong className="text-foreground">Work4Studio LLC</strong> is a professional web development company 
+                      specializing in creating modern and functional websites, applications, and digital solutions.
+                    </p>
+                    
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <h3 className="text-xl font-semibold text-foreground">Company Details</h3>
+                        <div className="space-y-2 text-muted-foreground">
+                          <p><strong>Legal Name:</strong> Work4Studio LLC</p>
+                          <p><strong>Registration Number:</strong> 1234567890</p>
+                          <p><strong>Legal Address:</strong> 123 Business Street, Suite 100, New York, NY 10001, USA</p>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <h3 className="text-xl font-semibold text-foreground">Contact Information</h3>
+                        <div className="space-y-2 text-muted-foreground">
+                          <p><strong>Email:</strong> info@work4studio.com</p>
+                          <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+                          <p><strong>Working Hours:</strong> Mon-Fri: 10:00 - 19:00</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-8 p-6 bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl border border-border">
+                      <h3 className="text-xl font-semibold text-foreground mb-3">Our Services</h3>
+                      <p className="text-muted-foreground">
+                        We offer comprehensive web development services including website development, 
+                        mobile applications, e-commerce solutions, and digital marketing. Our team of 
+                        experienced developers ensures high-quality results and customer satisfaction.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    <p className="text-muted-foreground">
+                      <strong className="text-foreground">ООО "Work4Studio"</strong> — профессиональная компания веб-разработки, 
+                      специализирующаяся на создании современных и функциональных сайтов, приложений и цифровых решений.
+                    </p>
+                    
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <h3 className="text-xl font-semibold text-foreground">Реквизиты компании</h3>
+                        <div className="space-y-2 text-muted-foreground">
+                          <p><strong>Наименование:</strong> ООО "Work4Studio"</p>
+                          <p><strong>ИНН:</strong> 1234567890</p>
+                          <p><strong>Юридический адрес:</strong> 123456, г. Москва, ул. Деловая, д. 1, оф. 100</p>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <h3 className="text-xl font-semibold text-foreground">Контактная информация</h3>
+                        <div className="space-y-2 text-muted-foreground">
+                          <p><strong>Email:</strong> info@work4studio.com</p>
+                          <p><strong>Телефон:</strong> +7 (495) 123-45-67</p>
+                          <p><strong>Время работы:</strong> Пн-Пт: 10:00 - 19:00</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-8 p-6 bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl border border-border">
+                      <h3 className="text-xl font-semibold text-foreground mb-3">Наши услуги</h3>
+                      <p className="text-muted-foreground">
+                        Мы предлагаем полный спектр услуг веб-разработки: создание сайтов, 
+                        мобильные приложения, интернет-магазины и цифровой маркетинг. Наша команда 
+                        опытных разработчиков обеспечивает высокое качество результата и полное удовлетворение клиентов.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
       <Footer />
       <BackToTop />
     </div>;
