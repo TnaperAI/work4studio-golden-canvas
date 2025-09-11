@@ -378,17 +378,20 @@ const Contact = () => {
                 {language === 'en' ? (
                   <div className="space-y-6">
                     <p className="text-muted-foreground">
-                      <strong className="text-foreground">Work4Studio LLC</strong> is a professional web development company 
-                      specializing in creating modern and functional websites, applications, and digital solutions.
+                      <strong className="text-foreground">Individual entrepreneur ANDREI ISKOU</strong> is a professional web development specialist 
+                      creating modern and functional websites, applications, and digital solutions.
                     </p>
                     
                     <div className="grid md:grid-cols-2 gap-6">
                       <div className="space-y-4">
                         <h3 className="text-xl font-semibold text-foreground">Company Details</h3>
                         <div className="space-y-2 text-muted-foreground">
-                          <p><strong>Legal Name:</strong> Work4Studio LLC</p>
-                          <p><strong>Registration Number:</strong> 1234567890</p>
-                          <p><strong>Legal Address:</strong> 123 Business Street, Suite 100, New York, NY 10001, USA</p>
+                          <p><strong>Firm Name:</strong> Individual entrepreneur ANDREI ISKOU</p>
+                          <p><strong>Legal Form:</strong> Individual Entrepreneur</p>
+                          <p><strong>Identification Number:</strong> 306528512</p>
+                          <p><strong>Registration Date:</strong> 26/08/2025</p>
+                          <p><strong>Registering Authority:</strong> LEPL National Agency of Public Registry</p>
+                          <p><strong>Legal Address:</strong> Georgia, Tbilisi, Samgori district, Police Lane I N5, Floor 2, N4a</p>
                         </div>
                       </div>
                       
@@ -396,7 +399,6 @@ const Contact = () => {
                         <h3 className="text-xl font-semibold text-foreground">Contact Information</h3>
                         <div className="space-y-2 text-muted-foreground">
                           <p><strong>Email:</strong> info@work4studio.com</p>
-                          <p><strong>Phone:</strong> +1 (555) 123-4567</p>
                           <p><strong>Working Hours:</strong> Mon-Fri: 10:00 - 19:00</p>
                         </div>
                       </div>
@@ -406,25 +408,28 @@ const Contact = () => {
                       <h3 className="text-xl font-semibold text-foreground mb-3">Our Services</h3>
                       <p className="text-muted-foreground">
                         We offer comprehensive web development services including website development, 
-                        mobile applications, e-commerce solutions, and digital marketing. Our team of 
-                        experienced developers ensures high-quality results and customer satisfaction.
+                        mobile applications, e-commerce solutions, and digital marketing. Professional 
+                        development with high-quality results and customer satisfaction guaranteed.
                       </p>
                     </div>
                   </div>
                 ) : (
                   <div className="space-y-6">
                     <p className="text-muted-foreground">
-                      <strong className="text-foreground">ООО "Work4Studio"</strong> — профессиональная компания веб-разработки, 
-                      специализирующаяся на создании современных и функциональных сайтов, приложений и цифровых решений.
+                      <strong className="text-foreground">Индивидуальный предприниматель АНДРЕЙ ИСКОУ</strong> — профессиональный специалист веб-разработки, 
+                      создающий современные и функциональные сайты, приложения и цифровые решения.
                     </p>
                     
                     <div className="grid md:grid-cols-2 gap-6">
                       <div className="space-y-4">
                         <h3 className="text-xl font-semibold text-foreground">Реквизиты компании</h3>
                         <div className="space-y-2 text-muted-foreground">
-                          <p><strong>Наименование:</strong> ООО "Work4Studio"</p>
-                          <p><strong>ИНН:</strong> 1234567890</p>
-                          <p><strong>Юридический адрес:</strong> 123456, г. Москва, ул. Деловая, д. 1, оф. 100</p>
+                          <p><strong>Наименование:</strong> Индивидуальный предприниматель АНДРЕЙ ИСКОУ</p>
+                          <p><strong>Правовая форма:</strong> Индивидуальный предприниматель</p>
+                          <p><strong>Идентификационный номер:</strong> 306528512</p>
+                          <p><strong>Дата регистрации:</strong> 26/08/2025</p>
+                          <p><strong>Регистрирующий орган:</strong> LEPL Национальное агентство публичного реестра</p>
+                          <p><strong>Юридический адрес:</strong> Грузия, Тбилиси, район Самгори, переулок Полицейский I N5, этаж 2, N4a</p>
                         </div>
                       </div>
                       
@@ -432,7 +437,6 @@ const Contact = () => {
                         <h3 className="text-xl font-semibold text-foreground">Контактная информация</h3>
                         <div className="space-y-2 text-muted-foreground">
                           <p><strong>Email:</strong> info@work4studio.com</p>
-                          <p><strong>Телефон:</strong> +7 (495) 123-45-67</p>
                           <p><strong>Время работы:</strong> Пн-Пт: 10:00 - 19:00</p>
                         </div>
                       </div>
@@ -441,9 +445,9 @@ const Contact = () => {
                     <div className="mt-8 p-6 bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl border border-border">
                       <h3 className="text-xl font-semibold text-foreground mb-3">Наши услуги</h3>
                       <p className="text-muted-foreground">
-                        Мы предлагаем полный спектр услуг веб-разработки: создание сайтов, 
-                        мобильные приложения, интернет-магазины и цифровой маркетинг. Наша команда 
-                        опытных разработчиков обеспечивает высокое качество результата и полное удовлетворение клиентов.
+                        Предлагаем полный спектр услуг веб-разработки: создание сайтов, 
+                        мобильные приложения, интернет-магазины и цифровой маркетинг. Профессиональная 
+                        разработка с гарантией высокого качества результата и полного удовлетворения клиентов.
                       </p>
                     </div>
                   </div>
