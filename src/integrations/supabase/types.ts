@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      business_profile: {
+        Row: {
+          brand_voice: string | null
+          business_description: string | null
+          business_goals: string | null
+          company_name: string | null
+          contact_info: Json | null
+          created_at: string
+          id: string
+          industry: string | null
+          key_messages: string[] | null
+          services_products: string[] | null
+          social_media_handles: Json | null
+          target_audience: string | null
+          unique_selling_points: string[] | null
+          updated_at: string
+          user_id: string
+          website_url: string | null
+        }
+        Insert: {
+          brand_voice?: string | null
+          business_description?: string | null
+          business_goals?: string | null
+          company_name?: string | null
+          contact_info?: Json | null
+          created_at?: string
+          id?: string
+          industry?: string | null
+          key_messages?: string[] | null
+          services_products?: string[] | null
+          social_media_handles?: Json | null
+          target_audience?: string | null
+          unique_selling_points?: string[] | null
+          updated_at?: string
+          user_id: string
+          website_url?: string | null
+        }
+        Update: {
+          brand_voice?: string | null
+          business_description?: string | null
+          business_goals?: string | null
+          company_name?: string | null
+          contact_info?: Json | null
+          created_at?: string
+          id?: string
+          industry?: string | null
+          key_messages?: string[] | null
+          services_products?: string[] | null
+          social_media_handles?: Json | null
+          target_audience?: string | null
+          unique_selling_points?: string[] | null
+          updated_at?: string
+          user_id?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       case_translations: {
         Row: {
           canonical_url: string | null
@@ -250,6 +307,158 @@ export type Database = {
           source?: string | null
           status?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      content_analytics: {
+        Row: {
+          clicks: number | null
+          collected_at: string
+          comments: number | null
+          created_at: string
+          engagement_rate: number | null
+          id: string
+          likes: number | null
+          platform: string
+          post_id: string | null
+          reach: number | null
+          shares: number | null
+          user_id: string
+          views: number | null
+        }
+        Insert: {
+          clicks?: number | null
+          collected_at?: string
+          comments?: number | null
+          created_at?: string
+          engagement_rate?: number | null
+          id?: string
+          likes?: number | null
+          platform: string
+          post_id?: string | null
+          reach?: number | null
+          shares?: number | null
+          user_id: string
+          views?: number | null
+        }
+        Update: {
+          clicks?: number | null
+          collected_at?: string
+          comments?: number | null
+          created_at?: string
+          engagement_rate?: number | null
+          id?: string
+          likes?: number | null
+          platform?: string
+          post_id?: string | null
+          reach?: number | null
+          shares?: number | null
+          user_id?: string
+          views?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_analytics_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "content_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_factory_settings: {
+        Row: {
+          ai_settings: Json | null
+          auto_generate: boolean | null
+          brand_voice: string | null
+          content_topics: string[] | null
+          created_at: string
+          generation_frequency: string | null
+          id: string
+          posting_times: Json | null
+          target_audience: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_settings?: Json | null
+          auto_generate?: boolean | null
+          brand_voice?: string | null
+          content_topics?: string[] | null
+          created_at?: string
+          generation_frequency?: string | null
+          id?: string
+          posting_times?: Json | null
+          target_audience?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_settings?: Json | null
+          auto_generate?: boolean | null
+          brand_voice?: string | null
+          content_topics?: string[] | null
+          created_at?: string
+          generation_frequency?: string | null
+          id?: string
+          posting_times?: Json | null
+          target_audience?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      content_posts: {
+        Row: {
+          analytics_data: Json | null
+          content: string
+          content_type: string
+          created_at: string
+          hashtags: string[] | null
+          id: string
+          image_url: string | null
+          platform: string
+          published_at: string | null
+          scheduled_at: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+          video_url: string | null
+        }
+        Insert: {
+          analytics_data?: Json | null
+          content: string
+          content_type?: string
+          created_at?: string
+          hashtags?: string[] | null
+          id?: string
+          image_url?: string | null
+          platform: string
+          published_at?: string | null
+          scheduled_at?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+          video_url?: string | null
+        }
+        Update: {
+          analytics_data?: Json | null
+          content?: string
+          content_type?: string
+          created_at?: string
+          hashtags?: string[] | null
+          id?: string
+          image_url?: string | null
+          platform?: string
+          published_at?: string | null
+          scheduled_at?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          video_url?: string | null
         }
         Relationships: []
       }
@@ -551,6 +760,48 @@ export type Database = {
         }
         Relationships: []
       }
+      social_accounts: {
+        Row: {
+          access_token: string | null
+          account_data: Json | null
+          account_name: string
+          created_at: string
+          id: string
+          is_active: boolean
+          platform: string
+          refresh_token: string | null
+          token_expires_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_token?: string | null
+          account_data?: Json | null
+          account_name: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          platform: string
+          refresh_token?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_token?: string | null
+          account_data?: Json | null
+          account_name?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          platform?: string
+          refresh_token?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       team_member_translations: {
         Row: {
           created_at: string
@@ -660,6 +911,62 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      video_generations: {
+        Row: {
+          avatar_id: string | null
+          created_at: string
+          duration: number | null
+          generation_data: Json | null
+          id: string
+          post_id: string | null
+          script: string
+          status: string
+          thumbnail_url: string | null
+          updated_at: string
+          user_id: string
+          video_url: string | null
+          voice_clone_id: string | null
+        }
+        Insert: {
+          avatar_id?: string | null
+          created_at?: string
+          duration?: number | null
+          generation_data?: Json | null
+          id?: string
+          post_id?: string | null
+          script: string
+          status?: string
+          thumbnail_url?: string | null
+          updated_at?: string
+          user_id: string
+          video_url?: string | null
+          voice_clone_id?: string | null
+        }
+        Update: {
+          avatar_id?: string | null
+          created_at?: string
+          duration?: number | null
+          generation_data?: Json | null
+          id?: string
+          post_id?: string | null
+          script?: string
+          status?: string
+          thumbnail_url?: string | null
+          updated_at?: string
+          user_id?: string
+          video_url?: string | null
+          voice_clone_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_generations_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "content_posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
